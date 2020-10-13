@@ -13,11 +13,11 @@ export function Calendar(props) {
   let shiftDaysEnd
   let touch = false
   let touchTimer
+  let scrollTimer
   let days = props.days || {}
   let daysOff = props.daysOff || []
   let daysPick = props.daysPick? props.daysPick.slice() : []
   let noScroll = false
-  let l = getDatesList()
 
   function DaysNames() {
     // React.component - Названия дней недели
@@ -37,10 +37,8 @@ export function Calendar(props) {
       const firstID = main.firstElementChild.firstElementChild.id
       const scroll = main.scrollLeft
       main.innerHTML = ""
-      for (let i = 0; i < l.length; i++) {
-        main.appendChild(Week(l[i]))
-      }
       main.scrollLeft = 0
+      filling()
       startScroll()
       if (main.scrollLeft === scroll &&main.firstElementChild.firstElementChild.id === firstID) {
         // Исключение, если второе нажатие кнопки подряд - перемотка на сегодня
@@ -77,10 +75,8 @@ export function Calendar(props) {
     )
   }
 
-  function Day(date, react=false) {
-    // День из даты. If react === true -> React.Component
-    if (react) return <div className={getDayClass(date)} id={date.format()} key={date.format()}>{date.getDate()}</div>
-
+  function Day(date) {
+    // День из даты
     let day = document.createElement("div")
     day.className = getDayClass(date)
     day.setAttribute("id", date.format())
@@ -88,22 +84,17 @@ export function Calendar(props) {
     return day
   }
 
-  function Week(start, react=false) {
-    // Столбец недели (7 дней, начиная с "start"). If react === true -> React.Component
+  function Week(start) {
+    // Столбец недели (7 дней, начиная с "start")
     start = new Date(start)
-    let list = []
-
-    for (let i = 0; i < 7; i++) {
-      let date = new Date(start)
-      date.setDate(date.getDate() + i)
-      list.push(Day(date, react))
-    }
-
-    if (react) return <div className="calendar-week" key={start.getTime()}>{list}</div>
 
     let week = document.createElement("div")
     week.className = "calendar-week"
-    list.forEach((date) => week.appendChild(date))
+    for (let i = 0; i < 7; i++) {
+      let date = new Date(start)
+      date.setDate(date.getDate() + i)
+      week.appendChild(Day(date))
+    }
     return week
   }
 
@@ -133,6 +124,7 @@ export function Calendar(props) {
     month.innerText = monthNames[date.getMonth()]
     return month
   }
+
   function getMonthText() {
     // Получение или обновление названий месяцев
     const main = document.getElementById("calendar-days")
@@ -145,10 +137,10 @@ export function Calendar(props) {
       start.setFullYear(start.getFullYear(), start.getMonth() + 1, 1)
     }
 
-    i = Math.trunc(main.scrollLeft + main.getBoundingClientRect().width) / 24
-    if (i > main.children.length) i = main.children.length
-    const end = new Date(main.children.item(i - 1).lastElementChild.id)
+    const end = new Date(main.children.item(i).firstElementChild.id)
     end.setHours(0,0,0,0)
+    i = Math.trunc(main.getBoundingClientRect().width) / 24 * 7 + 6
+    end.setDate(end.getDate() + i)
     let check = new Date(end)
     check.setMonth(check.getMonth() + 1)
     check.setDate(0)
@@ -158,6 +150,9 @@ export function Calendar(props) {
 
     let first = document.getElementById(start.format())
     let last = document.getElementById(end.format())
+
+    if (first === null || last === null) return
+
     let paddingL = first.getBoundingClientRect().left - main.getBoundingClientRect().left
     let paddingR = main.getBoundingClientRect().right - last.getBoundingClientRect().right
     if (start.getDay2() !== 0) paddingL += first.getBoundingClientRect().width / 2
@@ -309,6 +304,7 @@ export function Calendar(props) {
   }
 
   function lazyLoading() {
+    console.log("lazyLoading")
     const main = document.getElementById("calendar-days")
     const scroll = main.scrollLeft
     const refScroll = getRefScroll()
@@ -320,43 +316,48 @@ export function Calendar(props) {
     if (refScroll - scroll >= size) {
       // Скролл влево
       const offset = (refScroll - scroll) % size
-      for (let i = 0; i < Math.trunc((refScroll - scroll) / size); i++) {
-        const first = main.firstElementChild
-        let date = new Date(first.firstElementChild.id)
-        date.setHours(0, 0, 0, 0)
-        date.setDate(date.getDate() - 7)
-        main.insertBefore(Week(date), first)
+      const count = Math.trunc((refScroll - scroll) / size)
+
+      for (let i = 0; i < count; i++) {
         main.removeChild(main.lastElementChild)
       }
-      // main.scrollTo(refScroll - offset, 0)
+      const first = main.firstElementChild
+      let date = new Date(first.firstElementChild.id)
+      date.setHours(0, 0, 0, 0)
+      date.setDate(date.getDate() - 7 * count)
+      main.insertBefore(Weeks(date, count), first)
       main.scrollLeft = refScroll - offset
+
     } else if (scroll - refScroll >= size) {
       // Скролл вправо
       const offset = (scroll - refScroll) % size
-      for (let i = 0; i < Math.trunc((scroll - refScroll) / size); i++) {
-        const last = main.lastElementChild
-        let date = new Date(last.firstElementChild.id)
-        date.setHours(0, 0, 0, 0)
-        date.setDate(date.getDate() + 7)
-        main.appendChild(Week(date))
+      const count = Math.trunc((scroll - refScroll) / size)
+
+      const last = main.lastElementChild
+      let date = new Date(last.firstElementChild.id)
+      date.setHours(0, 0, 0, 0)
+      date.setDate(date.getDate() + 7)
+      main.appendChild(Weeks(date, count))
+
+      for (let i = 0; i < count; i++) {
         main.removeChild(main.firstElementChild)
       }
-      // main.scrollTo(refScroll + offset, 0)
+
       main.scrollLeft = refScroll + offset
     }
   }
 
   function onScroll() {
-    console.log("scroll")
     // Ленивая загрузка календаря от скроллинга
     if (dblClick) {
       // Исключение для возможности множественного выделения при скроллинге
       clearTimeout(dblClick)
       dblClick = setTimeout(() => props.changeDaysPick(daysPick), 400)
     }
-    if (!touch) lazyLoading()
     getYearsText()
     getMonthText()
+    clearTimeout(scrollTimer)
+    if (!touch) scrollTimer = setTimeout(() => lazyLoading(), 300)
   }
 
   function resetTexts() {
@@ -559,23 +560,23 @@ export function Calendar(props) {
     })
   }
 
-  function getDatesList() {
-    // Получение списка начальных дат для формирования недель
-    let l = []
+  function getStartDate() {
+    // Получение стартовой даты для формирования недель
     let today = new Date()
     let start = new Date(today)
-    let diff = 58
-    // diff - количество недель
+    start.setHours(0,0,0,0)
+    start.setDate(start.getDate() - start.getDay2())
+    let diff = null
     if (props.dates) {
       // Исключение, если есть props.dates
       let first = new Date(props.dates[0])
-      let last = new Date(props.dates[props.dates.length - 1])
       if (first < today) {
         // Если первая дата в прошлом - начало с неё
         first.setDate(1)
         first.setDate(first.getDate() - first.getDay2())
         start = first
       }
+      const last = new Date(props.dates[props.dates.length - 1])
       if (last < today) {
         // Если последняя дата в прошлом - формируются только месяцы, где есть даты. Запрет на ленивую загрузку
         last.setMonth(last.getMonth() + 1)
@@ -583,42 +584,27 @@ export function Calendar(props) {
         diff = last.getDiffWeeks(start) + 1
         noScroll = true
       }
-      else {
-        // Если первая даты в прошлом, а последняя нет - начало за 10 недель до первой даты
-        start.setDate(start.getDate() - start.getDay2() - 10 * 7 )
-      }
     }
-    else {
-      // Если нет props.dates - начало за 10 недель до сегодня
-      start.setDate(start.getDate() - start.getDay2() - 10 * 7 )
-    }
-
-    start.setHours(0,0,0,0)
-    for (let i = 0; i < diff; i++) {
-      // Добавление дат - итерация по количеству недель
-      let date = new Date(start)
-      date.setDate(date.getDate() + i * 7)
-      l.push(date)
-    }
-    return l
+    return {start: start, diff: diff}
   }
 
   function touchStart(e) {
     clearTimeout(touchTimer)
-    document.getElementById("calendar-days").addEventListener("scroll", touchEnd)
+    document.getElementById("calendar-days").addEventListener("scroll", touchScroll)
     touch = true
     onMouseLeave()
     onDayOver(e)
   }
 
-  function touchEnd(e) {
+  function touchScroll() {
     clearTimeout(touchTimer)
-    touchTimer = setTimeout(temp, 300)
+    touchTimer = setTimeout(onScroll, 300)
   }
 
-  function temp() {
+  function touchEnd() {
+    clearTimeout(touchTimer)
+    touchTimer = setTimeout(onScroll, 300)
     touch = false
-    onScroll()
   }
 
   function onWheel(e) {
@@ -628,9 +614,45 @@ export function Calendar(props) {
     e.preventDefault ? e.preventDefault() : (e.returnValue = false);
   }
 
+  function Weeks(date, count) {
+    let weeks = document.createDocumentFragment()
+    for (let i = 0; i < count; i++) {
+      weeks.appendChild(Week(date))
+      date.setDate(date.getDate() + 7)
+    }
+    return weeks
+  }
+
+  function filling() {
+    const main = document.getElementById("calendar-days")
+
+    const dates = getStartDate()
+    const start = dates.start
+
+    let date = new Date(start)
+
+    if (dates.diff !== null) {
+      main.appendChild(Weeks(date, dates.diff))
+      return
+    }
+
+    let width = 0
+    while (width <= main.getBoundingClientRect().width) {
+      main.appendChild(Week(date))
+      date.setDate(date.getDate() + 7)
+      width += 24
+    }
+    main.appendChild(Weeks(date, 52))
+    date = new Date(start)
+    date.setDate(date.getDate() - 7 * 52)
+    const first = main.firstElementChild
+    main.insertBefore(Weeks(date, 52), first)
+  }
+
   useEffect(() => {
     // componentDidMount
     const main = document.getElementById("calendar-days")
+    filling()
     startScroll()
     resetTexts()
     document.querySelector("div.calendar-block").classList.remove("shadow")
@@ -660,12 +682,10 @@ export function Calendar(props) {
              onWheel={onWheel}
              onTouchStart={touchStart}
              onTouchEnd={touchEnd}
-             onTouchCancel={touchEnd}
              onMouseDown={onDayShift}
              onMouseUp={onDayUnshift}
              onMouseOver={onDayOver}
              onMouseLeave={onMouseLeave}>
-          {l.map((item) => Week(item, true))}
         </div>
       </div>
     </div>
