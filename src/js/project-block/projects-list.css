@@ -1,0 +1,7 @@
+tr.project-list-row.pick {
+    background-color: #4db34b;
+}
+tr.project-list-row:hover {
+    cursor: pointer;
+    background-color: #4db34b;
+}
