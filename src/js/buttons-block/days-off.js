@@ -14,11 +14,13 @@ export default function DaysOffEdit(props) {
   function onMouseOver() {
     if (!props.state) {
       pick("set", props.daysOff)
+      pick("set", "daysOff")
     }
   }
   function onMouseLeave() {
     if (!props.state) {
       pick("unset", props.daysOff)
+      pick("unset", "daysOff")
     }
   }
 

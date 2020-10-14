@@ -1,24 +1,34 @@
 import React from "react";
 import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 function GridItemTextField(props) {
   return (
     <Grid item xs={12}>
       <TextField size="small"
                  fullWidth
-
                  {...props}/>
     </Grid>
   )
 }
 
-function ContactForm(props) {
+function GridItemTextFieldAuto(props) {
+  console.log(props)
   return (
-    <>
-      <GridItemTextField id="name" label="Контакт" defaultValue={props.name} required/>
-      <GridItemTextField id="phone" label="Телефон" defaultValue={props.phone} inputMode="tel"/>
-    </>
+    <Grid item xs={12}>
+      <Autocomplete {...props}
+        freeSolo
+        options={props.options}
+        renderInput={(params) => (
+          <TextField size="small"
+                     fullWidth
+                     label={props.label}
+                     required={props.required}
+                     {...params}/>
+        )}
+      />
+    </Grid>
   )
 }
 
@@ -36,12 +46,12 @@ export function ProjectForm(props) {
             <Grid container direction="row" spacing={3}>
               <GridItemTextField id="title" label="Название" defaultValue={props.title} required/>
               <GridItemTextField id="money" label="Гонорар" defaultValue={props.money} inputMode="numeric"/>
-              <ContactForm {...props.contact}/>
+              <GridItemTextFieldAuto id="client" label="Клиент" defaultValue={props.client} options={props.clients} required/>
             </Grid>
           </Grid>
           <Grid item xs={12} md={6}>
             <Grid container direction="row" spacing={3}>
-              <GridItemTextField id="info" label="Информация" defaultValue={props.info} multiline rows={12}/>
+              <GridItemTextField id="info" label="Информация" defaultValue={props.info} multiline rows={8}/>
             </Grid>
           </Grid>
         </Grid>

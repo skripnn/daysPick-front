@@ -1,5 +1,5 @@
 import React from 'react';
-import {projectsToDays, projectsSort, setUrl} from "./js/functions/functions";
+import {projectsToDays, projectsSort, setUrl, setClients} from "./js/functions/functions";
 import {getProject, getFromUrl, postDaysOff, getDaysOff, postProject, deleteProject} from "./js/functions/fetch";
 import {Container} from "@material-ui/core";
 import {ProjectsList} from "./js/project-block/projects-list";
@@ -9,6 +9,7 @@ import Header from "./js/core/app-bar";
 import {Calendar} from "./js/calendar-block/calendar";
 // import {Calendar} from "./js/calendar";
 import {ClientsList} from "./js/client-block/clients-list";
+import pick from "./js/functions/pick";
 
 class App extends React.Component {
   constructor(props) {
@@ -151,6 +152,7 @@ class App extends React.Component {
             daysOff: result
           }
         })
+        pick("unset", "daysOff")
       },
       (error) => {
         alert(error);
@@ -164,10 +166,7 @@ class App extends React.Component {
       title: document.querySelector("input#title").value,
       money: document.querySelector("input#money").value || null,
       dates: this.state.calendar.daysPick,
-      contact: {
-        name: document.querySelector("input#name").value,
-        phone: document.querySelector("input#phone").value
-      },
+      client: document.querySelector("input#client").value,
       info: document.querySelector("textarea#info").value,
     }
 
@@ -179,8 +178,8 @@ class App extends React.Component {
       alert("Введите название проекта")
       return
     }
-    if (project.contact.name === "") {
-      alert("Заполните имя клиента")
+    if (project.client === "") {
+      alert("Заполните название клиента")
       return
     }
 
@@ -258,6 +257,7 @@ class App extends React.Component {
             onSaveClick={this.projectSave}
             onBackClick={this.projectBack}
             onDeleteClick={this.projectDelete}
+            clients={setClients(this.state.projects)}
           >
             <Calendar {...this.state.calendar}
                       changeDaysPick={this.changeDaysPick}/>

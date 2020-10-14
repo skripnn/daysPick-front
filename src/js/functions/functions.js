@@ -102,3 +102,9 @@ export function actualProjects(projects) {
   })
   return p
 }
+
+export function setClients(projects) {
+  const clients = projects.map((project) => project.client)
+  clients.sort()
+  return Array.from(new Set(clients))
+}

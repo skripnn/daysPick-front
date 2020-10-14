@@ -25,14 +25,17 @@ import "./projects-list.css"
 function ProjectRow(props) {
   function onMouseOver() {
     pick("set", props.dates)
+    pick("set", props.id)
   }
 
   function onMouseLeave() {
     pick("unset", props.dates)
+    pick("unset", props.id)
   }
 
   return (
-    <TableRow className="project-list-row" id={props.id} onClick={props.onClick} onMouseOver={onMouseOver} onMouseLeave={onMouseLeave} >
+    <TableRow className="project-list-row" id={props.id} onClick={props.onClick}
+              onMouseOver={onMouseOver} onMouseLeave={onMouseLeave}>
       <Hidden xsDown>
         <TableCell align="center" width={100}>{props.dates[0]}</TableCell>
         <TableCell align="center" width={100}>{props.dates[props.dates.length - 1]}</TableCell>
@@ -42,7 +45,7 @@ function ProjectRow(props) {
       </Hidden>
       <TableCell scope="row">{props.title}</TableCell>
       <Hidden smDown>
-        <TableCell>{props.contact.name}</TableCell>
+        <TableCell>{props.client}</TableCell>
         <TableCell width={100}>{props.money}</TableCell>
       </Hidden>
     </TableRow>
@@ -66,7 +69,7 @@ function ProjectsTable(props) {
               <TableCell>Проект</TableCell>
             </Hidden>
             <Hidden smDown>
-              <TableCell>Контакт</TableCell>
+              <TableCell>Клиент</TableCell>
               <TableCell width={100}>Гонорар</TableCell>
             </Hidden>
           </TableRow>

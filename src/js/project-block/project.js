@@ -14,10 +14,7 @@ export const defaultProject = {
   title: "",
   money: "",
   dates: [],
-  contact: {
-    name: "",
-    phone: ""
-  },
+  client: "",
   info: "",
 }
 
@@ -26,7 +23,7 @@ export function Project(props) {
       <Box className="project-block">
         <form id="project-form" noValidate autoComplete="off">
           {props.children}
-          <ProjectForm {...props.project}/>
+          <ProjectForm {...props.project} clients={props.clients}/>
           <Grid container direction="row" justify="space-between" alignItems="center" spacing={2}>
             <Grid item>
               {props.project.id ? <DeleteButton onClick={props.onDeleteClick}/> : <></>}

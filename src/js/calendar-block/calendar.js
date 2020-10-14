@@ -304,20 +304,18 @@ export function Calendar(props) {
   }
 
   function lazyLoading() {
-    console.log("lazyLoading")
     const main = document.getElementById("calendar-days")
     const scroll = main.scrollLeft
     const refScroll = getRefScroll()
-    if (refScroll === scroll || noScroll) return
+    if (Math.abs(refScroll - scroll) < 24 || noScroll) return
     // Исключение, если нет необходимости в обновлении или запрет на ленивую загрузку (noScroll)
-
+    console.log("lazyLoading")
     const size = main.children[1].getBoundingClientRect().left - main.children[0].getBoundingClientRect().left
     // size - ширина одной недели (default = 24)
+    const offset = Math.abs(refScroll - scroll) % size
+    const count = Math.trunc(Math.abs(refScroll - scroll) / size)
     if (refScroll - scroll >= size) {
       // Скролл влево
-      const offset = (refScroll - scroll) % size
-      const count = Math.trunc((refScroll - scroll) / size)
-
       for (let i = 0; i < count; i++) {
         main.removeChild(main.lastElementChild)
       }
@@ -327,22 +325,17 @@ export function Calendar(props) {
       date.setDate(date.getDate() - 7 * count)
       main.insertBefore(Weeks(date, count), first)
       main.scrollLeft = refScroll - offset
-
-    } else if (scroll - refScroll >= size) {
+    }
+    else if (scroll - refScroll >= size) {
       // Скролл вправо
-      const offset = (scroll - refScroll) % size
-      const count = Math.trunc((scroll - refScroll) / size)
-
+      for (let i = 0; i < count; i++) {
+        main.removeChild(main.firstElementChild)
+      }
       const last = main.lastElementChild
       let date = new Date(last.firstElementChild.id)
       date.setHours(0, 0, 0, 0)
       date.setDate(date.getDate() + 7)
       main.appendChild(Weeks(date, count))
-
-      for (let i = 0; i < count; i++) {
-        main.removeChild(main.firstElementChild)
-      }
-
       main.scrollLeft = refScroll + offset
     }
   }
@@ -583,6 +576,7 @@ export function Calendar(props) {
         last.setDate(0)
         diff = last.getDiffWeeks(start) + 1
         noScroll = true
+        document.querySelector(".calendar-button-scroll").firstElementChild.remove()
       }
     }
     return {start: start, diff: diff}
@@ -602,8 +596,7 @@ export function Calendar(props) {
   }
 
   function touchEnd() {
-    clearTimeout(touchTimer)
-    touchTimer = setTimeout(onScroll, 300)
+    touchScroll()
     touch = false
   }
 

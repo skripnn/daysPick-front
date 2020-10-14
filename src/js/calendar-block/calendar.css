@@ -96,14 +96,6 @@ div.calendar-day {
     -ms-user-select: none;
     user-select: none;
 }
-/*div.calendar-day:hover {*/
-/*    min-width: 20px;*/
-/*    min-height: 20px;*/
-/*    width: 20px;*/
-/*    height: 20px;*/
-/*    border: 1px solid #4db34b;*/
-/*    border-radius: 4px;*/
-/*}*/
 div.calendar-day.hover {
     min-width: 20px;
     min-height: 20px;
