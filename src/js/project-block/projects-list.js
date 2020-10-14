@@ -20,6 +20,8 @@ import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from "@material-ui/core/Typography";
 import "./projects-list.css"
+import {toProjectPage} from "../functions/router";
+import {Link} from "react-router-dom";
 
 
 function ProjectRow(props) {
@@ -33,8 +35,14 @@ function ProjectRow(props) {
     pick("unset", props.id)
   }
 
+  function onClick(e) {
+    e.target.parentElement.querySelector('a').click()
+  }
+
+  const path = "/admin/project/" + props.id + "/"
+
   return (
-    <TableRow className="project-list-row" id={props.id} onClick={props.onClick}
+    <TableRow className="project-list-row" id={props.id} onClick={onClick}
               onMouseOver={onMouseOver} onMouseLeave={onMouseLeave}>
       <Hidden xsDown>
         <TableCell align="center" width={100}>{props.dates[0]}</TableCell>
@@ -47,6 +55,9 @@ function ProjectRow(props) {
       <Hidden smDown>
         <TableCell>{props.client}</TableCell>
         <TableCell width={100}>{props.money}</TableCell>
+      </Hidden>
+      <Hidden>
+        <Link to={path}/>
       </Hidden>
     </TableRow>
   )
@@ -76,7 +87,7 @@ function ProjectsTable(props) {
         </TableHead>
         <TableBody>
           {props.projects.map((project) => (
-            <ProjectRow key={project.id} onClick={props.onRowClick} {...project}/>
+            <ProjectRow key={project.id} {...project}/>
           ))}
         </TableBody>
       </Table>
@@ -137,7 +148,7 @@ const AccordionDetails = withStyles((theme) => ({
 
 
 export function ProjectsList(props) {
-  const [expanded, setExpanded] = React.useState(props.expanded);
+  const [expanded, setExpanded] = React.useState(props.expanded || "projects");
 
   const handleChange = (panel) => (event, isExpanded) => {
     let e = event.target
@@ -153,7 +164,7 @@ export function ProjectsList(props) {
         <AccordionSummary variant="outlined" expandIcon={<ExpandMoreIcon />}>
             <Grid container direction="row" justify="flex-start" alignItems="center">
               <Grid item xs={1}>
-                <NewProject onClick={props.onNewClick}/>
+                <NewProject/>
               </Grid>
               <Grid item xs={11}>
                 <Typography align="center">Проекты</Typography>
@@ -161,7 +172,7 @@ export function ProjectsList(props) {
             </Grid>
         </AccordionSummary>
         <AccordionDetails>
-          <ProjectsTable projects={actualProjects(props.projects)} onRowClick={props.onRowClick}/>
+          <ProjectsTable projects={actualProjects(props.projects)}/>
         </AccordionDetails>
       </Accordion>
       <Accordion square variant="outlined" expanded={expanded === "archive"} onChange={handleChange("archive")}>
@@ -174,7 +185,7 @@ export function ProjectsList(props) {
           </Grid>
         </AccordionSummary>
         <AccordionDetails>
-          <ProjectsTable projects={archiveProjects(props.projects)} onRowClick={props.onRowClick}/>
+          <ProjectsTable projects={archiveProjects(props.projects)}/>
         </AccordionDetails>
       </Accordion>
     </Box>
@@ -182,10 +193,17 @@ export function ProjectsList(props) {
 }
 
 
-function  NewProject(props) {
+function  NewProject() {
+  function onClick() {
+    toProjectPage(null)
+  }
+  const path = "/admin/project/"
+
   return (
-    <IconButton variant="outlined" onClick={props.onClick}>
-      <AddBoxIcon fontSize="small"/>
-    </IconButton>
+    <Link to={path}>
+      <IconButton variant="outlined" onClick={onClick}>
+        <AddBoxIcon fontSize="small"/>
+      </IconButton>
+    </Link>
   )
 }

@@ -5,24 +5,23 @@ const request_dataGet = {
   }
 }
 
-export function getFromUrl() {
+export async function getFromUrl() {
   let urlGet = window.location.pathname
   if (!urlGet.endsWith('/')) urlGet += '/'
   if (window.location.pathname === '/') urlGet += 'admin/'
-  if (urlGet !== '/admin/') urlGet += "?full"
   return fetch(url + urlGet, request_dataGet).then(res => res.json())
 }
 
-export function getProjects() {
+export async function getProjects() {
   return fetch(url, request_dataGet).then(res => res.json())
 }
 
-export function getProject(id) {
+export async function getProject(id) {
   let urlGet = url + "/admin/project/" + id + "/"
   return fetch(urlGet, request_dataGet).then(res => res.json())
 }
 
-export function postProject(project) {
+export async function postProject(project) {
   let urlPost = url + "/admin/project/"
   urlPost += project.id? project.id + "/" : ""
   return fetch(urlPost, {
@@ -35,7 +34,7 @@ export function postProject(project) {
   }).then(res => res.json())
 }
 
-export function deleteProject(id) {
+export async function deleteProject(id) {
   let urlDelete = url + "/admin/project/" + id + "/"
   return fetch(urlDelete, {
     method: 'DELETE',
@@ -45,7 +44,7 @@ export function deleteProject(id) {
   }).then(res => res.json())
 }
 
-export function postDaysOff(daysOff) {
+export async function postDaysOff(daysOff) {
   let urlPost = url + "/admin/daysoff/"
   return fetch(urlPost, {
     method: 'POST',
@@ -57,7 +56,7 @@ export function postDaysOff(daysOff) {
   }).then(res => res.json())
 }
 
-export function getDaysOff() {
+export async function getDaysOff() {
   let urlGet = url + "/admin/daysoff/"
   return fetch(urlGet, request_dataGet).then(res => res.json())
 }

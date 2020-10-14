@@ -7,7 +7,7 @@ import "./calendar.css"
 
 export function Calendar(props) {
   // React.Component - Календарь
-  console.log(props)
+  // console.log(props)
   let dblClick
   let shiftDaysStart
   let shiftDaysEnd
@@ -499,6 +499,7 @@ export function Calendar(props) {
     const array = []
     document.querySelectorAll("tr.pick").forEach((project) => array.push(project.id))
     if (document.querySelector(".daysOff.pick") !== null) array.push("daysOff")
+    document.querySelectorAll(".calendar-day.hover").forEach((day) => day.classList.remove("hover"))
     pick("unset", array)
   }
 

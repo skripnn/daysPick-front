@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
+import {toHomePage} from "../functions/router";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,9 +22,12 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
   },
+  titleText: {
+    cursor: "pointer",
+  }
 }));
 
-export default function Header(props) {
+export default function Header() {
   const classes = useStyles();
 
   return (
@@ -34,7 +38,7 @@ export default function Header(props) {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
-            Days Pick
+            <span className={classes.titleText} onClick={toHomePage}>Days Pick</span>
           </Typography>
           <Button color="inherit">Login</Button>
         </Toolbar>

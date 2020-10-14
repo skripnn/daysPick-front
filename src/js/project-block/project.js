@@ -8,6 +8,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import SaveIcon from '@material-ui/icons/Save';
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import "./project.css"
+import {Hidden} from "@material-ui/core";
+import {Link} from "react-router-dom";
 
 
 export const defaultProject = {
@@ -29,7 +31,7 @@ export function Project(props) {
               {props.project.id ? <DeleteButton onClick={props.onDeleteClick}/> : <></>}
             </Grid>
             <Grid item>
-              <Buttons onSaveClick={props.onSaveClick} onBackClick={props.onBackClick}/>
+              <Buttons onSaveClick={props.onSaveClick}/>
             </Grid>
           </Grid>
         </form>
@@ -39,15 +41,25 @@ export function Project(props) {
 
 
 function Buttons(props) {
+  function onBackClick() {
+    window.history.back()
+  }
+
   return (
-    <ButtonGroup variant="outlined">
-      <Button onClick={props.onBackClick}>
-        Back
-      </Button>
-      <Button onClick={props.onSaveClick} endIcon={<SaveIcon />}>
-        Save
-      </Button>
-    </ButtonGroup>
+    <>
+      {console.log(window.history.state)}
+      <ButtonGroup variant="outlined">
+        <Button onClick={onBackClick}>
+          Back
+        </Button>
+        <Button onClick={props.onSaveClick} endIcon={<SaveIcon />}>
+          Save
+        </Button>
+      </ButtonGroup>
+      <Hidden>
+        <Link to={"/admin/"} className="router-href"/>
+      </Hidden>
+    </>
   )
 }
 
