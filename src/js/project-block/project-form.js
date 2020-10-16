@@ -14,7 +14,6 @@ function GridItemTextField(props) {
 }
 
 function GridItemTextFieldAuto(props) {
-  console.log(props)
   return (
     <Grid item xs={12}>
       <Autocomplete {...props}

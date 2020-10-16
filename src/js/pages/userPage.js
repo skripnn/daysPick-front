@@ -7,11 +7,12 @@ import {ProjectsList} from "../project-block/projects-list";
 import pick from "../functions/pick";
 
 
-export default function HomePage() {
+export default function UserPage() {
   const [state, setState] = useState(null)
   const [calendar, setCalendar] = useState(null)
 
   function changeAll(result) {
+    if (!result) return
     setState({
       projects: projectsSort(result.projects),
       daysOff: result.daysOff,
@@ -87,20 +88,32 @@ export default function HomePage() {
 
   useEffect(() => {
     function start() {
-      getFromUrl().then(result => changeAll(result))
+      getFromUrl().then(result => {
+        changeAll(result)
+      })
     }
     start()
   }, [])
 
-  if (state === null || calendar === null) return <></>
+  if (!state || !calendar) return <></>
+
+  const DaysOff = () => {
+    if (window.location.pathname.match(/\/user\/(.*)\//)[1] === localStorage.getItem("User")) {
+      return (
+        <DaysOffEdit state={calendar.edit}
+                     daysOff={state.daysOff}
+                     onSaveClick={saveDaysOff}
+                     onBackClick={backDaysOff}
+                     onEditClick={editDaysOff}/>
+      )
+    }
+    return <></>
+  }
+
 
   return (
     <>
-      <DaysOffEdit state={calendar.edit}
-                   daysOff={state.daysOff}
-                   onSaveClick={saveDaysOff}
-                   onBackClick={backDaysOff}
-                   onEditClick={editDaysOff}/>
+      <DaysOff/>
       <Calendar {...calendar}
                 changeDaysPick={changeDaysPick}/>
       <ProjectsList projects={state.projects}

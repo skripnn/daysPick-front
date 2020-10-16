@@ -47,7 +47,6 @@ function Buttons(props) {
 
   return (
     <>
-      {console.log(window.history.state)}
       <ButtonGroup variant="outlined">
         <Button onClick={onBackClick}>
           Back
@@ -57,7 +56,7 @@ function Buttons(props) {
         </Button>
       </ButtonGroup>
       <Hidden>
-        <Link to={"/admin/"} className="router-href"/>
+        <Link to={"/"} className="router-href"/>
       </Hidden>
     </>
   )

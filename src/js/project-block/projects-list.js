@@ -20,7 +20,6 @@ import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from "@material-ui/core/Typography";
 import "./projects-list.css"
-import {toProjectPage} from "../functions/router";
 import {Link} from "react-router-dom";
 
 
@@ -39,25 +38,26 @@ function ProjectRow(props) {
     e.target.parentElement.querySelector('a').click()
   }
 
-  const path = "/admin/project/" + props.id + "/"
+  const path = window.location.pathname + "project/" + props.id + "/"
+  // console.log(window.location)
 
   return (
     <TableRow className="project-list-row" id={props.id} onClick={onClick}
               onMouseOver={onMouseOver} onMouseLeave={onMouseLeave}>
       <Hidden xsDown>
-        <TableCell align="center" width={100}>{props.dates[0]}</TableCell>
-        <TableCell align="center" width={100}>{props.dates[props.dates.length - 1]}</TableCell>
+        <TableCell align="center">{props.dates[0]}</TableCell>
+        <TableCell align="center">{props.dates[props.dates.length - 1]}</TableCell>
       </Hidden>
       <Hidden mdDown>
-        <TableCell align="center" width={50}>{props.dates.length}</TableCell>
+        <TableCell align="center" >{props.dates.length}</TableCell>
       </Hidden>
-      <TableCell scope="row">{props.title}</TableCell>
+      <TableCell scope="row">
+        {props.title}
+        <Hidden><Link to={path}/></Hidden>
+      </TableCell>
       <Hidden smDown>
         <TableCell>{props.client}</TableCell>
-        <TableCell width={100}>{props.money}</TableCell>
-      </Hidden>
-      <Hidden>
-        <Link to={path}/>
+        <TableCell >{props.money}</TableCell>
       </Hidden>
     </TableRow>
   )
@@ -70,18 +70,18 @@ function ProjectsTable(props) {
         <TableHead>
           <TableRow>
             <Hidden xsDown>
-              <TableCell align="center" width={100}>Начало</TableCell>
-              <TableCell align="center" width={100}>Окончание</TableCell>
+              <TableCell align="center">Начало</TableCell>
+              <TableCell align="center">Окончание</TableCell>
             </Hidden>
             <Hidden mdDown>
-              <TableCell align="center" width={50}>Дни</TableCell>
+              <TableCell align="center">Дни</TableCell>
             </Hidden>
             <Hidden xsDown>
               <TableCell>Проект</TableCell>
             </Hidden>
             <Hidden smDown>
               <TableCell>Клиент</TableCell>
-              <TableCell width={100}>Гонорар</TableCell>
+              <TableCell>Гонорар</TableCell>
             </Hidden>
           </TableRow>
         </TableHead>
@@ -194,14 +194,10 @@ export function ProjectsList(props) {
 
 
 function  NewProject() {
-  function onClick() {
-    toProjectPage(null)
-  }
-  const path = "/admin/project/"
-
+  const path = "/project/?user=" + window.location.pathname.match(/\/user\/(.*)\//)[1]
   return (
     <Link to={path}>
-      <IconButton variant="outlined" onClick={onClick}>
+      <IconButton variant="outlined">
         <AddBoxIcon fontSize="small"/>
       </IconButton>
     </Link>

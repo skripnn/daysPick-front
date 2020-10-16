@@ -108,3 +108,10 @@ export function setClients(projects) {
   clients.sort()
   return Array.from(new Set(clients))
 }
+
+export function getHomeUrl() {
+  const user = localStorage.getItem("User")
+  console.log(localStorage)
+  if (user) return "/user/" + user + "/"
+  return "/login/"
+}

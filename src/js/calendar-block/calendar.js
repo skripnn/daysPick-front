@@ -128,6 +128,7 @@ export function Calendar(props) {
   function getMonthText() {
     // Получение или обновление названий месяцев
     const main = document.getElementById("calendar-days")
+    if (!main) return
 
     let i = Math.trunc(main.scrollLeft / 24)
     if (i < 0) i = 0
@@ -236,6 +237,7 @@ export function Calendar(props) {
   function getYearsText() {
     // Получение или обновление названий года с фиксированной шириной
     const main = document.getElementById("calendar-days")
+    if (!main) return
     let i = Math.trunc(main.scrollLeft / 24)
     if (i < 0) i = 0
     const first = new Date(main.children.item(i).firstElementChild.id)
@@ -305,11 +307,11 @@ export function Calendar(props) {
 
   function lazyLoading() {
     const main = document.getElementById("calendar-days")
+    if (!main) return
     const scroll = main.scrollLeft
     const refScroll = getRefScroll()
     if (Math.abs(refScroll - scroll) < 24 || noScroll) return
     // Исключение, если нет необходимости в обновлении или запрет на ленивую загрузку (noScroll)
-    console.log("lazyLoading")
     const size = main.children[1].getBoundingClientRect().left - main.children[0].getBoundingClientRect().left
     // size - ширина одной недели (default = 24)
     const offset = Math.abs(refScroll - scroll) % size
@@ -355,8 +357,11 @@ export function Calendar(props) {
 
   function resetTexts() {
     // Обновление названий месяцев и лет
-    document.querySelector("div.calendar-years-text").innerHTML = ""
-    document.querySelector("div.calendar-months-text").innerHTML = ""
+    const yearsText = document.querySelector("div.calendar-years-text")
+    const monthsText = document.querySelector("div.calendar-months-text")
+    if (!yearsText || !monthsText) return
+    yearsText.innerHTML = ""
+    monthsText.innerHTML = ""
     getYearsText()
     getMonthText()
   }
@@ -387,7 +392,7 @@ export function Calendar(props) {
       // unPick на проекты с этой датой
       const array = []
       document.querySelectorAll("tr.pick").forEach((project) => array.push(project.id))
-      if (document.querySelector("div#daysOff.pick")) array.push("daysOff")
+      if (document.querySelector("div#daysOff.pick") && !props.edit) array.push("daysOff")
       pick("unset", array)
       document.querySelectorAll(".calendar-day.hover").forEach((element) => element.classList.remove("hover"))
     }
@@ -498,7 +503,7 @@ export function Calendar(props) {
     // unPick на всё, кроме дней
     const array = []
     document.querySelectorAll("tr.pick").forEach((project) => array.push(project.id))
-    if (document.querySelector(".daysOff.pick") !== null) array.push("daysOff")
+    if (document.querySelector(".daysOff.pick") && !props.edit) array.push("daysOff")
     document.querySelectorAll(".calendar-day.hover").forEach((day) => day.classList.remove("hover"))
     pick("unset", array)
   }

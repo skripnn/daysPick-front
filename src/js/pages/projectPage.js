@@ -3,7 +3,6 @@ import {Calendar} from "../calendar-block/calendar";
 import {projectsSort, projectsToDays, setClients} from "../functions/functions";
 import {Project} from "../project-block/project";
 import {deleteProject, getFromUrl, postProject} from "../functions/fetch";
-import {toHomePage} from "../functions/router";
 
 export default function ProjectPage() {
   const [state, setState] = useState(null)
@@ -78,10 +77,15 @@ export default function ProjectPage() {
       (error) => alert(error))
   }
 
-  function onDeleteClick() {
+  function onDeleteClick(e) {
+    e.preventDefault()
     deleteProject(state.project.id).then(
       () => toHomePage(),
       (error) => alert(error))
+  }
+
+  function toHomePage() {
+    document.querySelector("a.router-href").click()
   }
 
   useEffect(() => {
@@ -91,11 +95,10 @@ export default function ProjectPage() {
     start()
   }, [])
 
-  if (state === null || calendar === null) return <></>
+  if (!state || !calendar) return <></>
 
   return(
     <>
-      {console.log(state)}
       <Project
         project={state.project}
         onSaveClick={onSaveClick}

@@ -2,16 +2,13 @@ import React from 'react';
 import {Container} from "@material-ui/core";
 import Header from "./js/core/app-bar";
 import ProjectPage from "./js/pages/projectPage";
-import HomePage from "./js/pages/homePage"
-import {Route, Switch, Redirect} from "react-router-dom"
+import UserPage from "./js/pages/userPage"
+import {Route, Switch} from "react-router-dom"
+import LoginPage from "./js/pages/loginPage";
+import SignUpPage from "./js/pages/singUpPage";
+import UsersPage from "./js/pages/usersPage";
 
 export default class App extends React.Component {
-  getContent() {
-    if (window.location.pathname === "/admin/") return <HomePage/>
-    if (window.location.pathname.startsWith("/admin/project/")) return <ProjectPage/>
-    else return <></>
-  }
-
   render () {
     const { history } = this.props
 
@@ -20,11 +17,13 @@ export default class App extends React.Component {
         <Header/>
         <Container maxWidth="md" className="content-block">
           <Switch>
-            <Route history={history} path='/admin/project/' component={ProjectPage}/>
-            <Route history={history} path='/admin/' component={HomePage}/>
-            <Redirect from='/' to='/admin/'/>
+            <Route history={history} path='/project/' component={ProjectPage}/>
+            <Route history={history} path='/login/' component={LoginPage}/>
+            <Route history={history} path='/signup/' component={SignUpPage}/>
+            <Route history={history} path='/user/' component={UserPage}/>
+            <Route history={history} path='/' component={UsersPage}/>
+            {/*<Redirect from='/' to='/'/>*/}
           </Switch>
-          {/*{this.getContent}*/}
         </Container>
       </div>
     )
