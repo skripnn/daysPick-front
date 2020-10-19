@@ -11,15 +11,6 @@ import "./project.css"
 import {Hidden} from "@material-ui/core";
 import {Link} from "react-router-dom";
 
-
-export const defaultProject = {
-  title: "",
-  money: "",
-  dates: [],
-  client: "",
-  info: "",
-}
-
 export function Project(props) {
   return (
       <Box className="project-block">
@@ -38,7 +29,6 @@ export function Project(props) {
       </Box>
   )
 }
-
 
 function Buttons(props) {
   function onBackClick() {

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Calendar} from "../calendar-block/calendar";
-import {projectsSort, projectsToDays, setClients} from "../functions/functions";
+import {projectsToDays, setClients} from "../functions/functions";
 import {Project} from "../project-block/project";
 import {deleteProject, getFromUrl, postProject} from "../functions/fetch";
 
@@ -10,28 +10,17 @@ export default function ProjectPage() {
 
   function changeAll(result) {
     setState({
-      projects: projectsSort(result.projects),
-      daysOff: result.daysOff,
       project: result.project,
       clients: setClients(result.projects)
     })
     setCalendar({
-      edit: true,
+      edit: (result.project.creator === localStorage.getItem('User')),
       days: projectsToDays(result.projects, result.project),
       daysOff: result.daysOff,
       daysPick: result.project.dates,
       dates: result.project.dates
     })
   }
-
-  // function changeState(fields) {
-  //   setState({
-  //     projects: fields.projects || state.projects,
-  //     daysOff: fields.daysOff || state.daysOff,
-  //     project: fields.project || state.project,
-  //     clients: fields.clients || state.clients
-  //   })
-  // }
 
   function changeCalendar(fields) {
     setCalendar({
@@ -49,9 +38,15 @@ export default function ProjectPage() {
     })
   }
 
+  function changeStatus() {
+    if (state.project.status === "ok" || state.project.status === localStorage.getItem("User")) return state.project.status
+    if (state.project.status === "new" || state.project.status === state.project.creator) return "ok"
+  }
+
   function onSaveClick() {
     let project = {
       id: state.project.id,
+      status: changeStatus(),
       title: document.querySelector("input#title").value,
       money: document.querySelector("input#money").value || null,
       dates: calendar.daysPick,
@@ -73,19 +68,15 @@ export default function ProjectPage() {
     }
 
     postProject(project).then(
-      () => toHomePage(),
+      () => window.history.back(),
       (error) => alert(error))
   }
 
   function onDeleteClick(e) {
     e.preventDefault()
     deleteProject(state.project.id).then(
-      () => toHomePage(),
+      () => window.history.back(),
       (error) => alert(error))
-  }
-
-  function toHomePage() {
-    document.querySelector("a.router-href").click()
   }
 
   useEffect(() => {

@@ -13,7 +13,7 @@ import {IconButton} from "@material-ui/core";
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Hidden from "@material-ui/core/Hidden";
-import {actualProjects, archiveProjects} from "../functions/functions";
+import {actualProjects, archiveProjects, newProjects, updatedProjects} from "../functions/functions";
 import withStyles from "@material-ui/core/styles/withStyles";
 import MuiAccordion from '@material-ui/core/Accordion';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
@@ -38,8 +38,7 @@ function ProjectRow(props) {
     e.target.parentElement.querySelector('a').click()
   }
 
-  const path = window.location.pathname + "project/" + props.id + "/"
-  // console.log(window.location)
+  const path = "/project/" + props.id + "/"
 
   return (
     <TableRow className="project-list-row" id={props.id} onClick={onClick}
@@ -110,11 +109,13 @@ const Accordion = withStyles({
       border: '1px solid rgba(0, 0, 0, .125)',
     },
     '&:last-child': {
-      borderRadius: '0 0 4px 4px',
+      borderBottomRightRadius: '4px',
+      borderBottomLeftRadius: '4px',
       border: '1px solid rgba(0, 0, 0, .125)',
     },
     '&:first-child': {
-      borderRadius: '4px 4px 0 0',
+      borderTopLeftRadius: '4px',
+      borderTopRightRadius: '4px',
     },
   },
   expanded: {},
@@ -158,40 +159,23 @@ export function ProjectsList(props) {
     props.setExpanded(isExpanded ? panel : false);
   };
 
+  const panels = [
+    {panel: "new", title: "Предложения", projects: newProjects(props.projects)},
+    {panel: "updates", title: "Изменённые", projects: updatedProjects(props.projects)},
+    {panel: "projects", title: "Проекты", projects: actualProjects(props.projects), required: true, leftButton: <NewProject/>},
+    {panel: "archive", title: "Архив", projects: archiveProjects(props.projects)}
+  ]
+
   return (
     <Box className="project-list">
-      <Accordion square variant="outlined" expanded={expanded === "projects"} onChange={handleChange("projects")}>
-        <AccordionSummary variant="outlined" expandIcon={<ExpandMoreIcon />}>
-            <Grid container direction="row" justify="flex-start" alignItems="center">
-              <Grid item xs={1}>
-                <NewProject/>
-              </Grid>
-              <Grid item xs={11}>
-                <Typography align="center">Проекты</Typography>
-              </Grid>
-            </Grid>
-        </AccordionSummary>
-        <AccordionDetails>
-          <ProjectsTable projects={actualProjects(props.projects)}/>
-        </AccordionDetails>
-      </Accordion>
-      <Accordion square variant="outlined" expanded={expanded === "archive"} onChange={handleChange("archive")}>
-        <AccordionSummary variant="outlined" expandIcon={<ExpandMoreIcon />}>
-          <Grid container direction="row" justify="center" alignItems="center">
-            <Grid item xs={1}/>
-            <Grid item xs={11}>
-              <Typography align="center">Архив</Typography>
-            </Grid>
-          </Grid>
-        </AccordionSummary>
-        <AccordionDetails>
-          <ProjectsTable projects={archiveProjects(props.projects)}/>
-        </AccordionDetails>
-      </Accordion>
+      {panels.map(panel => <Panel key={panel.panel} {...panel}
+                                  accordion={{
+                                    expanded: expanded === panel.panel,
+                                    onChange: handleChange(panel.panel)
+                                  }}/>)}
     </Box>
   )
 }
-
 
 function  NewProject() {
   const path = "/project/?user=" + window.location.pathname.match(/\/user\/(.*)\//)[1]
@@ -201,5 +185,28 @@ function  NewProject() {
         <AddBoxIcon fontSize="small"/>
       </IconButton>
     </Link>
+  )
+}
+
+
+function Panel(props) {
+  if (!props.required && props.projects.length === 0)  return <></>
+
+  return (
+    <Accordion square variant="outlined" {...props.accordion}>
+      <AccordionSummary variant="outlined" expandIcon={<ExpandMoreIcon/>}>
+        <Grid container direction="row" justify="center" alignItems="center">
+          <Grid item xs={1}>
+            {props.leftButton}
+          </Grid>
+          <Grid item xs={11}>
+            <Typography align="center">{props.title}</Typography>
+          </Grid>
+        </Grid>
+      </AccordionSummary>
+      <AccordionDetails>
+        <ProjectsTable projects={props.projects}/>
+      </AccordionDetails>
+    </Accordion>
   )
 }

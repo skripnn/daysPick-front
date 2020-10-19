@@ -7,7 +7,6 @@ import "./calendar.css"
 
 export function Calendar(props) {
   // React.Component - Календарь
-  // console.log(props)
   let dblClick
   let shiftDaysStart
   let shiftDaysEnd
@@ -40,25 +39,17 @@ export function Calendar(props) {
       main.scrollLeft = 0
       filling()
       startScroll()
-      if (main.scrollLeft === scroll &&main.firstElementChild.firstElementChild.id === firstID) {
+      if (props.dates && main.scrollLeft === scroll && main.firstElementChild.firstElementChild.id === firstID) {
         // Исключение, если второе нажатие кнопки подряд - перемотка на сегодня
         main.scrollTo(main.scrollLeft - (main.scrollLeft % 24), 0)
         let first = main.children[main.scrollLeft / 24].firstElementChild.id
         let weekDiff = new Date(first).getDiffWeeks(new Date())
-        let x = weekDiff * 24
-        while (x > 0) {
+        let x = weekDiff * 24 - 1
+        while (x !== 0) {
           let scroll = main.scrollLeft
-          main.scrollTo(main.scrollLeft - x, 0)
-          x -= (scroll - main.scrollLeft)
-          onScroll()
+          main.scrollLeft -= x
+          x -= Math.abs(main.scrollLeft - scroll) * (x < 0 ? -1 : 1)
         }
-        while (x < 0) {
-          let scroll = main.scrollLeft
-          main.scrollTo(main.scrollLeft + x, 0)
-          x -= (main.scrollLeft - scroll)
-          onScroll()
-        }
-        main.scrollTo(main.scrollLeft + 1, 0)
       }
       resetTexts()
     }
@@ -306,6 +297,7 @@ export function Calendar(props) {
   }
 
   function lazyLoading() {
+    // Ленивая загрузка
     const main = document.getElementById("calendar-days")
     if (!main) return
     const scroll = main.scrollLeft
@@ -518,9 +510,9 @@ export function Calendar(props) {
   function startScroll() {
     // Начальный скролл сформировавшегося календаря
     const main = document.getElementById("calendar-days")
-    let offset = 0
     if (main.getBoundingClientRect().right >= main.lastElementChild.getBoundingClientRect().right) return
     // Исключение, если ширина блока календаря больше, чем календарь - отмена скролла
+    let offset = 0
     let start = new Date()
     start.setHours(0,0,0,0)
     if (props.dates && props.dates.length > 0) {
@@ -623,18 +615,15 @@ export function Calendar(props) {
   }
 
   function filling() {
+    // Заполнение календаря днями
     const main = document.getElementById("calendar-days")
-
     const dates = getStartDate()
     const start = dates.start
-
     let date = new Date(start)
-
     if (dates.diff !== null) {
       main.appendChild(Weeks(date, dates.diff))
       return
     }
-
     let width = 0
     while (width <= main.getBoundingClientRect().width) {
       main.appendChild(Week(date))
@@ -659,6 +648,7 @@ export function Calendar(props) {
     // Обновление названий месяцев и лет из-за смены размера окна
     main.addEventListener("selectstart", (e) => e.preventDefault())
     // Отмена изменения курсора движении с зажатием
+    // eslint-disable-next-line
   }, [],)
 
   useEffect(() => checkCalendar())

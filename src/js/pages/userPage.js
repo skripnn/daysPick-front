@@ -93,6 +93,7 @@ export default function UserPage() {
       })
     }
     start()
+    // eslint-disable-next-line
   }, [])
 
   if (!state || !calendar) return <></>

@@ -74,33 +74,49 @@ export function setUrl(state) {
 
 
 export function archiveProjects(projects) {
-  let p = projects.slice()
+  let archiveProjects = []
   let today = new Date()
   today.setUTCHours(0,0,0,0)
-  p.forEach(function (project, index) {
+  projects.forEach(project => {
+    if (project.status !== 'ok') return
     for (let i=0; i < project.dates.length; i++) {
-      if (new Date(project.dates[i]) >= today) {
-        delete p[index]
-        break
-      }
+      if (new Date(project.dates[i]) >= today) return
     }
+    archiveProjects.push(project)
   })
-  return p
+  return archiveProjects
 }
 
 export function actualProjects(projects) {
-  let p = []
-  projects.forEach(function (project) {
-    let today = new Date()
-    today.setUTCHours(0,0,0,0)
+  let actualProjects = []
+  let today = new Date()
+  today.setUTCHours(0,0,0,0)
+  projects.forEach(project => {
+    if (project.status !== 'ok') return
     for (let i=0; i < project.dates.length; i++) {
       if (new Date(project.dates[i]) >= today) {
-        p.push(project)
-        break
+        actualProjects.push(project)
+        return
       }
     }
   })
-  return p
+  return actualProjects
+}
+
+export function newProjects(projects) {
+  let newProjects = []
+  projects.forEach(project => {
+    if (project.status === 'new') newProjects.push(project)
+  })
+  return newProjects
+}
+
+export function updatedProjects(projects) {
+  let updatedProjects = []
+  projects.forEach(project => {
+    if (project.status === 'updated') updatedProjects.push(project)
+  })
+  return updatedProjects
 }
 
 export function setClients(projects) {

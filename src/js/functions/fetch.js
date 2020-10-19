@@ -1,4 +1,5 @@
 const url = "http://192.168.0.216:8000/api"
+// const url = "http://localhost:8000/api"
 
 function requestAuthHeaders() {
   return {
@@ -34,7 +35,8 @@ export async function getProject(id) {
 
 export async function postProject(project) {
   let urlPost = url + "/project/"
-  urlPost += project.id? project.id + "/" : ""
+  if(project.id) urlPost += project.id + "/"
+  urlPost += window.location.search
   return fetch(urlPost, {
     method: 'POST',
     headers: requestAuthHeaders(),
@@ -65,6 +67,7 @@ export async function getDaysOff() {
 }
 
 export async function postLogIn(data) {
+
   let urlPost = url + "/login/"
   return fetch(urlPost, {
     method: 'POST',
