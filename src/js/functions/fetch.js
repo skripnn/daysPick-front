@@ -1,5 +1,5 @@
-const url = "http://192.168.0.216:8000/api"
-// const url = "http://localhost:8000/api"
+// const url = "http://192.168.0.216:8000/api"
+const url = `${process.env.NODE_ENV === 'production' ? '' : 'http://localhost:8000'}/api`
 
 function requestAuthHeaders() {
   return {

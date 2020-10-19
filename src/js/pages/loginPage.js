@@ -5,7 +5,7 @@ import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import {Link} from "react-router-dom";
+// import {Link} from "react-router-dom";
 import {postLogIn} from "../functions/fetch";
 import {useStyles} from "../core/auth";
 
@@ -67,9 +67,9 @@ export default function LoginPage() {
               {/*</Link>*/}
             </Grid>
             <Grid item>
-              <Link to='/signup/' className={classes.underLink}>
-                {"Don't have an account? Sign Up"}
-              </Link>
+              {/*<Link to='/signup/' className={classes.underLink}>*/}
+              {/*  {"Don't have an account? Sign Up"}*/}
+              {/*</Link>*/}
             </Grid>
           </Grid>
         </form>

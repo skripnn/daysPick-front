@@ -38,7 +38,7 @@ function GridItemTextFieldAuto(props) {
 export function ProjectForm(props) {
 
 
-  const disabled = props.creator !== localStorage.getItem('User')
+  const disabled = props.creator && props.creator !== localStorage.getItem('User')
 
   const v = (prop) => {
     return disabled? {value: prop} : {defaultValue: prop}

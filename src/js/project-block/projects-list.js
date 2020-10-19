@@ -166,6 +166,8 @@ export function ProjectsList(props) {
     {panel: "archive", title: "Архив", projects: archiveProjects(props.projects)}
   ]
 
+  if (!localStorage.getItem('User')) return <></>
+
   return (
     <Box className="project-list">
       {panels.map(panel => <Panel key={panel.panel} {...panel}
