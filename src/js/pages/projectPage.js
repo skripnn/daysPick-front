@@ -14,7 +14,7 @@ export default function ProjectPage() {
       clients: setClients(result.projects)
     })
     setCalendar({
-      edit: (result.project.creator === localStorage.getItem('User')),
+      edit: (result.project.id && result.project.creator === localStorage.getItem('User')) || 'true',
       days: projectsToDays(result.projects, result.project),
       daysOff: result.daysOff,
       daysPick: result.project.dates,

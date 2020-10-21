@@ -14,6 +14,7 @@ export default function SignUpPage() {
   const [username, setUsername] = useState(false)
   const [password, setPassword] = useState(false)
   const [email, setEmail] = useState(false)
+  const [state, setState] = useState('form')
 
   function submit(e) {
     e.preventDefault()
@@ -23,19 +24,17 @@ export default function SignUpPage() {
       email: document.getElementById("email").value
     }
     postSignUp(data).then(
-      (result) => {
-        console.log("result", result)
-        if (result.token) {
-          localStorage.setItem("Authorization", "Token " + result.token)
-          localStorage.setItem("User", result.user)
-          window.location.href = "/user/" + result.user + "/"
-        }
-        else alert(result.error)
-      }
+      () => setState('ok')
     )
   }
 
-  return (
+  if (state === 'ok') return (
+    <Typography>
+      Please confirm your e-mail
+    </Typography>
+  )
+
+  if (state === 'form') return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
@@ -108,7 +107,6 @@ function UsernameField(props) {
       id="username"
       label="Username"
       name="username"
-      autoComplete="username"
       autoFocus
       onChange={checkUsername}
       onBlur={onBlur}
@@ -152,7 +150,6 @@ function EmailField(props) {
       id="email"
       label="E-mail"
       name="email"
-      autoComplete="email"
       onChange={onChange}
       onBlur={onBlur}
       error={error}
@@ -188,7 +185,6 @@ function PasswordField(props) {
       label="Password"
       type="password"
       id="password"
-      autoComplete="current-password"
       onChange={checkSymbolsCount}
       onBlur={checkError}
       error={error}

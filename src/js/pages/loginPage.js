@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-// import {Link} from "react-router-dom";
+import {Link} from "react-router-dom";
 import {postLogIn} from "../functions/fetch";
 import {useStyles} from "../core/auth";
 
@@ -25,15 +25,20 @@ export default function LoginPage() {
       (result) => {
         if (result.token) {
           if (error) setError(null)
-          console.log("result", result)
           localStorage.setItem("Authorization", "Token " + result.token)
           localStorage.setItem("User", result.user)
           window.location.href = "/user/" + result.user + "/"
         }
-        else setError(<Typography className={classes.error}>Wrong username or password</Typography> )
+        else setError(<Typography className={classes.error}>{result.error}</Typography>)
       }
     )
   }
+
+  useEffect(() => {
+    if (localStorage.getItem("Authorization") && localStorage.getItem("User")) {
+      window.location.href = "/user/" + localStorage.getItem("User") + "/"
+    }
+  }, [])
 
   return (
     <Container component="main" maxWidth="xs">
@@ -67,9 +72,9 @@ export default function LoginPage() {
               {/*</Link>*/}
             </Grid>
             <Grid item>
-              {/*<Link to='/signup/' className={classes.underLink}>*/}
-              {/*  {"Don't have an account? Sign Up"}*/}
-              {/*</Link>*/}
+              <Link to='/signup/' className={classes.underLink}>
+                {"Don't have an account? Sign Up"}
+              </Link>
             </Grid>
           </Grid>
         </form>

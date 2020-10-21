@@ -30,9 +30,12 @@ const useStyles = makeStyles((theme) => ({
 
 function RightButton() {
   const classes = useStyles();
+  if (window.location.pathname.match(/\/login\/?/) || window.location.pathname.match(/\/signup\/?/)) {
+    localStorage.clear()
+    return <></>
+  }
   const user = localStorage.getItem('User')
   if (user) return <UserButton user={user}/>
-  if (window.location.pathname.match(/\/login\/?/) || window.location.pathname.match(/\/signup\/?/)) return <></>
   return <Link to="/login/" className={classes.titleText}><Button color="inherit">Login</Button></Link>
 }
 
