@@ -68,3 +68,9 @@ Date.prototype.format = function () {
 
   return yyyy + '-' + mm + '-' + dd;
 }
+
+export function newDate(date) {
+  let newDate = date? new Date(date) : new Date()
+  newDate.setHours(0,0,0,0)
+  return newDate
+}

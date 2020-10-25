@@ -39,9 +39,12 @@ function ProjectRow(props) {
   }
 
   const path = "/project/" + props.id + "/"
+  let className = "project-list-row"
+  console.log(props)
+  if (props.is_paid) className += " paid"
 
   return (
-    <TableRow className="project-list-row" id={props.id} onClick={onClick}
+    <TableRow className={className} id={props.id} onClick={onClick}
               onMouseOver={onMouseOver} onMouseLeave={onMouseLeave}>
       <Hidden xsDown>
         <TableCell align="center">{props.dates[0]}</TableCell>

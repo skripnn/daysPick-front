@@ -1,3 +1,5 @@
+import {newDate} from "./date";
+
 export function projectsToDays(projects, project) {
   // создание списка дат с проектами из списка проектов
   let days = {}
@@ -74,17 +76,20 @@ export function setUrl(state) {
 
 
 export function archiveProjects(projects) {
-  let archiveProjects = []
-  let today = new Date()
-  today.setUTCHours(0,0,0,0)
+  let paidProjects = []
+  let notPaidProjects = []
+  let today = newDate()
   projects.forEach(project => {
     if (project.status !== 'ok') return
     for (let i=0; i < project.dates.length; i++) {
-      if (new Date(project.dates[i]) >= today) return
+      let date = newDate(project.dates[i])
+      if (date >= today) return
     }
-    archiveProjects.push(project)
+    if (project.is_paid) paidProjects.push(project)
+    else notPaidProjects.push(project)
   })
-  return archiveProjects
+  paidProjects.reverse()
+  return notPaidProjects.concat(paidProjects)
 }
 
 export function actualProjects(projects) {
@@ -94,7 +99,9 @@ export function actualProjects(projects) {
   projects.forEach(project => {
     if (project.status !== 'ok') return
     for (let i=0; i < project.dates.length; i++) {
-      if (new Date(project.dates[i]) >= today) {
+      let date = new Date(project.dates[i])
+        date.setHours(0,0,0,0)
+      if (date >= today) {
         actualProjects.push(project)
         return
       }

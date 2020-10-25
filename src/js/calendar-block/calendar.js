@@ -4,6 +4,7 @@ import pick from "../functions/pick";
 import IconButton from "@material-ui/core/IconButton";
 import SettingsBackupRestoreIcon from '@material-ui/icons/SettingsBackupRestore';
 import "./calendar.css"
+import {newDate} from "../functions/date";
 
 export function Calendar(props) {
   // React.Component - Календарь
@@ -123,14 +124,12 @@ export function Calendar(props) {
 
     let i = Math.trunc(main.scrollLeft / 24)
     if (i < 0) i = 0
-    const start = new Date(main.children.item(i).firstElementChild.id)
-    start.setHours(0,0,0,0)
+    const start = newDate(main.children.item(i).firstElementChild.id)
     if (start.getDate() !== 1) {
       start.setFullYear(start.getFullYear(), start.getMonth() + 1, 1)
     }
 
-    const end = new Date(main.children.item(i).firstElementChild.id)
-    end.setHours(0,0,0,0)
+    const end = newDate(main.children.item(i).firstElementChild.id)
     i = Math.trunc(main.getBoundingClientRect().width) / 24 * 7 + 6
     end.setDate(end.getDate() + i)
     let check = new Date(end)
@@ -281,7 +280,7 @@ export function Calendar(props) {
     // Формирование css-класса дня из даты
     let result = "calendar-day"
     result += date.getMonth() % 2 === 0 ? " color0" : " color1"
-    if (date < (new Date()).setHours(0,0,0,0)) result += " past"
+    if (date < newDate()) result += " past"
     if (days[date.format()]) result += " busy"
     else if (daysOff.includes(date.format())) result += " busy"
     if (daysPick.includes(date.format())) result += " pick"
@@ -314,10 +313,9 @@ export function Calendar(props) {
         main.removeChild(main.lastElementChild)
       }
       const first = main.firstElementChild
-      let date = new Date(first.firstElementChild.id)
-      date.setHours(0, 0, 0, 0)
+      let date = newDate(first.firstElementChild.id)
       date.setDate(date.getDate() - 7 * count)
-      main.insertBefore(Weeks(date, count), first)
+      main.insertBefore(weeks(date, count), first)
       main.scrollLeft = refScroll - offset
     }
     else if (scroll - refScroll >= size) {
@@ -326,10 +324,9 @@ export function Calendar(props) {
         main.removeChild(main.firstElementChild)
       }
       const last = main.lastElementChild
-      let date = new Date(last.firstElementChild.id)
-      date.setHours(0, 0, 0, 0)
+      let date = newDate(last.firstElementChild.id)
       date.setDate(date.getDate() + 7)
-      main.appendChild(Weeks(date, count))
+      main.appendChild(weeks(date, count))
       main.scrollLeft = refScroll + offset
     }
   }
@@ -513,27 +510,17 @@ export function Calendar(props) {
     if (main.getBoundingClientRect().right >= main.lastElementChild.getBoundingClientRect().right) return
     // Исключение, если ширина блока календаря больше, чем календарь - отмена скролла
     let offset = 0
-    let start = new Date()
-    start.setHours(0,0,0,0)
+    let start = newDate()
     if (props.dates && props.dates.length > 0) {
       // Исключение, если есть props.dates - скролл на первую дату
-      const first = new Date(props.dates[0])
-      first.setHours(0,0,0,0)
+      const first = newDate(props.dates[0])
       start = first
-      if (props.dates.length > 1) {
-        // Если дат несколько - центрирование дат
-        let last = new Date(props.dates[props.dates.length - 1])
-        last.setHours(0,0,0,0)
-        const firstElement = document.getElementById(first.format())
-        const lastElement = document.getElementById(last.format())
-        if (lastElement !== null) {
-          const firstL = firstElement.getBoundingClientRect().left
-          const lastR = lastElement.getBoundingClientRect().right
-          const mainWidth = main.getBoundingClientRect().width
-          if (lastR - firstL < mainWidth) {
-            offset = (lastR - firstL) / 2 - mainWidth / 2
-          }
-        }
+      // Центрирование
+      let last = newDate(props.dates[props.dates.length - 1])
+      const datesWidth = (last.getDiffWeeks(first) + 1) * 24
+      const mainWidth = main.getBoundingClientRect().width
+      if (datesWidth < mainWidth) {
+        offset = datesWidth / 2 - mainWidth / 2
       }
     }
     // Старт перемотки. В случае недоскролла из-за короткого календаря - рекурсия, пока не доскроллит
@@ -553,28 +540,27 @@ export function Calendar(props) {
 
   function getStartDate() {
     // Получение стартовой даты для формирования недель
-    let today = new Date()
+    let today = newDate()
     let start = new Date(today)
-    start.setHours(0,0,0,0)
     start.setDate(start.getDate() - start.getDay2())
     let diff = null
     if (props.dates) {
       // Исключение, если есть props.dates
-      let first = new Date(props.dates[0])
+      let first = newDate(props.dates[0])
       if (first < today) {
         // Если первая дата в прошлом - начало с неё
         first.setDate(1)
         first.setDate(first.getDate() - first.getDay2())
         start = first
-      }
-      const last = new Date(props.dates[props.dates.length - 1])
-      if (last < today) {
-        // Если последняя дата в прошлом - формируются только месяцы, где есть даты. Запрет на ленивую загрузку
-        last.setMonth(last.getMonth() + 1)
-        last.setDate(0)
-        diff = last.getDiffWeeks(start) + 1
-        noScroll = true
-        document.querySelector(".calendar-button-scroll").firstElementChild.remove()
+        const last = newDate(props.dates[props.dates.length - 1])
+        if (last < today) {
+          // Если последняя дата в прошлом - формируются только месяцы, где есть даты. Запрет на ленивую загрузку
+          last.setMonth(last.getMonth() + 1)
+          last.setDate(0)
+          diff = last.getDiffWeeks(start) + 1
+          noScroll = true
+          document.querySelector(".calendar-button-scroll").firstElementChild.remove()
+        }
       }
     }
     return {start: start, diff: diff}
@@ -605,7 +591,7 @@ export function Calendar(props) {
     e.preventDefault ? e.preventDefault() : (e.returnValue = false);
   }
 
-  function Weeks(date, count) {
+  function weeks(date, count) {
     let weeks = document.createDocumentFragment()
     for (let i = 0; i < count; i++) {
       weeks.appendChild(Week(date))
@@ -621,7 +607,7 @@ export function Calendar(props) {
     const start = dates.start
     let date = new Date(start)
     if (dates.diff !== null) {
-      main.appendChild(Weeks(date, dates.diff))
+      main.appendChild(weeks(date, dates.diff))
       return
     }
     let width = 0
@@ -630,11 +616,11 @@ export function Calendar(props) {
       date.setDate(date.getDate() + 7)
       width += 24
     }
-    main.appendChild(Weeks(date, 52))
+    main.appendChild(weeks(date, 52))
     date = new Date(start)
     date.setDate(date.getDate() - 7 * 52)
     const first = main.firstElementChild
-    main.insertBefore(Weeks(date, 52), first)
+    main.insertBefore(weeks(date, 52), first)
   }
 
   useEffect(() => {

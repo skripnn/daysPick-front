@@ -12,17 +12,77 @@ import {Hidden} from "@material-ui/core";
 import {Link} from "react-router-dom";
 
 export function Project(props) {
+  function onBackClick() {
+    window.history.back()
+  }
+
+  function Buttons() {
+    if (props.project.status === "new" && props.project.user === localStorage.getItem("User")) {
+      return <ButtonsAcceptDeclineBack/>
+    }
+    return <ButtonsSaveBack/>
+  }
+
+  function ButtonsSaveBack() {
+    return (
+      <>
+        <ButtonGroup variant="outlined">
+          <Button onClick={onBackClick}>
+            Back
+          </Button>
+          <Button onClick={props.onSaveClick} endIcon={<SaveIcon />}>
+            Save
+          </Button>
+        </ButtonGroup>
+        <Hidden>
+          <Link to={"/"} className="router-href"/>
+        </Hidden>
+      </>
+    )
+  }
+
+  function ButtonsAcceptDeclineBack() {
+    return (
+      <>
+      <ButtonGroup variant="outlined">
+        <Button onClick={onBackClick}>
+          Back
+        </Button>
+        <Button onClick={props.onDeleteClick}>
+          Decline
+        </Button>
+        <Button onClick={props.onSaveClick}>
+          Accept
+        </Button>
+      </ButtonGroup>
+      <Hidden>
+        <Link to={"/"} className="router-href"/>
+      </Hidden>
+    </>
+    )
+  }
+
+  function DeleteButton() {
+    if (!props.project.id) return <></>
+    if (props.project.status === "new" && props.project.user === localStorage.getItem("User")) return <></>
+    return (
+      <IconButton variant="contained" onClick={props.onDeleteClick}>
+        <DeleteIcon/>
+      </IconButton>
+    )
+  }
+
   return (
       <Box className="project-block">
-        <form id="project-form" noValidate autoComplete="off">
+        <form id="project-form" autoComplete="off">
           {props.children}
           <ProjectForm {...props.project} clients={props.clients}/>
           <Grid container direction="row" justify="space-between" alignItems="center" spacing={2}>
             <Grid item>
-              {props.project.id ? <DeleteButton onClick={props.onDeleteClick}/> : <></>}
+              <DeleteButton/>
             </Grid>
             <Grid item>
-              <Buttons onSaveClick={props.onSaveClick}/>
+              <Buttons/>
             </Grid>
           </Grid>
         </form>
@@ -30,32 +90,4 @@ export function Project(props) {
   )
 }
 
-function Buttons(props) {
-  function onBackClick() {
-    window.history.back()
-  }
 
-  return (
-    <>
-      <ButtonGroup variant="outlined">
-        <Button onClick={onBackClick}>
-          Back
-        </Button>
-        <Button onClick={props.onSaveClick} endIcon={<SaveIcon />}>
-          Save
-        </Button>
-      </ButtonGroup>
-      <Hidden>
-        <Link to={"/"} className="router-href"/>
-      </Hidden>
-    </>
-  )
-}
-
-function DeleteButton(props) {
-  return (
-    <IconButton variant="contained" onClick={props.onClick}>
-      <DeleteIcon/>
-    </IconButton>
-  )
-}

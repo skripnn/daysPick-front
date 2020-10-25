@@ -67,12 +67,10 @@ export async function getDaysOff() {
 }
 
 export async function postLogIn(data) {
-
   let urlPost = url + "/login/"
   return fetch(urlPost, {
     method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(data)
+    body: data
   }).then(res => checkAuth(res))
 }
 
@@ -80,8 +78,7 @@ export async function postSignUp(data) {
   let urlPost = url + "/signup/"
   return fetch(urlPost, {
     method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(data)
+    body: data
   }).then(res => checkAuth(res))
 }
 

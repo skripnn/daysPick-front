@@ -44,16 +44,18 @@ export default function ProjectPage() {
   }
 
   function onSaveClick() {
+    let form = new FormData(document.getElementById("project-form"))
     let project = {
       id: state.project.id,
       status: changeStatus(),
-      title: document.querySelector("input#title").value,
-      money: document.querySelector("input#money").value || null,
+      title: form.get("title"),
+      money: form.get("money") || null,
       dates: calendar.daysPick,
-      client: document.querySelector("input#client").value,
-      info: document.querySelector("textarea#info").value,
+      client: form.get("client"),
+      info: form.get("info"),
+      is_paid: form.has("is_paid")
     }
-
+    console.log(project)
     if (project.dates.length === 0) {
       alert("Выберете даты")
       return

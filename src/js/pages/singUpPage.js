@@ -18,11 +18,7 @@ export default function SignUpPage() {
 
   function submit(e) {
     e.preventDefault()
-    const data = {
-      username: document.getElementById("username").value,
-      password: document.getElementById("password").value,
-      email: document.getElementById("email").value
-    }
+    const data = new FormData(document.querySelector("form"))
     postSignUp(data).then(
       () => setState('ok')
     )

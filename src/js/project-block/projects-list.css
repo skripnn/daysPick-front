@@ -2,3 +2,7 @@ tr.project-list-row.pick {
     background-color: #4db34b;
     cursor: pointer;
 }
+.paid {
+    font-style: italic;
+    opacity: 0.5;
+}

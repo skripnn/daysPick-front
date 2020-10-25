@@ -17,10 +17,7 @@ export default function LoginPage() {
 
   function submit(e) {
     e.preventDefault()
-    const data = {
-      username: document.getElementById("username").value,
-      password: document.getElementById("password").value
-    }
+    const data = new FormData(document.querySelector("form"))
     postLogIn(data).then(
       (result) => {
         if (result.token) {
