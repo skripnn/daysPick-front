@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -6,11 +6,22 @@ import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 function GridItemTextField(props) {
+  let [value, setValue] = useState(props.value)
+  function validation(e) {
+    if (props.inputMode === 'numeric') {
+      const re = new RegExp('[\\D]')
+      setValue(e.target.value.replace(re, ''))
+    }
+  }
+
   return (
     <Grid item xs={12}>
       <TextField size="small"
                  fullWidth
-                 {...props}/>
+                 value={value}
+                 {...props}
+                  onChange={validation}
+                  autoComplete='off'/>
     </Grid>
   )
 }

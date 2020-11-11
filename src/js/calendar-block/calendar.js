@@ -12,7 +12,6 @@ export function Calendar(props) {
   let shiftDaysStart
   let shiftDaysEnd
   let touch = false
-  let touchTimer
   let scrollTimer
   let days = props.days || {}
   let daysOff = props.daysOff || []
@@ -296,6 +295,7 @@ export function Calendar(props) {
   }
 
   function lazyLoading() {
+    if (touch) return
     // Ленивая загрузка
     const main = document.getElementById("calendar-days")
     if (!main) return
@@ -373,6 +373,7 @@ export function Calendar(props) {
       // Pick на проекты с этой датой
       let array = []
       if (props.daysOff.includes(e.target.id)) array.push("daysOff")
+      else pick("unset", "daysOff")
       if (props.days[e.target.id]) array = array.concat(props.days[e.target.id])
       pick("set", array)
       document.querySelectorAll(".calendar-day.hover").forEach((element) => element.classList.remove("hover"))
@@ -567,21 +568,15 @@ export function Calendar(props) {
   }
 
   function touchStart(e) {
-    clearTimeout(touchTimer)
-    document.getElementById("calendar-days").addEventListener("scroll", touchScroll)
+    clearTimeout(scrollTimer)
     touch = true
     onMouseLeave()
     onDayOver(e)
   }
 
-  function touchScroll() {
-    clearTimeout(touchTimer)
-    touchTimer = setTimeout(onScroll, 300)
-  }
-
   function touchEnd() {
-    touchScroll()
     touch = false
+    // onScroll()
   }
 
   function onWheel(e) {

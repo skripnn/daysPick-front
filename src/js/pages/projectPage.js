@@ -49,7 +49,7 @@ export default function ProjectPage() {
       id: state.project.id,
       status: changeStatus(),
       title: form.get("title"),
-      money: form.get("money") || null,
+      money: Number(form.get("money")) || null,
       dates: calendar.daysPick,
       client: form.get("client"),
       info: form.get("info"),

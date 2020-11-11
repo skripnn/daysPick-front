@@ -5,6 +5,7 @@ import DaysOffEdit from "../buttons-block/days-off";
 import {Calendar} from "../calendar-block/calendar";
 import {ProjectsList} from "../project-block/projects-list";
 import pick from "../functions/pick";
+import UserButton from "../buttons-block/user-button";
 
 
 export default function UserPage() {
@@ -16,6 +17,7 @@ export default function UserPage() {
     setState({
       projects: projectsSort(result.projects),
       daysOff: result.daysOff,
+      user: result.user,
       projectListExpanded: state === null? "projects" : state.projectListExpanded
     })
     setCalendar({
@@ -39,6 +41,7 @@ export default function UserPage() {
     setState({
       projects: fields.projects || state.projects,
       daysOff: fields.daysOff || state.daysOff,
+      user: state.user,
       projectListExpanded: fields.projectListExpanded || state.projectListExpanded
     })
   }
@@ -108,7 +111,9 @@ export default function UserPage() {
                      onEditClick={editDaysOff}/>
       )
     }
-    return <></>
+    return (
+      <UserButton user={state.user}/>
+    )
   }
 
   return (

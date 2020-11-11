@@ -183,7 +183,8 @@ export function ProjectsList(props) {
 }
 
 function  NewProject() {
-  const path = "/project/?user=" + window.location.pathname.match(/\/user\/(.*)\//)[1]
+  const user =  window.location.pathname.match(/\/user\/(.*)\//)[1]
+  const path = "/project/?user=" + user
   return (
     <Link to={path}>
       <IconButton variant="outlined">

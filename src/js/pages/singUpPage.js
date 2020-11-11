@@ -13,6 +13,7 @@ export default function SignUpPage() {
   const classes = useStyles();
   const [username, setUsername] = useState(false)
   const [password, setPassword] = useState(false)
+  const [password2, setPassword2] = useState(false)
   const [email, setEmail] = useState(false)
   const [state, setState] = useState('form')
 
@@ -40,6 +41,7 @@ export default function SignUpPage() {
         <form className={classes.form} noValidate>
           <UsernameField setUsername={setUsername}/>
           <PasswordField setPassword={setPassword}/>
+          <Password2Field setPassword={setPassword2}/>
           <EmailField setEmail={setEmail}/>
           <Button
             fullWidth
@@ -47,7 +49,7 @@ export default function SignUpPage() {
             variant="outlined"
             className={classes.submit}
             onClick={submit}
-            disabled={!(username && password && email)}
+            disabled={!(username && password && password2 && email)}
           >
             Sign Up
           </Button>
@@ -181,6 +183,41 @@ function PasswordField(props) {
       label="Password"
       type="password"
       id="password"
+      onChange={checkSymbolsCount}
+      onBlur={checkError}
+      error={error}
+      helperText={helperText}
+    />
+  )
+}
+
+function Password2Field(props) {
+  const [error, setError] = useState(false)
+  const [helperText, setHelperText] = useState(" ")
+
+  function checkSymbolsCount(e) {
+    if (e.target.value === document.querySelector("input#password").value) setHelperText(" ")
+    else setHelperText("Not the password")
+  }
+
+  function checkError() {
+    setError(helperText !== " ")
+  }
+
+  useEffect(() => {
+    props.setPassword(helperText === " ")
+  }, [helperText, props])
+
+  return (
+    <TextField
+      size="small"
+      margin="dense"
+      required
+      fullWidth
+      name="password2"
+      label="Repeat password"
+      type="password"
+      id="password2"
       onChange={checkSymbolsCount}
       onBlur={checkError}
       error={error}

@@ -94,13 +94,11 @@ export function archiveProjects(projects) {
 
 export function actualProjects(projects) {
   let actualProjects = []
-  let today = new Date()
-  today.setUTCHours(0,0,0,0)
+  let today = newDate()
   projects.forEach(project => {
     if (project.status !== 'ok') return
     for (let i=0; i < project.dates.length; i++) {
-      let date = new Date(project.dates[i])
-        date.setHours(0,0,0,0)
+      let date = newDate(project.dates[i])
       if (date >= today) {
         actualProjects.push(project)
         return
