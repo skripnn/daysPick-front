@@ -20,8 +20,8 @@ function GridItemTextField(props) {
                  fullWidth
                  value={value}
                  {...props}
-                  onChange={validation}
-                  autoComplete='off'/>
+                 onChange={validation}
+                 autoComplete='off'/>
     </Grid>
   )
 }

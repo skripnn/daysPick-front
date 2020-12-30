@@ -1,6 +1,6 @@
 // const localhost = "http://192.168.0.216:8000"
-// const localhost = "http://192.168.31.71:8000"
-const localhost = "http://localhost:8000"
+const localhost = "http://192.168.31.71:8000"
+// const localhost = "http://localhost:8000"
 const url = `${process.env.NODE_ENV === 'production' ? '' : localhost}/api`
 
 function requestAuthHeaders() {
@@ -28,6 +28,11 @@ export async function getFromUrl() {
 
 export async function getProjects() {
   return fetch(url, {headers: requestAuthHeaders()}).then(res => checkAuth(res))
+}
+
+export async function getClientsOptions() {
+  let urlGet = url + "/clientsoptions/"
+  return fetch(urlGet, {headers: requestAuthHeaders()}).then(res => checkAuth(res))
 }
 
 export async function getProject(id) {
@@ -87,4 +92,19 @@ export async function postSignUp(data) {
 export async function getCheckUsername(username) {
   let urlGet = url + "/signup/?username=" + username
   return fetch(urlGet).then(res => checkAuth(res))
+}
+
+export async function getCalendar(dateStart, dateEnd, user, project) {
+  let urlGet = url + "/calendar/?"
+  urlGet += "&start=" + dateStart.format()
+  urlGet += "&end=" + dateEnd.format()
+  urlGet += "&user=" + user
+  if (project) urlGet += "&project_id=" + project
+  return fetch(urlGet, {headers: requestAuthHeaders()}).then(res => checkAuth(res))
+}
+
+export async function getProjectList() {
+  let urlGet = url + "/projectlist/?"
+  urlGet += "&user=" + window.location.pathname.match(/\/user\/(.*)\//)[1]
+  return fetch(urlGet, {headers: requestAuthHeaders()}).then(res => checkAuth(res))
 }

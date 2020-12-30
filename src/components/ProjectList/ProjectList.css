@@ -1,0 +1,20 @@
+.project-list-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.project-list-head > div {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+.project-list-head > div:first-child {
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+}
+.project-list-head > div:last-child {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+}

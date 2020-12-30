@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -29,14 +29,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function RightButton() {
-  const classes = useStyles();
   if (window.location.pathname.match(/\/login\/?/) || window.location.pathname.match(/\/signup\/?/)) {
     localStorage.clear()
     return <></>
   }
-  const user = localStorage.getItem('User')
-  if (user) return <UserButton user={user}/>
-  return <Link to="/login/" className={classes.titleText}><Button color="inherit">Login</Button></Link>
+  return <LogOutButton/>
 }
 
 export default function Header() {
@@ -60,24 +57,15 @@ export default function Header() {
   );
 }
 
-function UserButton(props) {
-  const [text, setText] = useState(props.user)
+function LogOutButton() {
 
   function logout() {
     localStorage.clear()
     window.location.href = '/login/'
   }
 
-  function onHover() {
-    setText("Log Out")
-  }
-
-  function offHover() {
-    setText(props.user)
-  }
-
   return (
-    <Button color="inherit" onClick={logout} onMouseOver={onHover} onMouseLeave={offHover}>{text}</Button>
+    <Button color="inherit" onClick={logout}>Log Out</Button>
   )
 
 }

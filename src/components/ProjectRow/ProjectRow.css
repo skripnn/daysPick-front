@@ -1,8 +1,7 @@
-tr.project-list-row.pick {
-    background-color: #4db34b;
+.project-list-row:hover {
     cursor: pointer;
 }
-.paid {
+.project-list-row.paid {
     font-style: italic;
     opacity: 0.5;
 }

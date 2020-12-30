@@ -74,6 +74,24 @@ export function setUrl(state) {
   history.pushState(JSON.stringify(state), null, url)
 }
 
+export function noArchiveProjects(projects) {
+  let actualProjects = []
+  let today = newDate()
+  projects.forEach(project => {
+    for (let i=0; i < project.dates.length; i++) {
+      if (!project.is_paid) {
+        actualProjects.push(project)
+        return
+      }
+      let date = newDate(project.dates[i])
+      if (date >= today) {
+        actualProjects.push(project)
+        return
+      }
+    }
+  })
+  return actualProjects
+}
 
 export function archiveProjects(projects) {
   let paidProjects = []
@@ -135,4 +153,9 @@ export function getHomeUrl() {
   console.log(localStorage)
   if (user) return "/user/" + user + "/"
   return "/login/"
+}
+
+export function checkUser() {
+  const user = window.location.pathname.match(/\/user\/(.*)\//)[1]
+  if (user !== localStorage.getItem("User")) return true
 }

@@ -6,8 +6,8 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import {Link} from "react-router-dom";
-import {postLogIn} from "../functions/fetch";
-import {useStyles} from "../core/auth";
+import {postLogIn} from "../js/functions/fetch";
+import {useStyles} from "../js/core/auth";
 
 export default function LoginPage() {
   const classes = useStyles();

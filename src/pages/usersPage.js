@@ -1,16 +1,15 @@
 import React, {useEffect, useState} from "react";
-import {getFromUrl} from "../functions/fetch";
-import {Link} from "react-router-dom";
+import {getFromUrl} from "../js/functions/fetch";
+import {Link, Redirect} from "react-router-dom";
 
 export default function UsersPage() {
   const [users, setUsers] = useState([])
 
   useEffect(() =>{
-    getFromUrl().then(result => {
-      if (result.length === 1) window.location.href = "/user/" + result[0].username + "/"
-      else setUsers(result)
-    })
+    getFromUrl().then(result => setUsers(result))
   },[])
+
+  if (users.length === 1) return <Redirect to={"/user/" + users[0].username + "/"}/>
 
   return (
     <ul>
