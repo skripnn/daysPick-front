@@ -9,6 +9,7 @@ import UserPageNavigator from "../components/UserPageNavigator/UserPageNavigator
 import {Link} from "react-router-dom";
 import NavigatorButton from "../components/NavigatorButton/NavigatorButton";
 import UserProfile from "../components/UserProfile/UserProfile";
+import {checkUser} from "../js/functions/functions";
 
 
 export default function UserPage() {

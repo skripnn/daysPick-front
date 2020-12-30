@@ -23,7 +23,7 @@ export function ProjectsList(props) {
   })
 
   useEffect(() => {
-    if (!props.projects) getProjectList().then((result) => setState(prevState => ({
+    if (!props.projects && !checkUser()) getProjectList().then((result) => setState(prevState => ({
       ...prevState,
       projects: result
     })))

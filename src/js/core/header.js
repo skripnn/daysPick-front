@@ -33,6 +33,9 @@ function RightButton() {
     localStorage.clear()
     return <></>
   }
+  if (!localStorage.User) {
+    return <LogInButton/>
+  }
   return <LogOutButton/>
 }
 
@@ -66,6 +69,28 @@ function LogOutButton() {
 
   return (
     <Button color="inherit" onClick={logout}>Log Out</Button>
+  )
+
+}
+
+function SignUpButton() {
+  function signUp() {
+    window.location.href = '/signup/'
+  }
+
+  return (
+    <Button color="inherit" onClick={signUp}>Sign Up</Button>
+  )
+
+}
+
+function LogInButton() {
+  function login() {
+    window.location.href = '/login/'
+  }
+
+  return (
+    <Button color="inherit" onClick={login}>Log In</Button>
   )
 
 }

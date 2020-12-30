@@ -100,11 +100,11 @@ export async function getCalendar(dateStart, dateEnd, user, project) {
   urlGet += "&end=" + dateEnd.format()
   urlGet += "&user=" + user
   if (project) urlGet += "&project_id=" + project
-  return fetch(urlGet, {headers: requestAuthHeaders()}).then(res => checkAuth(res))
+  return fetch(urlGet, {headers: requestAuthHeaders()}).then(res => res.json())
 }
 
 export async function getProjectList() {
   let urlGet = url + "/projectlist/?"
   urlGet += "&user=" + window.location.pathname.match(/\/user\/(.*)\//)[1]
-  return fetch(urlGet, {headers: requestAuthHeaders()}).then(res => checkAuth(res))
+  return fetch(urlGet, {headers: requestAuthHeaders()}).then(res => res.json())
 }
