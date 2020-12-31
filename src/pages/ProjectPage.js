@@ -4,7 +4,7 @@ import NavigatorButton from "../components/NavigatorButton/NavigatorButton";
 import {ArrowBackIos, Save} from "@material-ui/icons";
 import {getCalendar, getProject, postProject} from "../js/functions/fetch";
 import {Redirect} from "react-router-dom";
-import Calendar from 'react-pick-calendar'
+import Calendar from "../components/Calendar/Calendar";
 import ProjectForm from "../components/ProjectForm/ProjectForm";
 import {Hidden} from "@material-ui/core";
 

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import Calendar from "react-pick-calendar";
+import Calendar from "../components/Calendar/Calendar";
 import {ProjectsList} from "../components/ProjectList/ProjectList";
 import {getCalendar, getFromUrl, postDaysOff} from "../js/functions/fetch";
 import {Hidden} from "@material-ui/core";
@@ -9,7 +9,6 @@ import UserPageNavigator from "../components/UserPageNavigator/UserPageNavigator
 import {Link} from "react-router-dom";
 import NavigatorButton from "../components/NavigatorButton/NavigatorButton";
 import UserProfile from "../components/UserProfile/UserProfile";
-import {checkUser} from "../js/functions/functions";
 
 
 export default function UserPage() {
