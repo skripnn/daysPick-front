@@ -24,6 +24,7 @@ export default class DeltaTouchClass {
       return
     }
     this.lastTouch = this.eXY(e)
+    e.preventDefault()
   }
 
   move(e, func) {

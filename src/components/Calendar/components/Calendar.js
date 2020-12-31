@@ -76,7 +76,7 @@ function Calendar (props) {
       if (props.init.days) init.days = props.init.days
       if (props.init.daysOff) init.daysOff = sortSet(props.init.daysOff)
       if (props.init.daysPick) init.daysPick = sortSet(props.init.daysPick)
-      updateState(init)
+      setContent(prevState => ({...prevState, ...init}))
     }
   }
 
