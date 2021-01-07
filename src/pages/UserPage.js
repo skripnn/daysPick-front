@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import Calendar from "../components/Calendar/Calendar";
+import Calendar from "react-pick-calendar";
 import {ProjectsList} from "../components/ProjectList/ProjectList";
 import {getCalendar, getFromUrl, postDaysOff} from "../js/functions/fetch";
 import {Hidden} from "@material-ui/core";
@@ -48,7 +48,7 @@ export default function UserPage() {
       icon={<EventBusy />}
       active={state.edit}
       red={state.dayOffOver}
-      onClick={() => changeState({profile: false}, ['edit'])}
+      onClick={() => changeState({profile: false, dayInfo: null, dayOffOver: false}, ['edit'])}
     />,
     <Link to={'/project/'} key={"Добавить"} style={{textDecoration: 'none'}}>
       <NavigatorButton
@@ -77,7 +77,7 @@ export default function UserPage() {
     daysPick: state.edit? state.user.daysOff : []
   }
 
-  function dayOver(info, date) {
+  function showInfo(info, date) {
     if (state.user.daysOff) {
       const dayOffOver = state.user.daysOff.includes(date.format())
       changeState({
@@ -107,7 +107,10 @@ export default function UserPage() {
           offset={false}
           edit={state.edit}
           onChange={onChange}
-          dayOver={dayOver}
+          onDay={{
+            onTouchHold: showInfo,
+            onContextMenu: showInfo
+          }}
           init={init}
         />
         <div hidden={state.profile}><ProjectsList dayInfo={state.dayInfo} close={closeDayInfo}/></div>
@@ -141,5 +144,3 @@ export default function UserPage() {
     </>
   )
 }
-
-

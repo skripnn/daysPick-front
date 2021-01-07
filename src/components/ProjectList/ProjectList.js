@@ -35,10 +35,7 @@ export function ProjectsList(props) {
 
 
   if (checkUser()) return <></>
-  console.log(state.dayInfo)
-  console.log(state.dayInfo !== null)
   let visibleProjects = state.dayInfo? state.dayInfo : state.showArchive? state.projects : noArchiveProjects(state.projects)
-  console.log(visibleProjects)
   return (
     <Box className="project-list">
       <div className={'project-list-head'}>

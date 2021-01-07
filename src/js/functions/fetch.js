@@ -1,6 +1,7 @@
 // const localhost = "http://192.168.0.216:8000"
-const localhost = "http://192.168.31.71:8000"
-// const localhost = "http://localhost:8000"
+// const localhost = "http://192.168.31.71:8000"
+// const localhost = "http://192.168.0.109:8000"
+const localhost = "http://localhost:8000"
 const url = `${process.env.NODE_ENV === 'production' ? '' : localhost}/api`
 
 function requestAuthHeaders() {
@@ -33,6 +34,16 @@ export async function getProjects() {
 export async function getClientsOptions() {
   let urlGet = url + "/clientsoptions/"
   return fetch(urlGet, {headers: requestAuthHeaders()}).then(res => checkAuth(res))
+}
+
+export async function postClient(client) {
+  let urlPost = url + "/client/"
+  if (client.id) urlPost += client.id + "/"
+  return fetch(urlPost, {
+    method: 'POST',
+    headers: requestAuthHeaders(),
+    body: JSON.stringify(client)
+  }).then(res => checkAuth(res))
 }
 
 export async function getProject(id) {

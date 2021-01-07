@@ -30,7 +30,7 @@ export function ProjectRow(props) {
         {props.title}
         <Hidden><Link to={path}/></Hidden>
       </TableCell>
-      <TableCell>{props.client}</TableCell>
+      <TableCell>{props.client? props.client.fullname : undefined}</TableCell>
       <Hidden xsDown>
         <TableCell >{props.money}</TableCell>
         <TableCell align="center" >{props.dates.length}</TableCell>

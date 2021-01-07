@@ -7,12 +7,16 @@ export const propTypes = {
   onChange: PropTypes.func,
   // можно ли менять daysPick
   edit: PropTypes.bool,
-  // рассчет календаря от началльной даты в daysPick
-  offset: PropTypes.bool,
+  // отмена рассчета календаря от началльной даты в daysPick
+  noOffset: PropTypes.bool,
   // начальные значения - если есть, то к пустым значениям прибавляются те, что есть в init
   init: PropTypes.object,
-  // функция, которой передается информация о дне при наведении на день
-  dayOver: PropTypes.func,
+  // функции активности Day, которым передаётся информация о дне
+  onDay: PropTypes.shape({
+    onTouchHold: PropTypes.func,
+    onMouseOver: PropTypes.func,
+    onContextMenu: PropTypes.func
+  }),
   // начало календаря (не скроллится раньше этой даты)
   startDate: (props, propName, componentName) => checkDateFormat(props, propName, componentName),
   // конец календаря (не скроллится дальше этой даты)
@@ -21,9 +25,9 @@ export const propTypes = {
 
 export const defaultProps = {
   onChange: () => {},
-  dayOver: () => {},
+  onDay: {},
   edit: false,
-  offset: true
+  noOffset: false
 }
 
 function checkDateFormat(props, propName, componentName) {
@@ -34,7 +38,7 @@ function checkDateFormat(props, propName, componentName) {
       return
     }
     return new Error(
-      componentName + ': Неверный формат даты "' + propName + '". Ожидаемый формат YYYY-MM-DD'
+      componentName + ': Wrong date format "' + propName + '". Please use YYYY-MM-DD'
     );
   }
 }

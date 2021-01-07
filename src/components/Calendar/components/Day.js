@@ -33,26 +33,38 @@ function Day(props) {
   function touchStart() {
     touch = true
     clearTimeout(touchTimer)
-    touchTimer = setTimeout(onMouseOver, 500)
+    touchTimer = setTimeout(onTouchHold, 500)
   }
 
   function onClick() {
-    if (props.onClick) props.onClick(props.date.format())
+    if (props.onClick) props.onClick(props.date)
+  }
+
+  function onTouchHold() {
+    touchFalse()
+    if (props.onTouchHold) props.onTouchHold(props.info, props.date)
   }
 
   function onMouseOver() {
-    touchFalse()
     if (props.onMouseOver) props.onMouseOver(props.info, props.date)
   }
 
+  function onContextMenu(e) {
+    e.preventDefault()
+    if (props.onContextMenu) props.onContextMenu(props.info, props.date)
+  }
+
   return (
-    <div className={getDayCSS()}
-         onClick={onClick}
-         onMouseOver={onMouseOver}
-         onTouchEnd={touchEnd}
-         onTouchStart={touchStart}
-         onTouchMove={touchFalse}
-         onTouchCancel={touchFalse}>
+    <div
+      className={getDayCSS()}
+      onClick={onClick}
+      onContextMenu={onContextMenu}
+      onMouseOver={onMouseOver}
+      onTouchEnd={touchEnd}
+      onTouchStart={touchStart}
+      onTouchMove={touchFalse}
+      onTouchCancel={touchFalse}
+    >
       {props.date.getDate().toString()}
     </div>
   )

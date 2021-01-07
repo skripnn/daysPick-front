@@ -23,12 +23,12 @@ export default class DeltaTouchClass {
       this.lastDelta = null
       return
     }
-    this.lastTouch = this.eXY(e)
     e.preventDefault()
+    this.lastTouch = this.eXY(e)
   }
 
   move(e, func) {
-    if (e.touches.length > 1) return
+    if (e.touches.length > 1 || !this.lastTouch) return
     let delta = this.lastTouch - this.eXY(e)
     this.lastTouch = this.eXY(e)
     this.touchDeltas.push(delta)
@@ -68,5 +68,4 @@ export default class DeltaTouchClass {
       this.lastDelta = null
     }
   }
-
 }

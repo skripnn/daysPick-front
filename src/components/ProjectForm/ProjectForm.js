@@ -5,18 +5,11 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import {getClientsOptions} from "../../js/functions/fetch";
+import ClientChoice from "../ChoiseField/ChoiceField";
 
 export default function ProjectForm(props) {
 
-  const [clientOptions, setClientOptions] = useState([])
-
-  useEffect(() => {
-    getClientsOptions().then(result => setClientOptions(result))
-  }, [])
-
-
   const numValid = (str) => parseInt(str)? parseInt(str) : null
-  console.log(props)
   return (
     <Grid container className={'project-form'} justify="space-between" alignItems="center" spacing={3}>
       <Grid item xs={12} md={6}>
@@ -32,10 +25,7 @@ export default function ProjectForm(props) {
 
           </Grid>
           <Grid item xs={12}>
-
-            <Autocomplete options={clientOptions} freeSolo name='client' label='Клиент' value={props.client} renderInput={(params) => (
-              <TextField size="small" fullWidth onChange={(e) => props.onChange({client: e.target.value})} onBlur={(e) => props.onChange({client: e.target.value})} name='client' label='Клиент' {...params}/>)}/>
-
+            <ClientChoice value={props.client} setValue={(v) => props.onChange({client: v})}/>
           </Grid>
           <Grid item xs={12}>
 

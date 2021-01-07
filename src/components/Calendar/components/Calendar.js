@@ -30,9 +30,7 @@ function Calendar (props) {
     weeks: <span style={{width: window.innerWidth + scrollOffset}} key={'temp'}/>,
     texts: {},
 
-    init: props.init,
-
-    offset: props.offset,
+    offset: !props.noOffset,
     loading: true,
     check: 0
   })
@@ -45,9 +43,9 @@ function Calendar (props) {
   // eslint-disable-next-line
   useEffect(firstRender, [])
   // eslint-disable-next-line
-  useEffect(refreshWeeks, [content.days, content.daysOff, content.daysPick, state.check, props.edit])
-  useEffect(fromPropsToInit, [props.init])
-  useEffect(fromPropsToOffset, [props.offset])
+  useEffect(refreshWeeks, [content.days, content.daysOff, content.daysPick, state.check, props.edit, props.onDay])
+  useEffect(fromPropsInit, [props.init])
+  useEffect(fromPropsOffset, [props.noOffset])
 
   function firstRender() {
     DeltaTouchX = new DeltaTouchClass('x')
@@ -69,7 +67,7 @@ function Calendar (props) {
     }))
   }
 
-  function fromPropsToInit() {
+  function fromPropsInit() {
     // обновление при смене props.init
     if (props.init) {
       let init = {}
@@ -80,14 +78,14 @@ function Calendar (props) {
     }
   }
 
-  function fromPropsToOffset() {
-    // обновление при смене props.offset
-    updateState({offset: props.offset})
+  function fromPropsOffset() {
+    // обновление при смене props.noOffset
+    updateState({offset: !props.noOffset})
   }
 
   function getWeeks(prevWeeks) {
     // получение новых недель
-    let weeksCount = weeksCounter(ref.current.getBoundingClientRect().width)  // сколько недель влезает в блок
+    let weeksCount = weeksCounter(ref.current.clientWidth)  // сколько недель влезает в блок
     const startDate = props.startDate? newDate(props.startDate).monday() : null  // левая граница
     const endDate = props.endDate? newDate(props.endDate).monday().offsetDays(7) : null  // правая граница
 
@@ -99,7 +97,7 @@ function Calendar (props) {
     let leftDate = newDate(start)
     if (!prevWeeks) leftDate.offsetWeeks(-weeksOffset)
     else if (ref.current.scrollLeft === 0) leftDate.offsetWeeks(-weeksOffset)  // влево
-    else if (ref.current.scrollLeft >= scrollOffset * 2) leftDate.offsetWeeks(weeksOffset)  // или вправо
+    else if (ref.current.scrollLeft === ref.current.scrollWidth - ref.current.clientWidth) leftDate.offsetWeeks(weeksOffset)  // или вправо
 
     // 3 - обрабатывыаем новую стартовую дату
     if (startDate && leftDate < startDate) leftDate = newDate(startDate)  // если стартовая дата раньше левой границы - сдвигаем стартовую дату до границы
@@ -147,7 +145,7 @@ function Calendar (props) {
     let tempMonth = {}
     let textWidth = 0
 
-    let mainWidth = ref.current.getBoundingClientRect().width
+    let mainWidth = ref.current.clientWidth
     let scrollLeft = ref.current.scrollLeft
     let wCount = weeksCounter(mainWidth)
     if (newWeeks && weekWidth(newWeeks.length) < mainWidth) mainWidth = weekWidth(newWeeks.length)
@@ -227,7 +225,7 @@ function Calendar (props) {
         pick: content.daysPick.has(fDate)
       }
       if ((props.startDate && fDate < props.startDate) || (props.endDate && fDate > props.endDate)) daysList.push(<div className={'calendar-day hidden'} key={fDate}/>)
-      else daysList.push(<Day date={date} key={fDate} {...day} onClick={onDayClick} onMouseOver={props.dayOver}/>)
+      else daysList.push(<Day date={date} key={fDate} {...day} onClick={onDayClick} {...props.onDay}/>)
     }
 
     return (
@@ -238,14 +236,15 @@ function Calendar (props) {
     )
   }
 
-  function onDayClick(dateStr) {
+  function onDayClick(date) {
     // Нажатие на день
     if (!props.edit) return
+    const fDate = date.format()
     let set = new Set(content.daysPick)
-    set.has(dateStr)? set.delete(dateStr) : set.add(dateStr)
+    set.has(fDate)? set.delete(fDate) : set.add(fDate)
     set = sortSet(set)
     setContent(prevState => ({...prevState, daysPick: set}))
-    props.onChange([...set])
+    props.onChange([...set], date)
   }
 
   function get(weeks, timeout=500) {
@@ -254,19 +253,19 @@ function Calendar (props) {
     const start = newDate(weeks[0].key)
     const end = newDate(start).offsetWeeks(weeks.length).offsetDays(-1)
     getTimeOut = setTimeout(() => {
-      props.get(start, end).then(result => setContent(prevState => ({
-        ...prevState,
-        days: result.days ? {...prevState.days, ...result.days} : prevState.days,
-        daysOff: result.daysOff ? sortSet([...prevState.daysOff, ...result.daysOff]) : prevState.daysOff,
-        daysPick: result.daysPick ? sortSet([...prevState.daysPick, ...result.daysPick]) : prevState.daysPick
-      })))
+      props.get(start, end)  //.then(result => setContent(prevState => ({
+      //   ...prevState,
+      //   days: result.days ? {...prevState.days, ...result.days} : prevState.days,
+      //   daysOff: result.daysOff ? sortSet([...prevState.daysOff, ...result.daysOff]) : prevState.daysOff,
+      //   daysPick: result.daysPick ? sortSet([...prevState.daysPick, ...result.daysPick]) : prevState.daysPick
+      // })))
     }, timeout)
   }
 
   function reset() {
     // нажатие на ButtonScroll - reset state
     newWeeks(undefined, true)
-    if (props.offset) setState(prevState => ({...prevState, offset: !prevState.offset}))
+    if (!props.noOffset) setState(prevState => ({...prevState, offset: !prevState.offset}))
   }
 
   function refreshWeeks() {
@@ -290,7 +289,7 @@ function Calendar (props) {
 
   function onScroll() {
     // реакция на скролл
-    if (ref.current.scrollLeft === 0 || ref.current.scrollLeft >= scrollOffset * 2) {
+    if (ref.current.scrollLeft === 0 || ref.current.scrollLeft === ref.current.scrollWidth - ref.current.clientWidth) {
       newWeeks(state.weeks, true)
     }
     else {
@@ -325,8 +324,8 @@ function Calendar (props) {
         </div>
       </div>
     </div>
-    )
-  }
+  )
+}
 
 
 Calendar.propTypes = propTypes
