@@ -1,10 +1,8 @@
 import React, {useEffect, useState} from "react";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
-import Autocomplete from "@material-ui/lab/Autocomplete";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import {getClientsOptions} from "../../js/functions/fetch";
 import ClientChoice from "../ChoiseField/ChoiceField";
 
 export default function ProjectForm(props) {

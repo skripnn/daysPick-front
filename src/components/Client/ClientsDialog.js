@@ -7,7 +7,7 @@ import {
   TextField
 } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
-import {postClient} from "../../js/functions/fetch";
+import {postClient} from "../../js/fetch/client";
 
 export default function ClientsDialog(props) {
   const [state, setState] = useState(props.client)

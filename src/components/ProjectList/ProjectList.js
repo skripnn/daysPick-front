@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from "react";
-import {checkUser, noArchiveProjects} from "../../js/functions/functions";
-import {getProjectList} from "../../js/functions/fetch";
+import React, {useEffect} from "react";
+import {checkUser, getUser, noArchiveProjects} from "../../js/functions/functions";
+import {getProjects} from "../../js/fetch/project";
 import Box from "@material-ui/core/Box";
 import TableContainer from "@material-ui/core/TableContainer";
 import Table from "@material-ui/core/Table";
@@ -13,38 +13,30 @@ import {ProjectRow} from "../ProjectRow/ProjectRow";
 import ArchiveButton from "../ArchiveButton/ArchiveButton";
 import './ProjectList.css'
 import CloseButton from "../CloseButton/CloseButton";
+import {inject, observer} from "mobx-react";
 
-export function ProjectsList(props) {
+function ProjectsList(props) {
 
-  const [state, setState] = useState({
-    projects: [],
-    showArchive: false,
-    dayInfo: null
-  })
+  function closeDayInfo() {
+    props.setValue({dayOffOver: false, dayInfo: null})
+  }
 
   useEffect(() => {
-    if (!props.projects && !checkUser()) getProjectList().then((result) => setState(prevState => ({
-      ...prevState,
-      projects: result
-    })))
+    if (!checkUser()) getProjects().then((result) => props.setProjects(result))
   }, [])
-
-  useEffect(() => {
-    setState(prevState => ({...prevState, dayInfo: props.dayInfo}))
-  }, [props.dayInfo])
 
 
   if (checkUser()) return <></>
-  let visibleProjects = state.dayInfo? state.dayInfo : state.showArchive? state.projects : noArchiveProjects(state.projects)
+  let visibleProjects = props.dayInfo? props.dayInfo : props.showArchive? props.projects : noArchiveProjects(props.projects)
   return (
     <Box className="project-list">
       <div className={'project-list-head'}>
         <div/>
         <div>Проекты</div>
         <div>
-          {state.dayInfo?
-            <CloseButton onClick={props.close}/> :
-            <ArchiveButton active={state.showArchive} onClick={() => setState(prevState => ({...prevState, showArchive: !prevState.showArchive}))}/>
+          {props.dayInfo?
+            <CloseButton onClick={closeDayInfo}/> :
+            <ArchiveButton active={props.showArchive} onClick={() => props.setValue({showArchive: !props.showArchive})}/>
           }
           </div>
       </div>
@@ -71,3 +63,13 @@ export function ProjectsList(props) {
     </Box>
   );
 }
+
+export default inject(stores => {
+  const user = getUser()
+  return {
+    projects: stores.UsersStore.getUser(user).projects,
+    setProjects: stores.UsersStore.getUser(user).setProjects,
+    ...stores.UsersStore.getUser(user).userPage,
+    setValue: stores.UsersStore.getUser(user).setValue
+  }
+})(observer(ProjectsList))

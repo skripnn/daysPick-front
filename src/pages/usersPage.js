@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {getFromUrl} from "../js/functions/fetch";
+import {getFromUrl} from "../js/fetch/core";
 import {Link, Redirect} from "react-router-dom";
 
 export default function UsersPage() {

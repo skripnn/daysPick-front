@@ -6,25 +6,20 @@
     "@material-ui/core": "^4.11.2",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.57",
-    "@reduxjs/toolkit": "^1.5.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "babel-cli": "^6.26.0",
-    "babel-preset-react-app": "^9.1.2",
     "history": "^5.0.0",
-    "material-table": "^1.69.2",
     "mobx": "^6.0.4",
     "mobx-react": "^7.0.5",
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.0",
     "react-dom": "^17.0.1",
-    "react-pick-calendar": "^1.2.1",
-    "react-redux": "^7.2.2",
+    "react-pick-calendar": "^1.2.2",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^4.0.1",
-    "redux": "^4.0.5",
-    "redux-thunk": "^2.3.0"
+    "react-router-last-location": "^2.0.1",
+    "react-scripts": "^4.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -49,9 +44,6 @@
   },
   "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
   "main": "index.js",
-  "devDependencies": {
-    "redux-devtools": "^3.7.0"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC"

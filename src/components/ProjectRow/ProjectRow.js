@@ -1,4 +1,3 @@
-import pick from "../../js/functions/pick";
 import TableRow from "@material-ui/core/TableRow";
 import Hidden from "@material-ui/core/Hidden";
 import TableCell from "@material-ui/core/TableCell";
@@ -7,13 +6,6 @@ import React from "react";
 import "./ProjectRow.css"
 
 export function ProjectRow(props) {
-  function onMouseOver() {
-    pick("set", props.dates)
-  }
-
-  function onMouseLeave() {
-    pick("unset", props.dates)
-  }
 
   function onClick(e) {
     e.target.parentElement.querySelector('a').click()
@@ -24,8 +16,7 @@ export function ProjectRow(props) {
   if (props.is_paid) className += " paid"
 
   return (
-    <TableRow className={className} id={props.id} onClick={onClick}
-              onMouseOver={onMouseOver} onMouseLeave={onMouseLeave}>
+    <TableRow className={className} id={props.id} onClick={onClick}>
       <TableCell scope="row">
         {props.title}
         <Hidden><Link to={path}/></Hidden>

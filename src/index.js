@@ -4,22 +4,19 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import {BrowserRouter} from "react-router-dom"
-
+import { LastLocationProvider } from 'react-router-last-location';
 import {Provider} from "mobx-react";
 import mainStore from "./stores/mainStore";
-
-const stores = {
-  mainStore,
-  TestPageStore: mainStore.TestPageStore
-}
 
 
 ReactDOM.render(
   <React.StrictMode>
       <BrowserRouter>
-        <Provider {...stores}>
-          <App />
-        </Provider>
+        <LastLocationProvider>
+          <Provider {...mainStore}>
+            <App />
+          </Provider>
+        </LastLocationProvider>
       </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')

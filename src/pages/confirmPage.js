@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {getFromUrl} from "../js/functions/fetch";
+import {getFromUrl} from "../js/fetch/core";
 import {Typography} from "@material-ui/core";
 import {Link} from "react-router-dom";
 

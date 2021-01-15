@@ -34,17 +34,17 @@ function Calendar (props) {
     loading: true,
     check: 0
   })
-  const [content, setContent] = useState({
-    days: props.init? props.init.days || {} : {},
-    daysOff: sortSet(props.init? props.init.daysOff : []),
-    daysPick: sortSet(props.init? props.init.daysPick : []),
+  let [content, setContent] = useState({
+    days: props.content ? props.content.days || {} : {},
+    daysOff: sortSet(props.content ? props.content.daysOff : []),
+    daysPick: sortSet(props.content ? props.content.daysPick : []),
   })
-
   // eslint-disable-next-line
   useEffect(firstRender, [])
   // eslint-disable-next-line
   useEffect(refreshWeeks, [content.days, content.daysOff, content.daysPick, state.check, props.edit, props.onDay])
-  useEffect(fromPropsInit, [props.init])
+  // eslint-disable-next-line
+  useEffect(fromPropsInit, [props.content])
   useEffect(fromPropsOffset, [props.noOffset])
 
   function firstRender() {
@@ -69,11 +69,11 @@ function Calendar (props) {
 
   function fromPropsInit() {
     // обновление при смене props.init
-    if (props.init) {
+    if (props.content && props.setContent) {
       let init = {}
-      if (props.init.days) init.days = props.init.days
-      if (props.init.daysOff) init.daysOff = sortSet(props.init.daysOff)
-      if (props.init.daysPick) init.daysPick = sortSet(props.init.daysPick)
+      if (props.content.days) content.days = props.content.days
+      if (props.content.daysOff) content.daysOff = sortSet(props.content.daysOff)
+      if (props.content.daysPick) content.daysPick = sortSet(props.content.daysPick)
       setContent(prevState => ({...prevState, ...init}))
     }
   }
@@ -243,8 +243,32 @@ function Calendar (props) {
     let set = new Set(content.daysPick)
     set.has(fDate)? set.delete(fDate) : set.add(fDate)
     set = sortSet(set)
-    setContent(prevState => ({...prevState, daysPick: set}))
+    const f = prevState => ({...prevState, daysPick: set})
+    props.setContent? props.setContent(f) : setContent(f)
     props.onChange([...set], date)
+  }
+
+  function updateContent(result, start, end) {
+
+    const clearContent = (content) => {
+      if (start && end) {
+        let date = newDate(start)
+        while (date.getTime() <= end.getTime()) {
+          if (content instanceof Set) content.delete(date.format())
+          else delete content[date.format()]
+          date.offsetDays(1)
+        }
+      }
+      return content
+    }
+
+    const f = prevState => ({
+      ...prevState,
+      days: result.days ? {...clearContent(prevState.days), ...result.days} : prevState.days,
+      daysOff: result.daysOff ? sortSet([...clearContent(prevState.daysOff), ...result.daysOff]) : prevState.daysOff,
+      daysPick: result.daysPick ? sortSet([...clearContent(prevState.daysPick), ...result.daysPick]) : prevState.daysPick
+    })
+    props.setContent? props.setContent(f) : setContent(f)
   }
 
   function get(weeks, timeout=500) {
@@ -253,12 +277,7 @@ function Calendar (props) {
     const start = newDate(weeks[0].key)
     const end = newDate(start).offsetWeeks(weeks.length).offsetDays(-1)
     getTimeOut = setTimeout(() => {
-      props.get(start, end)  //.then(result => setContent(prevState => ({
-      //   ...prevState,
-      //   days: result.days ? {...prevState.days, ...result.days} : prevState.days,
-      //   daysOff: result.daysOff ? sortSet([...prevState.daysOff, ...result.daysOff]) : prevState.daysOff,
-      //   daysPick: result.daysPick ? sortSet([...prevState.daysPick, ...result.daysPick]) : prevState.daysPick
-      // })))
+      props.get(start, end).then((result) => updateContent(result, start, end)).then(refreshWeeks)
     }, timeout)
   }
 

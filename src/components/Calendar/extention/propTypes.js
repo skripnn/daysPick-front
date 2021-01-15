@@ -10,7 +10,9 @@ export const propTypes = {
   // отмена рассчета календаря от началльной даты в daysPick
   noOffset: PropTypes.bool,
   // начальные значения - если есть, то к пустым значениям прибавляются те, что есть в init
-  init: PropTypes.object,
+  content: PropTypes.object,
+  // функция для обновления внешнего хранилища
+  setContent: PropTypes.func,
   // функции активности Day, которым передаётся информация о дне
   onDay: PropTypes.shape({
     onTouchHold: PropTypes.func,

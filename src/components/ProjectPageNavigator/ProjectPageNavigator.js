@@ -7,13 +7,19 @@ export default function ProjectPageNavigator(props) {
 
   if (props.bottom) return (
     <div className={'user-page-navigator bottom'}>
-      {props.children}
+      {props.childrenL}
+      {props.childrenR}
     </div>
   )
 
   return (
     <div className={'user-page-navigator'}>
-      {props.children}
+      <div>
+        {props.childrenL}
+      </div>
+      <div>
+        {props.childrenR}
+      </div>
     </div>
   )
 }

@@ -3,7 +3,7 @@ import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete, {createFilterOptions} from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import {getClientsOptions} from "../../js/functions/fetch";
+import {getClients} from "../../js/fetch/client";
 import ClientsDialog from "../Client/ClientsDialog";
 
 const filter = createFilterOptions();
@@ -17,11 +17,10 @@ export default function ClientChoice(props) {
 
   React.useEffect(() => {
     if (!loading) return undefined
-    getClientsOptions().then(result => setOptions(result))
+    getClients().then(result => setOptions(result))
   }, [loading]);
 
   React.useEffect(() => {
-    console.log(props.value)
     if (props.value && props.value.new) {
       setDialog({name: props.value.name, company: ''})
     }
@@ -40,7 +39,6 @@ export default function ClientChoice(props) {
     setDialog(null)
   }
 
-  console.log(props.value)
   return (
     <>
     <Autocomplete
