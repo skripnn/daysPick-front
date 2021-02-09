@@ -59,6 +59,10 @@ class UsersStore {
     this.users[user].calendar = func(this.users[user].calendar)
   }
 
+  setDaysOff = (daysOff, user) => {
+    this.users[user].calendar.daysOff = daysOff
+  }
+
   getUser = (user) => {
     if (!this.users[user]) this.users[user] = {...this.default}
     return {
@@ -72,7 +76,8 @@ class UsersStore {
       setValue: (obj) => this.setValue(obj, user),
       delProject: (id) => this.delProject(id, user),
       setProject: (project) => this.setProject(project, user),
-      getProject: (id) => this.getProject(id, user)
+      getProject: (id) => this.getProject(id, user),
+      setDaysOff: (daysOff) => this.setDaysOff(daysOff, user)
     }
   }
 

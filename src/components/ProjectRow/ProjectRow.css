@@ -1,7 +1,7 @@
 .project-list-row:hover {
     cursor: pointer;
 }
-.project-list-row.paid {
+.project-list-row.past {
     font-style: italic;
     opacity: 0.5;
 }

@@ -8,17 +8,19 @@ import {getProjectId} from "../js/functions/functions";
 
 function ProjectPage(props) {
   useEffect(() => {
-    if (props.project.id) getProject(props.project.id).then((project) => props.project.setValue(project))
+    if (props.project.id) getProject(props.project.id).then((project) => {
+      props.project.setValue({...project, dates: Object.keys(project.days), hidden: false})
+    })
   // eslint-disable-next-line
   },[])
 
-  if (props.loading) return <></>
+  if (props.project.hidden) return <></>
   return (
     <div className={'project-block'}>
       <Calendar
         edit={true}
         get={(start, end) => getCalendar(start, end, localStorage.User, props.project.id)}
-        onChange={(days) => props.project.setValue({dates: days})}
+        onChange={(daysPick, date) => props.project.setDays(daysPick, date)}
         content={{
           ...props.init,
           daysPick: props.project.dates
@@ -35,13 +37,12 @@ function ProjectPage(props) {
 export default inject(stores => {
   const id = getProjectId()
   const project = stores.UsersStore.getUser(localStorage.User).getProject(id) || stores.ProjectStore.default
-  if (stores.ProjectStore.id !== id) stores.ProjectStore.setValue({...project, id: id})
+  if (stores.ProjectStore.id !== id) stores.ProjectStore.setValue({...project, id: id, hidden: true})
   return {
-    loading: stores.ProjectStore.id && !stores.ProjectStore.dates.length,
     project: stores.ProjectStore,
     init: {
       days: JSON.parse(JSON.stringify(stores.UsersStore.getUser(localStorage.User).calendar.content.days)),
-      daysOff: [...stores.UsersStore.getUser(localStorage.User).calendar.content.daysOff],
+      daysOff: JSON.parse(JSON.stringify(stores.UsersStore.getUser(localStorage.User).calendar.content.daysOff)),
     }
   }
 })(observer(ProjectPage))

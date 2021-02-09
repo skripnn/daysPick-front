@@ -4,16 +4,16 @@ import TableCell from "@material-ui/core/TableCell";
 import {Link} from "react-router-dom";
 import React from "react";
 import "./ProjectRow.css"
+import {newDate} from "../../js/functions/date";
 
 export function ProjectRow(props) {
-
   function onClick(e) {
     e.target.parentElement.querySelector('a').click()
   }
 
   const path = "/project/" + props.id + "/"
   let className = "project-list-row"
-  if (props.is_paid) className += " paid"
+  if (props.date_end < newDate().format()) className += " past"
 
   return (
     <TableRow className={className} id={props.id} onClick={onClick}>
@@ -24,7 +24,6 @@ export function ProjectRow(props) {
       <TableCell>{props.client? props.client.fullname : undefined}</TableCell>
       <Hidden xsDown>
         <TableCell >{props.money}</TableCell>
-        <TableCell align="center" >{props.dates.length}</TableCell>
       </Hidden>
     </TableRow>
   )

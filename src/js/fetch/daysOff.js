@@ -6,11 +6,11 @@ export async function getDaysOff() {
   return fetch(urlGet, {headers: requestAuthHeaders()}).then(res => checkAuth(res))
 }
 
-export async function postDaysOff(daysOff) {
+export async function postDaysOff(day) {
   let urlPost = url + "/daysoff/"
   return fetch(urlPost, {
     method: 'POST',
     headers: requestAuthHeaders(),
-    body: JSON.stringify(daysOff)
+    body: JSON.stringify(day)
   }).then(res => checkAuth(res))
 }

@@ -25,11 +25,11 @@ function UserPage(props) {
     })
   }, [])
 
-  const content = props.user.user.daysOff ? {
+  const content = {
     days: props.user.calendar.content.days,
-    daysOff: sortSet(store.edit? [] : props.user.user.daysOff),
-    daysPick: sortSet(store.edit? props.user.user.daysOff : [])
-  } : props.user.calendar.content
+    daysOff: sortSet(store.edit? [] : props.user.calendar.content.daysOff),
+    daysPick: sortSet(store.edit? props.user.calendar.content.daysOff : [])
+  }
 
   function showInfo(info, date) {
     if (props.user.user.daysOff) {
@@ -42,9 +42,9 @@ function UserPage(props) {
     else props.user.setValue({dayInfo: info})
   }
 
-  function onChange(daysPick) {
-    postDaysOff(daysPick)
-    props.user.setUser({...props.user.user, daysOff: daysPick})
+  function onChange(daysPick, date) {
+    postDaysOff(date.format())
+    props.user.setDaysOff(daysPick)
   }
 
   if (store.loading) return <></>

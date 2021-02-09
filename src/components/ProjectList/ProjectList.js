@@ -49,7 +49,6 @@ function ProjectsList(props) {
               <TableCell>Клиент</TableCell>
               <Hidden xsDown>
                 <TableCell>Гонорар</TableCell>
-                <TableCell align="center">Дни</TableCell>
               </Hidden>
             </TableRow>
           </TableHead>

@@ -39,6 +39,7 @@ function UserPageActionPanel(props) {
       onClick={() => props.setValue({edit: false, profile: true})}
     />
   ]
+  const right = localStorage.User? buttonsBlock : []
 
 
   return (
@@ -46,7 +47,7 @@ function UserPageActionPanel(props) {
       {...props}
       hidden={props.bottom ? props.hidden : false}
       left={props.bottom ? [] : [<UserFullName user={props.user} key={'userFullName'}/>]}
-      right={props.hidden ? [] : buttonsBlock}
+      right={props.hidden ? [] : right}
     />
   )
 }

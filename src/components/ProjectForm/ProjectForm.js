@@ -4,10 +4,13 @@ import TextField from "@material-ui/core/TextField";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import ClientChoice from "../ChoiseField/ChoiceField";
+import {Switch} from "@material-ui/core";
+import MoneyField from "../MoneyField/MoneyField";
+import {inject, observer} from "mobx-react";
+import {getProjectId} from "../../js/functions/functions";
 
 export default function ProjectForm(props) {
-
-  const numValid = (str) => parseInt(str)? parseInt(str) : null
+  console.log(props)
   return (
     <Grid container className={'project-form'} justify="space-between" alignItems="center" spacing={3}>
       <Grid item xs={12} md={6}>
@@ -18,9 +21,7 @@ export default function ProjectForm(props) {
 
           </Grid>
           <Grid item xs={12}>
-
-            <TextField size="small" fullWidth onChange={(e) => props.onChange({money: numValid(e.target.value)})} name='money' label='Гонорар' value={props.money? props.money : ''} autoComplete='off'/>
-
+            <MoneyField {...props}/>
           </Grid>
           <Grid item xs={12}>
             <ClientChoice value={props.client} setValue={(v) => props.onChange({client: v})}/>
