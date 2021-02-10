@@ -4,17 +4,7 @@ export function noArchiveProjects(projects) {
   let actualProjects = []
   let today = newDate()
   projects.forEach(project => {
-    for (let i=0; i < project.dates.length; i++) {
-      if (!project.is_paid) {
-        actualProjects.push(project)
-        return
-      }
-      let date = newDate(project.dates[i])
-      if (date >= today) {
-        actualProjects.push(project)
-        return
-      }
-    }
+    if (!project.is_paid || newDate(project.date_end) >= today) actualProjects.push(project)
   })
   return actualProjects
 }

@@ -46,7 +46,7 @@ export default function Header() {
   return (
     <div className={classes.root}>
       <AppBar position="sticky" className={classes.appBar}>
-        <Toolbar>
+        <Toolbar style={{minHeight: 49}}>
           {/*<IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">*/}
           {/*  <MenuIcon />*/}
           {/*</IconButton>*/}

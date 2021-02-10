@@ -21,7 +21,8 @@ function ProjectPageActionPanel(props) {
   function save() {
     let errors = []
     if (!props.project.dates.length) errors.push('Выбери даты')
-    if (!props.project.title && !props.project.client) errors.push('Введи название проекта или клиента')
+    if (!props.project.title) errors.push('Введи название проекта')
+    if (!props.project.client) errors.push('Выбери клиента')
     if (errors.length) {
       let errorsString = 'Ошибка:\n'
       for (let i=0; i< errors.length; i++) {

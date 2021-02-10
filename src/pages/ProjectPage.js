@@ -28,7 +28,8 @@ function ProjectPage(props) {
       />
       <ProjectForm
         {...props.project}
-        onChange={(field) => props.project.setValue(field)}
+        setValue={props.project.setValue}
+        setInfo={props.project.setDayInfo}
       />
     </div>
   )

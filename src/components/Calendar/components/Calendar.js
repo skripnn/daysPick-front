@@ -15,7 +15,7 @@ import TextLine from "./TextLine";
 import YearText from "./YearText";
 import MonthText from "./MonthText";
 import Days from "./Days";
-import Day from "./Day";
+import Day from "./Day/Day";
 
 let getTimeOut
 let DeltaTouchX

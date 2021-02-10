@@ -23,23 +23,23 @@ function App(props) {
 
   return (
     <div className="App">
-      <div className={'block scroll'}>
-        <Header/>
-        <Container maxWidth="md" className={"content-block"}>
-          <ActionsSwitch hidden={mobile} history={history}/>
-          <Switch>
-            <Route history={history} path='/test' component={TestPage}/>
-            <Route history={history} path='/project/:id' component={ProjectPage}/>
-            <Route history={history} path='/project' component={ProjectPage}/>
-            <Route history={history} path='/login' component={LoginPage}/>
-            <Route history={history} path='/signup' component={SignUpPage}/>
-            <Route history={history} path='/confirm' component={ConfirmPage}/>
-            <Route history={history} path='/user/:username' component={UserPage}/>
-            <Route history={history} path='/' component={UsersPage}/>
-          </Switch>
-        </Container>
-      </div>
-      <div className={'block static'}><ActionsSwitch bottom hidden={!mobile} history={history}/></div>
+      <Header/>
+      <Container maxWidth="md" className={"content-block"}>
+        <ActionsSwitch hidden={mobile} history={history}/>
+        <Switch>
+          <Route history={history} path='/test' component={TestPage}/>
+          <Route history={history} path='/project/:id' component={ProjectPage}/>
+          <Route history={history} path='/project' component={ProjectPage}/>
+          <Route history={history} path='/login' component={LoginPage}/>
+          <Route history={history} path='/signup' component={SignUpPage}/>
+          <Route history={history} path='/confirm' component={ConfirmPage}/>
+          <Route history={history} path='/user/:username' component={UserPage}/>
+          <Route history={history} path='/' component={UsersPage}/>
+        </Switch>
+      </Container>
+      {mobile && <div className={'block static'}>
+        <ActionsSwitch bottom history={history}/>
+      </div>}
     </div>
   )
 }

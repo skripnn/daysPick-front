@@ -1,10 +1,9 @@
-
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete, {createFilterOptions} from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import {getClients} from "../../js/fetch/client";
-import ClientsDialog from "../Client/ClientsDialog";
+import {getClients} from "../../../js/fetch/client";
+import ClientsDialog from "../../Client/ClientsDialog";
 
 const filter = createFilterOptions();
 
@@ -14,6 +13,7 @@ export default function ClientChoice(props) {
   const [options, setOptions] = React.useState([]);
   const [dialog, setDialog] = React.useState(null)
   const loading = open && options.length === 0;
+  const setValue = (value) => props.setValue({client: value})
 
   React.useEffect(() => {
     if (!loading) return undefined
@@ -21,8 +21,8 @@ export default function ClientChoice(props) {
   }, [loading]);
 
   React.useEffect(() => {
-    if (props.value && props.value.new) {
-      setDialog({name: props.value.name, company: ''})
+    if (props.client && props.client.new) {
+      setDialog({name: props.client.name, company: ''})
     }
     if (!open) {
       setOptions([]);
@@ -30,22 +30,22 @@ export default function ClientChoice(props) {
   }, [open]);
 
   function closeDialog() {
-    props.setValue(null)
+    setValue(null)
     setDialog(null)
   }
 
   function saveDialog(v) {
-    props.setValue(v)
+    setValue(v)
     setDialog(null)
   }
 
   return (
     <>
     <Autocomplete
-      value={props.value}
+      value={props.client}
       size={"small"}
       groupBy={option => option.company}
-      onChange={(e, newValue) => props.setValue(newValue)}
+      onChange={(e, newValue) => setValue(newValue)}
       filterOptions={(options, params) => {
         const filtered = filter(options, params);
         filtered.push({new: true, name: params.inputValue, company: '---'});
@@ -63,6 +63,7 @@ export default function ClientChoice(props) {
         <TextField
           {...params}
           label="Заказчик"
+          required
           InputProps={{
             ...params.InputProps,
             endAdornment: (

@@ -6,7 +6,7 @@ class ProjectStore {
     dates: [],
     date_start: null,
     date_end: null,
-    days: [],
+    days: {},
     title: '',
     money: null,
     money_per_day: null,
@@ -30,9 +30,20 @@ class ProjectStore {
     if (!this['days'].hasOwnProperty(d)) this['days'][d] = null
   }
 
+  setDayInfo = (key, value) => {
+    const days = {...this['days']}
+    days[key] = value
+    this.setValue({days: days})
+  }
+
   setMoney = () => {
-    if (this['money_calculating']) this['money'] = Math.floor(this['money_per_day'] * this['dates'].length)
-    else this['money_per_day'] = Math.floor(this['money'] / this['dates'].length)
+    const valid = (x) => {
+      x = Math.floor(x)
+      if (Number.isInteger(x)) return x
+      return ''
+    }
+    if (this['money_calculating']) this['money'] = valid(this['money_per_day'] * this['dates'].length)
+    else this['money_per_day'] = valid(this['money'] / this['dates'].length)
   }
 
   setValue = (obj) => {

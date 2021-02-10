@@ -1,0 +1,52 @@
+div.calendar-day {
+    min-width: 22px;
+    min-height: 22px;
+    width: 22px;
+    height: 22px;
+    margin: 1px;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+    cursor: pointer;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+div.calendar-day.hidden {
+    cursor: inherit;
+}
+div.calendar-day.hidden:hover {
+    min-width: 22px;
+    min-height: 22px;
+    width: 22px;
+    height: 22px;
+    border: unset;
+    border-radius: unset;
+}
+div.calendar-day:hover {
+    min-width: 20px;
+    min-height: 20px;
+    width: 20px;
+    height: 20px;
+    border: 1px solid #4db34b;
+    border-radius: 4px;
+}
+div.calendar-day.color1 {
+    background-color: #ebedf0;
+}
+div.calendar-day.color0 {
+    background-color: #cae3fc;
+}
+div.calendar-day.busy {
+    background-color: #ff6c6c;
+}
+div.calendar-day.past {
+    opacity: 0.4;
+}
+div.calendar-day.pick {
+    background-color: #4db34b;
+}

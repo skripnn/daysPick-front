@@ -1,4 +1,5 @@
-import {newDate} from "../extention/date";
+import {newDate} from "../../extention/date";
+import "./Day.css"
 import React from "react";
 
 function Day(props) {

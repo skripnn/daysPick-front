@@ -6,3 +6,6 @@
 .user-full-name > * {
     padding-right: 5px;
 }
+.user-full-name-avatar {
+    zoom: 0.6
+}
