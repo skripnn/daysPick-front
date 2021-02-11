@@ -1,4 +1,5 @@
 import {makeAutoObservable} from "mobx";
+import {getUser as fetchGetUser} from "../../js/fetch/user";
 
 
 class UsersStore {
@@ -18,7 +19,8 @@ class UsersStore {
       loading: true,
       showArchive: false,
       dayInfo: null,
-      dayOffOver: false
+      dayOffOver: false,
+      daysPick: new Set()
     }
   }
 
@@ -63,8 +65,16 @@ class UsersStore {
     this.users[user].calendar.daysOff = daysOff
   }
 
+  setDaysPick = (daysPick, user) => {
+    this.users[user].userPage.daysPick = new Set(daysPick)
+  }
+
   getUser = (user) => {
-    if (!this.users[user]) this.users[user] = {...this.default}
+    if (!user) document.location.href = '/'
+    if (!this.users[user]) {
+      this.users[user] = JSON.parse(JSON.stringify(this.default))
+      fetchGetUser(user).then(this.setUser)
+    }
     return {
       ...this.users[user],
       calendar: {
@@ -77,7 +87,8 @@ class UsersStore {
       delProject: (id) => this.delProject(id, user),
       setProject: (project) => this.setProject(project, user),
       getProject: (id) => this.getProject(id, user),
-      setDaysOff: (daysOff) => this.setDaysOff(daysOff, user)
+      setDaysOff: (daysOff) => this.setDaysOff(daysOff, user),
+      setDaysPick: (daysPick) => this.setDaysPick(daysPick, user)
     }
   }
 

@@ -1,9 +1,9 @@
 import {url, checkAuth, requestAuthHeaders} from "./core";
 
 
-export async function getProjects() {
+export async function getProjects(user) {
   let urlGet = url + "/projects/?"
-  urlGet += "&user=" + window.location.pathname.match(/\/user\/(.*)\//)[1]
+  urlGet += "user=" + user
   return fetch(urlGet, {headers: requestAuthHeaders()}).then(res => res.json())
 }
 

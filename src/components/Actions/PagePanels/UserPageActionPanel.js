@@ -11,6 +11,7 @@ function UserPageActionPanel(props) {
 
   const buttonsBlock = [
     <ActionButton
+      hidden={localStorage.User !== props.user.username}
       key={"Выходные"}
       label={"Выходные"}
       icon={<EventBusy/>}
@@ -46,7 +47,7 @@ function UserPageActionPanel(props) {
     <ActionsPanel
       {...props}
       hidden={props.bottom ? props.hidden : false}
-      left={props.bottom ? [] : [<UserFullName user={props.user} key={'userFullName'}/>]}
+      left={props.bottom ? [] : <UserFullName user={props.user} avatar={'left'}/>}
       right={props.hidden ? [] : right}
     />
   )

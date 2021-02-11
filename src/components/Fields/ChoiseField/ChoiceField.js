@@ -63,7 +63,6 @@ export default function ClientChoice(props) {
         <TextField
           {...params}
           label="Заказчик"
-          required
           InputProps={{
             ...params.InputProps,
             endAdornment: (

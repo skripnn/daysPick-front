@@ -4,6 +4,8 @@ import {Link} from "react-router-dom";
 import './ActionButton.css'
 
 export default function ActionButton(props) {
+  if (props.hidden) return null
+
   const className = "action-button" + (props.active? " pick" : (props.red? " red" : ""))
 
   const actionButton = (

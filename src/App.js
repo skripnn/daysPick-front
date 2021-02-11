@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import Container from "@material-ui/core/Container";
-import Header from "./js/core/header";
 import ProjectPage from "./pages/ProjectPage";
 import UserPage from "./pages/UserPage";
 import {Route, Switch, withRouter} from "react-router-dom";
@@ -11,6 +10,9 @@ import ConfirmPage from "./pages/confirmPage";
 import TestPage from "./pages/TestPage";
 import './App.css'
 import ActionsSwitch from "./components/Actions/ActionsSwitch";
+import ClientsPage from "./pages/ClientsPage";
+import Header from "./components/Header/Header";
+import ProjectsList from "./components/ProjectList/ProjectList";
 
 function App(props) {
   const [mobile, setMobile] = useState(document.body.clientWidth < 720)
@@ -23,13 +25,15 @@ function App(props) {
 
   return (
     <div className="App">
-      <Header/>
+      <Header history={history}/>
       <Container maxWidth="md" className={"content-block"}>
         <ActionsSwitch hidden={mobile} history={history}/>
         <Switch>
+          <Route history={history} path='/clients' component={ClientsPage}/>
+          <Route history={history} path='/projects/' component={ProjectsList}/>
           <Route history={history} path='/test' component={TestPage}/>
           <Route history={history} path='/project/:id' component={ProjectPage}/>
-          <Route history={history} path='/project' component={ProjectPage}/>
+          <Route history={history} path='/project/' component={ProjectPage}/>
           <Route history={history} path='/login' component={LoginPage}/>
           <Route history={history} path='/signup' component={SignUpPage}/>
           <Route history={history} path='/confirm' component={ConfirmPage}/>

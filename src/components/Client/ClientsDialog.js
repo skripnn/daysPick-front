@@ -3,24 +3,51 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle,
-  TextField
+  DialogTitle, List, ListItem, ListItemText, ListSubheader
 } from "@material-ui/core";
+import TextField from "../Fields/TextField/TextField";
 import Button from "@material-ui/core/Button";
-import {postClient} from "../../js/fetch/client";
+import {getClient, getClients, postClient} from "../../js/fetch/client";
+import {Link} from "react-router-dom";
+import './ClientsDialog.css'
+import {inject, observer} from "mobx-react";
 
-export default function ClientsDialog(props) {
-  const [state, setState] = useState(props.client)
+
+function ProjectList(props) {
+  if (!props.projects.length) return null
+  const subheader = <ListSubheader style={{background: "white"}}>Проекты</ListSubheader>
+  return (
+      <List dense subheader={subheader} style={{maxHeight: 300, overflow: "scroll"}}>
+        {props.projects.map(project =>
+          <Link to={`/project/${project.id}/`}>
+            <ListItem button>
+              <ListItemText primary={project.title}/>
+            </ListItem>
+          </Link>
+        )}
+      </List>
+  )
+}
+
+function ClientsDialog(props) {
+  const [state, setState] = useState(props.client || props.ClientsPageStore.dialog)
+
+  useEffect(() => {
+    if (state.id) getClient(state.id).then(client => setState(client))
+  }, [])
 
   function save() {
     postClient(state).then((result) => {
+      props.ClientsPageStore.saveClient(result)
+      getClients().then(result => props.ClientsPageStore.setClients(result))
       if (props.save) props.save(result)
+      props.ClientsPageStore.setDialog(null)
     })
   }
 
   function close() {
     if (props.close) props.close()
-    setState({})
+    props.ClientsPageStore.setDialog(null)
   }
 
   return (
@@ -29,14 +56,13 @@ export default function ClientsDialog(props) {
       maxWidth={'sm'}
       onClose={close}
       open={true}>
-      <DialogTitle id="max-width-dialog-title">Заказчик</DialogTitle>
-      <DialogContent>
+      <DialogTitle>Заказчик</DialogTitle>
+      <DialogContent style={{overflow: "hidden"}}>
         <TextField
           autoFocus
           margin="dense"
           name="name"
           label="Имя"
-          fullWidth
           value={state.name || ''}
           onChange={(e) => setState(prevState => ({...prevState, name: e.target.value}))}
         />
@@ -44,19 +70,21 @@ export default function ClientsDialog(props) {
           margin="dense"
           name="company"
           label="Компания"
-          fullWidth
           value={state.company || ''}
           onChange={(e) => setState(prevState => ({...prevState, company: e.target.value}))}
         />
+        {state.projects && <ProjectList projects={state.projects}/>}
       </DialogContent>
       <DialogActions>
         <Button onClick={close} color="primary">
           Отмена
         </Button>
-        <Button onClick={save} color="primary">
+        <Button onClick={save} color="primary" disabled={!state.name}>
           Сохранить
         </Button>
       </DialogActions>
     </Dialog>
   )
 }
+
+export default inject('ClientsPageStore')(observer(ClientsDialog))

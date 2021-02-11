@@ -3,6 +3,8 @@ import TestPageActionPanel from "./PagePanels/TestPageActionPanel";
 import UserPageActionPanel from "./PagePanels/UserPageActionPanel";
 import ProjectPageActionPanel from "./PagePanels/ProjectPageActionPanel";
 import React from "react";
+import ClientsPageActionPanel from "./PagePanels/ClientsPageActionPanel";
+import ProjectsPageActionPanel from "./PagePanels/ProjectsPageActionPanel";
 
 export default function ActionsSwitch(props) {
   if (!localStorage.User) return (
@@ -13,8 +15,10 @@ export default function ActionsSwitch(props) {
   return (
     <Switch>
       <Route path='/test' render={() => <TestPageActionPanel {...props}/>}/>
+      <Route path='/clients/' render={() => <ClientsPageActionPanel {...props}/>}/>
+      <Route path='/projects/' render={() => <ProjectsPageActionPanel {...props}/>}/>
       <Route path='/user/:username' render={() => <UserPageActionPanel {...props}/>}/>
-      <Route path='/project' render={() => <ProjectPageActionPanel {...props}/>}/>
+      <Route path='/project/' render={() => <ProjectPageActionPanel {...props}/>}/>
     </Switch>
   )
 }

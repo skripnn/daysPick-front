@@ -1,10 +1,11 @@
-import {AccountCircle, ArrowBackIos, Delete, Save} from "@material-ui/icons";
+import {Delete, Save} from "@material-ui/icons";
 import React from "react";
 import ActionButton from "../ActionButton/ActionButton";
 import ActionsPanel from "../ActionsPanel/ActionsPanel";
 import {inject, observer} from "mobx-react";
 import {deleteProject, postProject} from "../../../js/fetch/project";
 import { useLastLocation } from 'react-router-last-location';
+import BackOrProfileActionButton from "../BackOrProfileActionButton/BackOrProfileActionButton";
 
 function ProjectPageActionPanel(props) {
   const lastLocation = useLastLocation()
@@ -22,7 +23,6 @@ function ProjectPageActionPanel(props) {
     let errors = []
     if (!props.project.dates.length) errors.push('Выбери даты')
     if (!props.project.title) errors.push('Введи название проекта')
-    if (!props.project.client) errors.push('Выбери клиента')
     if (errors.length) {
       let errorsString = 'Ошибка:\n'
       for (let i=0; i< errors.length; i++) {
@@ -41,22 +41,7 @@ function ProjectPageActionPanel(props) {
     }
   }
 
-  const left = [
-    lastLocation ?
-    <ActionButton
-      key={"Назад"}
-      label={"Назад"}
-      icon={<ArrowBackIos />}
-      onClick={back}
-    />
-    :
-    <ActionButton
-      key={"Профиль"}
-      label={"Профиль"}
-      icon={<AccountCircle />}
-      onClick={back}
-    />
-  ]
+  const left = <BackOrProfileActionButton {...props} onClick={back}/>
 
   const right = [
     <ActionButton

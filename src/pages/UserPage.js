@@ -23,12 +23,13 @@ function UserPage(props) {
         })
       }
     })
-  }, [])
+  }, [props.user.user.username])
+
 
   const content = {
     days: props.user.calendar.content.days,
     daysOff: sortSet(store.edit? [] : props.user.calendar.content.daysOff),
-    daysPick: sortSet(store.edit? props.user.calendar.content.daysOff : [])
+    daysPick: sortSet(store.edit? props.user.calendar.content.daysOff : props.user.userPage.daysPick)
   }
 
   function showInfo(info, date) {
@@ -52,6 +53,7 @@ function UserPage(props) {
   return (
     <div>
       <Calendar
+        trigger={props.user.user.username}
         content={content}
         setContent={props.user.calendar.setContent}
         get={(start, end) => getCalendar(start, end, props.user.user.username)}
@@ -63,10 +65,14 @@ function UserPage(props) {
           onContextMenu: showInfo
         }}
       />
-      <div hidden={store.profile}><ProjectsList /></div>
+      <div hidden={store.profile}><ProjectsList history={props.history} actual/></div>
       <div hidden={!store.profile}><UserProfile user={props.user.user}/></div>
     </div>
   )
 }
 
-export default inject(stores => ({user: stores.UsersStore.getUser(getUser())}))(observer(UserPage))
+export default inject(stores => {
+  return {
+    user: stores.UsersStore.getUser(getUser())
+  }
+})(observer(UserPage))
