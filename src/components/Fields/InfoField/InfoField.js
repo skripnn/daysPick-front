@@ -5,6 +5,7 @@ import Day from "../../Calendar/components/Day/Day";
 import {newDate} from "../../../js/functions/date";
 import './InfoField.css'
 import TextField from "../TextField/TextField";
+import {inject, observer} from "mobx-react";
 
 
 function TabPanel(props) {
@@ -18,16 +19,18 @@ function TabPanel(props) {
   )
 }
 
-export default function InfoField(props) {
-  const [value, setValue] = React.useState('info');
+function InfoField(props) {
+  const [state, setState] = React.useState('info');
+  const {info, days, dates, setValue, setInfo} = props.ProjectStore
 
-  if (value !== 'info' && !props.dates.includes(value)) setValue('info')
+
+  if (state !== 'info' && !dates.includes(state)) setState('info')
 
 
   function Tab(props) {
-    const pick = value === props.date
+    const pick = state === props.date
     function handleClick() {
-      pick? setValue('info') : setValue(props.date)
+      pick? setState('info') : setState(props.date)
     }
 
     return (
@@ -40,11 +43,11 @@ export default function InfoField(props) {
   const tabPanel = (date) => {
     if (date === 'info') return (
       <TabPanel
-        value={props.info}
+        value={info}
         index={'info'}
         label={'Информация о проекте'}
-        onChange={e => props.setValue({info: e.target.value})}
-        plusSize={!props.dates.length}
+        onChange={e => setInfo(e.target.value)}
+        plusSize={!dates.length}
       />
     )
 
@@ -52,11 +55,11 @@ export default function InfoField(props) {
     const fdate = (new Intl.DateTimeFormat('ru-RU', options).format(newDate(date)));
     return (
       <TabPanel
-        value={props.days[date]}
+        value={days[date]}
         index={date}
         key={date}
         label={fdate}
-        onChange={(e) => props.setInfo(date, e.target.value)}
+        onChange={(e) => setInfo(e.target.value, date)}
       />
     )
   }
@@ -70,9 +73,11 @@ export default function InfoField(props) {
         variant="scrollable"
         scrollButtons="auto"
       >
-        {props.dates.map(date => <Tab date={date} key={date}/>)}
+        {dates.map(date => <Tab date={date} key={date}/>)}
       </Tabs>
-      {tabPanel(value)}
+      {tabPanel(state)}
     </Box>
   )
 }
+
+export default inject('ProjectStore')(observer(InfoField))

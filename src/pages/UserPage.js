@@ -1,78 +1,88 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import Calendar from '../components/Calendar';
 import ProjectsList from "../components/ProjectList/ProjectList";
 import UserProfile from "../components/UserProfile/UserProfile";
-import {getFromUrl} from "../js/fetch/core";
 import {postDaysOff} from "../js/fetch/daysOff";
 import {getCalendar} from "../js/fetch/calendar";
 import {inject, observer} from "mobx-react";
-import {getUser} from "../js/functions/functions";
-import sortSet from "../components/Calendar/extention/sortSet";
+import {deleteProject, postProject} from "../js/fetch/project";
+
 
 
 function UserPage(props) {
-  const store = props.user.userPage
+  const [pick, setPick] = useState([])
+  const [triggerGet, setTriggerGet] = useState(new Date().getTime())
+  const {userPage, user, projects, calendar, getUser, delProject} = props.UserStore
 
   useEffect(() => {
-    getFromUrl().then(result => {
-      props.user.setUser(result)
-      if (props.user.userPage.loading) {
-        props.user.setValue({
-          loading: false,
-          profile: result.username !== localStorage.User
-        })
-      }
-    })
-  }, [props.user.user.username])
-
+    if (user.username) getUser()
+  }, [user.username])
 
   const content = {
-    days: props.user.calendar.content.days,
-    daysOff: sortSet(store.edit? [] : props.user.calendar.content.daysOff),
-    daysPick: sortSet(store.edit? props.user.calendar.content.daysOff : props.user.userPage.daysPick)
+    days: calendar.days,
+    daysOff: userPage.edit? [] : calendar.daysOff,
+    daysPick: userPage.edit? calendar.daysOff : pick
   }
 
   function showInfo(info, date) {
-    if (props.user.user.daysOff) {
-      const dayOffOver = props.user.user.daysOff.includes(date.format())
-      props.user.setValue({
-        dayOffOver: dayOffOver,
-        dayInfo: dayOffOver? (info? info : []) : info
-      })
-    }
-    else props.user.setValue({dayInfo: info})
   }
 
   function onChange(daysPick, date) {
-    postDaysOff(date.format())
-    props.user.setDaysOff(daysPick)
+    postDaysOff(date.format()).then()
+    calendar.setValue({daysOff: daysPick})
   }
 
-  if (store.loading) return <></>
+  function link(project) {
+    props.setProject(project)
+    props.history.push(`/project/${project.id}/`)
+  }
+
+  function del(id) {
+    delProject(id)
+    deleteProject(id).then(() => delProject(id)).then(() => setTriggerGet(new Date().getTime()))
+  }
+
+  function paidToggle(project) {
+    project.is_paid = !project.is_paid
+    postProject(project).then(getUser)
+  }
+
+  if (userPage.loading) return <></>
 
   return (
     <div>
       <Calendar
-        trigger={props.user.user.username}
+        triggerGet={triggerGet}
+        triggerNew={user.username}
         content={content}
-        setContent={props.user.calendar.setContent}
-        get={(start, end) => getCalendar(start, end, props.user.user.username)}
+        setContent={calendar.setContent}
+        get={(start, end) => getCalendar(start, end, user.username)}
         offset={false}
-        edit={store.edit}
+        edit={userPage.edit}
         onChange={onChange}
         onDay={{
           onTouchHold: showInfo,
           onContextMenu: showInfo
         }}
       />
-      <div hidden={store.profile}><ProjectsList history={props.history} actual/></div>
-      <div hidden={!store.profile}><UserProfile user={props.user.user}/></div>
+      <div hidden={userPage.profile}><ProjectsList
+        history={props.history}
+        projects={projects}
+        onClick={link}
+        onDelete={del}
+        title={"Актуальные проекты"}
+        onTouchHold={setPick}
+        onTouchEnd={() => setPick([])}
+        onMouseOver={setPick}
+        onMouseLeave={() => setPick([])}
+        paidToggle={paidToggle}
+      /></div>
+      <div hidden={!userPage.profile}><UserProfile user={user}/></div>
     </div>
   )
 }
 
-export default inject(stores => {
-  return {
-    user: stores.UsersStore.getUser(getUser())
-  }
-})(observer(UserPage))
+export default inject(stores => ({
+  UserStore: stores.UsersStore.getUser(),
+  setProject: stores.ProjectStore.setProject
+}))(observer(UserPage))

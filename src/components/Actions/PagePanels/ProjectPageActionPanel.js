@@ -9,20 +9,21 @@ import BackOrProfileActionButton from "../BackOrProfileActionButton/BackOrProfil
 
 function ProjectPageActionPanel(props) {
   const lastLocation = useLastLocation()
+  const {id, dates, title, serializer} = props.ProjectStore
 
   function back() {
-    props.project.reset()
     props.history.push(lastLocation || '/user/' + localStorage.User + '/')
+    props.ProjectStore.default()
   }
 
   function del() {
-    deleteProject(props.project.id).then(() => props.delProject).then(() => back())
+    deleteProject(id).then(back)
   }
 
   function save() {
     let errors = []
-    if (!props.project.dates.length) errors.push('Выбери даты')
-    if (!props.project.title) errors.push('Введи название проекта')
+    if (!dates.length) errors.push('Выбери даты')
+    if (!title) errors.push('Введи название проекта')
     if (errors.length) {
       let errorsString = 'Ошибка:\n'
       for (let i=0; i< errors.length; i++) {
@@ -31,11 +32,8 @@ function ProjectPageActionPanel(props) {
       alert(errorsString)
     }
     else {
-      postProject(props.project.serializer()).then(
-        (result) => {
-          props.setProject(result)
-          back()
-        },
+      postProject(serializer()).then(
+        (result) => back(),
         (error) => alert(error)
       )
     }
@@ -49,7 +47,7 @@ function ProjectPageActionPanel(props) {
       label={"Удалить"}
       icon={<Delete />}
       onClick={del}
-      disabled={!props.project.id}
+      disabled={!id}
     />,
     <ActionButton
       key={"Сохранить"}
@@ -68,9 +66,4 @@ function ProjectPageActionPanel(props) {
   )
 }
 
-export default inject(stores => ({
-  calendar: stores.UsersStore.getUser(localStorage.User).calendar,
-  project: stores.ProjectStore,
-  delProject: stores.UsersStore.getUser(localStorage.User).delProject,
-  setProject: stores.UsersStore.getUser(localStorage.User).setProject,
-}))(observer(ProjectPageActionPanel))
+export default inject('ProjectStore')(observer(ProjectPageActionPanel))

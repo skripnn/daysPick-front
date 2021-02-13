@@ -10,13 +10,23 @@ import Menu from "../Menu/Menu";
 
 export default function Header(props) {
   const auth = !!localStorage.User
+  const titles = [
+    ['/projects', 'Проекты'],
+    ['/clients', 'Клиенты']
+  ]
+  function title() {
+    for (const [path, name] of titles) {
+      if (window.location.pathname.startsWith(path)) return name
+    }
+    return 'DaysPick'
+  }
 
   return (
     <AppBar position="static">
       <Toolbar className={'header'} variant={"dense"}>
         <Box flexGrow={1}>
           <Typography variant="h6">
-            <Link to="/">DaysPick</Link>
+            <Link to="/">{title()}</Link>
           </Typography>
         </Box>
         {auth? (

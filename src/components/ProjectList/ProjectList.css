@@ -5,3 +5,7 @@
 .project-item.past {
     opacity: 0.5;
 }
+.project-item.deleting {
+    opacity: 0;
+    transition: all 1s;
+}

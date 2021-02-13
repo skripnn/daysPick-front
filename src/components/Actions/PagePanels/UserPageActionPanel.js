@@ -4,20 +4,21 @@ import ActionButton from "../ActionButton/ActionButton";
 import ActionsPanel from "../ActionsPanel/ActionsPanel";
 import {inject, observer} from "mobx-react";
 import UserFullName from "../../UserFullName/UserFullName";
-import {getUser} from "../../../js/functions/functions";
+import {parseUser} from "../../../js/functions/functions";
 
 
 function UserPageActionPanel(props) {
+  const {isSelf, edit, dayOffOver, profile, setValue} = props.userPage
 
   const buttonsBlock = [
     <ActionButton
-      hidden={localStorage.User !== props.user.username}
+      hidden={!isSelf}
       key={"Выходные"}
       label={"Выходные"}
       icon={<EventBusy/>}
-      active={props.edit}
-      red={props.dayOffOver}
-      onClick={() => props.setValue({profile: false, dayInfo: null, dayOffOver: false, edit: !props.edit})}
+      active={edit}
+      red={dayOffOver}
+      onClick={() => setValue({profile: false, dayInfo: null, dayOffOver: false, edit: !edit})}
     />,
     <ActionButton
       key={'Добавить'}
@@ -29,15 +30,15 @@ function UserPageActionPanel(props) {
       key={"Проекты"}
       label={"Проекты"}
       icon={<List/>}
-      active={!props.profile}
-      onClick={() => props.setValue({edit: false, profile: false})}
+      active={!profile}
+      onClick={() => setValue({edit: false, profile: false})}
     />,
     <ActionButton
       key={"Профиль"}
       label={"Профиль"}
       icon={<AccountCircle/>}
-      active={props.profile}
-      onClick={() => props.setValue({edit: false, profile: true})}
+      active={profile}
+      onClick={() => setValue({edit: false, profile: true})}
     />
   ]
   const right = localStorage.User? buttonsBlock : []
@@ -53,8 +54,4 @@ function UserPageActionPanel(props) {
   )
 }
 
-export default inject(stores => ({
-  ...stores.UsersStore.getUser(getUser()).userPage,
-  user: stores.UsersStore.getUser(getUser()).user,
-  setValue: stores.UsersStore.getUser(getUser()).setValue
-}))(observer(UserPageActionPanel))
+export default inject(stores => stores.UsersStore.getUser(parseUser()))(observer(UserPageActionPanel))

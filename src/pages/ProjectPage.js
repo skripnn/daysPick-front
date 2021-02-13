@@ -7,43 +7,41 @@ import {inject, observer} from "mobx-react";
 import {getProjectId} from "../js/functions/functions";
 
 function ProjectPage(props) {
+  const { project, calendar } = props
   useEffect(() => {
-    if (props.project.id) getProject(props.project.id).then((project) => {
-      props.project.setValue({...project, dates: Object.keys(project.days), hidden: false})
-    })
+    if (project.id) getProject(project.id).then(project.setProject)
   // eslint-disable-next-line
   },[])
 
-  if (props.project.hidden) return <></>
+  if (project.hidden) return null
   return (
     <div className={'project-block'}>
       <Calendar
+        trigger={project.id}
         edit={true}
-        get={(start, end) => getCalendar(start, end, localStorage.User, props.project.id)}
-        onChange={(daysPick, date) => props.project.setDays(daysPick, date)}
+        get={(start, end) => getCalendar(start, end, project.user, project.id)}
+        onChange={(daysPick, date) => project.setDays(daysPick, date)}
         content={{
-          ...props.init,
-          daysPick: props.project.dates
+          ...calendar,
+          daysPick: project.dates
         }}
       />
-      <ProjectForm
-        {...props.project}
-        setValue={props.project.setValue}
-        setInfo={props.project.setDayInfo}
-      />
+      <ProjectForm />
     </div>
   )
 }
 
 export default inject(stores => {
   const id = getProjectId()
-  const project = stores.UsersStore.getUser(localStorage.User).getProject(id) || stores.ProjectStore.default
-  if (stores.ProjectStore.id !== id) stores.ProjectStore.setValue({...project, id: id, hidden: true})
+  if (stores.ProjectStore.id !== id) stores.ProjectStore.default({id: id, hidden: !id})
+  const calendar = {}
+  if (stores.ProjectStore.user) {
+    const userCalendar = stores.UsersStore.getUser(stores.ProjectStore.user).calendar
+    calendar.days = JSON.parse(JSON.stringify(userCalendar.days))
+    calendar.daysOff = JSON.parse(JSON.stringify(userCalendar.daysOff))
+  }
   return {
     project: stores.ProjectStore,
-    init: {
-      days: JSON.parse(JSON.stringify(stores.UsersStore.getUser(localStorage.User).calendar.content.days)),
-      daysOff: JSON.parse(JSON.stringify(stores.UsersStore.getUser(localStorage.User).calendar.content.daysOff)),
-    }
+    calendar: calendar
   }
 })(observer(ProjectPage))

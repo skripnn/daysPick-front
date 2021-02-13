@@ -29,3 +29,9 @@ export async function getFromUrl() {
   return fetch(url + urlGet, {headers: requestAuthHeaders()}).then(res => checkAuth(res))
 }
 
+
+class Fetch {
+
+}
+
+export default new Fetch()

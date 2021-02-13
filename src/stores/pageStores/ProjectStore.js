@@ -1,28 +1,41 @@
 import {makeAutoObservable} from "mobx";
+import {LocalUser} from "../../js/functions/functions";
 
 class ProjectStore {
-  default = {
-    id: null,
-    dates: [],
-    date_start: null,
-    date_end: null,
-    days: {},
-    title: '',
-    money: null,
-    money_per_day: null,
-    money_calculating: false,
-    client: null,
-    is_paid: false,
-    info: '',
-    hidden: false
-  }
-
+  id = null
+  dates = []
+  user = LocalUser()
+  date_start = null
+  date_end = null
+  days = {}
+  title = ''
+  money = null
+  money_per_day = null
+  money_calculating = false
+  client = null
+  is_paid = false
+  info = ''
 
   constructor() {
-    this.reset()
     makeAutoObservable(this)
   }
 
+  default = (obj) => {
+    this.id = null
+    this.dates = []
+    this.user = LocalUser()
+    this.date_start = null
+    this.date_end = null
+    this.days = {}
+    this.title = ''
+    this.money = null
+    this.money_per_day = null
+    this.money_calculating = false
+    this.client = null
+    this.is_paid = false
+    this.info = ''
+    this.setValue(obj)
+  }
 
   setDays = (daysPick, date) => {
     const d = date.format()
@@ -30,10 +43,13 @@ class ProjectStore {
     if (!this['days'].hasOwnProperty(d)) this['days'][d] = null
   }
 
-  setDayInfo = (key, value) => {
-    const days = {...this['days']}
-    days[key] = value
-    this.setValue({days: days})
+  setInfo = (value, date) => {
+    if (!date) this.info = value
+    else {
+      const days = {...this.days}
+      days[date] = value
+      this.setValue({days: days})
+    }
   }
 
   setMoney = () => {
@@ -42,11 +58,15 @@ class ProjectStore {
       if (Number.isInteger(x)) return x
       return ''
     }
-    if (this['money_calculating']) this['money'] = valid(this['money_per_day'] * this['dates'].length)
-    else this['money_per_day'] = valid(this['money'] / this['dates'].length)
+    if (this.money_calculating) this.money = valid(this.money_per_day * this.dates.length)
+    else this.money_per_day = valid(this.money / this.dates.length)
   }
 
-  setValue = (obj) => {
+  setProject = (project) => {
+    this.setValue({...project, hidden: false, dates: [...Object.keys(project.days)]})
+  }
+
+  setValue = (obj={}) => {
     for (const [key, value] of Object.entries(obj)) {
       this[key] = value
       if (['dates', 'money', 'money_per_day'].includes(key)) {
@@ -55,19 +75,15 @@ class ProjectStore {
     }
   }
 
-  reset = () => this.setValue(this.default)
-
   serializer = () => {
-    const project = {}
-    for (const key of Object.keys(this)) {
-      if (key in ['dates', 'hidden']) continue
-      if (key === 'days') {
-        project[key] = {}
-        for (const date of this['dates']) {
-          project[key][date] = this['days'][date]
-        }
-      }
-      else project[key] = this[key]
+    const project = {
+      ...this,
+      dates: undefined,
+      hidden: undefined,
+      days: {}
+    }
+    for (const date of this.dates) {
+      project.days[date] = this.days[date]
     }
     return project
   }

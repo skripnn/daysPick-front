@@ -1,6 +1,11 @@
 .App {
     display: flex;
     flex-direction: column;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 .content-block {
     padding: 10px 15px 10px;

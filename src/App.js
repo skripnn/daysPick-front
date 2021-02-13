@@ -7,12 +7,11 @@ import LoginPage from "./pages/loginPage";
 import SignUpPage from "./pages/singUpPage";
 import UsersPage from "./pages/usersPage";
 import ConfirmPage from "./pages/confirmPage";
-import TestPage from "./pages/TestPage";
 import './App.css'
 import ActionsSwitch from "./components/Actions/ActionsSwitch";
 import ClientsPage from "./pages/ClientsPage";
 import Header from "./components/Header/Header";
-import ProjectsList from "./components/ProjectList/ProjectList";
+import ProjectsPage from "./pages/ProjectsPage";
 
 function App(props) {
   const [mobile, setMobile] = useState(document.body.clientWidth < 720)
@@ -30,8 +29,7 @@ function App(props) {
         <ActionsSwitch hidden={mobile} history={history}/>
         <Switch>
           <Route history={history} path='/clients' component={ClientsPage}/>
-          <Route history={history} path='/projects/' component={ProjectsList}/>
-          <Route history={history} path='/test' component={TestPage}/>
+          <Route history={history} path='/projects/' component={ProjectsPage}/>
           <Route history={history} path='/project/:id' component={ProjectPage}/>
           <Route history={history} path='/project/' component={ProjectPage}/>
           <Route history={history} path='/login' component={LoginPage}/>

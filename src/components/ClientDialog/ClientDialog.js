@@ -3,14 +3,18 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle, List, ListItem, ListItemText, ListSubheader
+  DialogTitle, Divider, List, ListItem, ListItemText, ListSubheader
 } from "@material-ui/core";
 import TextField from "../Fields/TextField/TextField";
 import Button from "@material-ui/core/Button";
 import {getClient, getClients, postClient} from "../../js/fetch/client";
 import {Link} from "react-router-dom";
-import './ClientsDialog.css'
+import './ClientDialog.css'
 import {inject, observer} from "mobx-react";
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import Box from "@material-ui/core/Box";
+import IconButton from "@material-ui/core/IconButton";
+import {Close} from "@material-ui/icons";
 
 
 function ProjectList(props) {
@@ -29,7 +33,7 @@ function ProjectList(props) {
   )
 }
 
-function ClientsDialog(props) {
+function ClientDialog(props) {
   const [state, setState] = useState(props.client || props.ClientsPageStore.dialog)
 
   useEffect(() => {
@@ -50,13 +54,16 @@ function ClientsDialog(props) {
     props.ClientsPageStore.setDialog(null)
   }
 
+  const fullScreen = useMediaQuery('(max-width:720px)');
+
   return (
     <Dialog
+      fullScreen={fullScreen}
       fullWidth
       maxWidth={'sm'}
       onClose={close}
       open={true}>
-      <DialogTitle>Заказчик</DialogTitle>
+      <DialogTitle>Клиент</DialogTitle>
       <DialogContent style={{overflow: "hidden"}}>
         <TextField
           autoFocus
@@ -87,4 +94,4 @@ function ClientsDialog(props) {
   )
 }
 
-export default inject('ClientsPageStore')(observer(ClientsDialog))
+export default inject('ClientsPageStore')(observer(ClientDialog))

@@ -1,6 +1,6 @@
 import {newDate} from "./date";
 
-export function noArchiveProjects(projects) {
+export function actualProjects(projects) {
   let actualProjects = []
   let today = newDate()
   projects.forEach(project => {
@@ -9,13 +9,17 @@ export function noArchiveProjects(projects) {
   return actualProjects
 }
 
+export function LocalUser() {
+  if (localStorage.User) return localStorage.User
+  window.location.href = '/'
+}
 
 export function checkUser() {
-  const user = getUser()
+  const user = parseUser()
   if (user !== localStorage.getItem("User")) return true
 }
 
-export function getUser(username) {
+export function parseUser(username) {
   const user = window.location.pathname.match(/\/user\/(.*)\//)
   if (user) return user[1]
   else if (username) return username

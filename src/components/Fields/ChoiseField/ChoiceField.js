@@ -3,17 +3,20 @@ import TextField from '@material-ui/core/TextField';
 import Autocomplete, {createFilterOptions} from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import {getClients} from "../../../js/fetch/client";
-import ClientsDialog from "../../Client/ClientsDialog";
+import {inject, observer} from "mobx-react";
+import ClientDialog from "../../ClientDialog/ClientDialog";
 
 const filter = createFilterOptions();
 
 
-export default function ClientChoice(props) {
+function ChoiceField(props) {
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState([]);
   const [dialog, setDialog] = React.useState(null)
   const loading = open && options.length === 0;
-  const setValue = (value) => props.setValue({client: value})
+  const setValue = (value) => props.ProjectStore.setValue({client: value})
+  const {client} = props.ProjectStore
+
 
   React.useEffect(() => {
     if (!loading) return undefined
@@ -21,8 +24,8 @@ export default function ClientChoice(props) {
   }, [loading]);
 
   React.useEffect(() => {
-    if (props.client && props.client.new) {
-      setDialog({name: props.client.name, company: ''})
+    if (client && client.new) {
+      setDialog({name: client.name, company: ''})
     }
     if (!open) {
       setOptions([]);
@@ -42,7 +45,7 @@ export default function ClientChoice(props) {
   return (
     <>
     <Autocomplete
-      value={props.client}
+      value={client}
       size={"small"}
       groupBy={option => option.company}
       onChange={(e, newValue) => setValue(newValue)}
@@ -56,13 +59,13 @@ export default function ClientChoice(props) {
       onOpen={() => setOpen(true)}
       options={options}
       getOptionSelected={(option, value) => (option.name === value.name && option.company === value.company)}
-      getOptionLabel={(option) => option.new? 'Новый заказчик': option.name}
+      getOptionLabel={(option) => option.new? 'Новый клиент': option.name}
       loading={loading}
       loadingText={'Загрузка...'}
       renderInput={(params) => (
         <TextField
           {...params}
-          label="Заказчик"
+          label="Клиент"
           InputProps={{
             ...params.InputProps,
             endAdornment: (
@@ -75,7 +78,9 @@ export default function ClientChoice(props) {
         />
       )}
     />
-    {dialog? <ClientsDialog client={dialog} close={closeDialog} save={saveDialog}/> : undefined}
+    {dialog? <ClientDialog client={dialog} close={closeDialog} save={saveDialog}/> : undefined}
     </>
   );
 }
+
+export default inject('ProjectStore')(observer(ChoiceField))

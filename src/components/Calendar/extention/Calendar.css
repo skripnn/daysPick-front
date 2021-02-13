@@ -5,6 +5,11 @@ div.calendar-block {
     padding-top: 10px;
     padding-bottom: 20px;
     overflow: hidden;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 div.calendar-block.hidden {
     opacity: 0;
