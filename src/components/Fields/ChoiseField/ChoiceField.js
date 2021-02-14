@@ -30,6 +30,7 @@ function ChoiceField(props) {
     if (!open) {
       setOptions([]);
     }
+  // eslint-disable-next-line
   }, [open]);
 
   function closeDialog() {
@@ -78,7 +79,7 @@ function ChoiceField(props) {
         />
       )}
     />
-    {dialog? <ClientDialog client={dialog} close={closeDialog} save={saveDialog}/> : undefined}
+    {dialog? <ClientDialog autoFocus client={dialog} close={closeDialog} save={saveDialog}/> : undefined}
     </>
   );
 }

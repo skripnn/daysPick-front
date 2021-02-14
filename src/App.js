@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import Container from "@material-ui/core/Container";
 import ProjectPage from "./pages/ProjectPage";
 import UserPage from "./pages/UserPage";
-import {Route, Switch, withRouter} from "react-router-dom";
+import {Route, Switch, useLocation, withRouter} from "react-router-dom";
 import LoginPage from "./pages/loginPage";
 import SignUpPage from "./pages/singUpPage";
 import UsersPage from "./pages/usersPage";
@@ -12,6 +12,16 @@ import ActionsSwitch from "./components/Actions/ActionsSwitch";
 import ClientsPage from "./pages/ClientsPage";
 import Header from "./components/Header/Header";
 import ProjectsPage from "./pages/ProjectsPage";
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
 
 function App(props) {
   const [mobile, setMobile] = useState(document.body.clientWidth < 720)
@@ -24,6 +34,7 @@ function App(props) {
 
   return (
     <div className="App">
+      <ScrollToTop />
       <Header history={history}/>
       <Container maxWidth="md" className={"content-block"}>
         <ActionsSwitch hidden={mobile} history={history}/>

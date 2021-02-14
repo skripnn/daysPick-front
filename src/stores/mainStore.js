@@ -1,5 +1,5 @@
-import UsersStore from "./pageStores/UsersStore";
-import ProjectStore from "./pageStores/ProjectStore";
+import UsersStore from "./modelStores/UsersStore";
+import ProjectStore from "./modelStores/ProjectStore";
 import ClientsPageStore from "./pageStores/ClientsPageStore";
 import ProjectsPageStore from "./pageStores/ProjectsPageStore";
 

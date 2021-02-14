@@ -9,10 +9,10 @@ import BackOrProfileActionButton from "../BackOrProfileActionButton/BackOrProfil
 
 function ProjectPageActionPanel(props) {
   const lastLocation = useLastLocation()
-  const {id, dates, title, serializer} = props.ProjectStore
+  const {id, dates, title, user, serializer} = props.ProjectStore
 
   function back() {
-    props.history.push(lastLocation || '/user/' + localStorage.User + '/')
+    props.history.push(lastLocation? lastLocation.pathname : `/user/${user}/`)
     props.ProjectStore.default()
   }
 
@@ -33,13 +33,13 @@ function ProjectPageActionPanel(props) {
     }
     else {
       postProject(serializer()).then(
-        (result) => back(),
+        () => back(),
         (error) => alert(error)
       )
     }
   }
 
-  const left = <BackOrProfileActionButton {...props} onClick={back}/>
+  const left = <BackOrProfileActionButton {...props} />
 
   const right = [
     <ActionButton

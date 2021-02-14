@@ -3,7 +3,7 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle, Divider, List, ListItem, ListItemText, ListSubheader
+  DialogTitle, List, ListItem, ListItemText, ListSubheader
 } from "@material-ui/core";
 import TextField from "../Fields/TextField/TextField";
 import Button from "@material-ui/core/Button";
@@ -12,9 +12,6 @@ import {Link} from "react-router-dom";
 import './ClientDialog.css'
 import {inject, observer} from "mobx-react";
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import Box from "@material-ui/core/Box";
-import IconButton from "@material-ui/core/IconButton";
-import {Close} from "@material-ui/icons";
 
 
 function ProjectList(props) {
@@ -38,6 +35,7 @@ function ClientDialog(props) {
 
   useEffect(() => {
     if (state.id) getClient(state.id).then(client => setState(client))
+  // eslint-disable-next-line
   }, [])
 
   function save() {
@@ -66,7 +64,7 @@ function ClientDialog(props) {
       <DialogTitle>Клиент</DialogTitle>
       <DialogContent style={{overflow: "hidden"}}>
         <TextField
-          autoFocus
+          autoFocus={props.autoFocus}
           margin="dense"
           name="name"
           label="Имя"

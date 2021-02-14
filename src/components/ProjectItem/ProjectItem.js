@@ -5,6 +5,7 @@ import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import React, {useState} from "react";
 import {CheckBox, CheckBoxOutlineBlank} from "@material-ui/icons";
+import "./ProjectItem.css"
 
 function ProjectItem(props) {
   const onTouchHold = new TouchHold(props.onTouchHold, props.onTouchEnd)
@@ -25,7 +26,7 @@ function ProjectItem(props) {
   const delProject = (
     <IconButton edge="end" disabled={deleting} onClick={() => {
       setDeleting(true)
-      setTimeout(() => props.onDelete(project.id), 1000)
+      setTimeout(() => props.onDelete(project), 1000)
     }}>
       <DeleteIcon/>
     </IconButton>
@@ -36,14 +37,13 @@ function ProjectItem(props) {
   else if (props.onDelete) secondaryAction = delProject
   else if (props.paidToggle) secondaryAction = paidToggle
 
-
   return (
     <ListItem
       className={className}
       onMouseOver={props.onMouseOver}
       onMouseLeave={props.onMouseLeave}
       button
-      onClick={!deleting ? props.onClick : undefined}
+      onClick={deleting? undefined : () => props.onClick(project)}
       {...onTouchHold.actions}
     >
       <ListItemText primary={project.title} secondary={project.client ? project.client.name : null}/>

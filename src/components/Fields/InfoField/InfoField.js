@@ -21,7 +21,7 @@ function TabPanel(props) {
 
 function InfoField(props) {
   const [state, setState] = React.useState('info');
-  const {info, days, dates, setValue, setInfo} = props.ProjectStore
+  const {info, days, dates, setInfo} = props.ProjectStore
 
 
   if (state !== 'info' && !dates.includes(state)) setState('info')

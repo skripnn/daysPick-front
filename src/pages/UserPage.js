@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from "react";
 import Calendar from '../components/Calendar';
-import ProjectsList from "../components/ProjectList/ProjectList";
 import UserProfile from "../components/UserProfile/UserProfile";
 import {postDaysOff} from "../js/fetch/daysOff";
 import {getCalendar} from "../js/fetch/calendar";
 import {inject, observer} from "mobx-react";
 import {deleteProject, postProject} from "../js/fetch/project";
-
+import {List, ListSubheader} from "@material-ui/core";
+import ProjectItem from "../components/ProjectItem/ProjectItem";
 
 
 function UserPage(props) {
@@ -16,6 +16,7 @@ function UserPage(props) {
 
   useEffect(() => {
     if (user.username) getUser()
+  // eslint-disable-next-line
   }, [user.username])
 
   const content = {
@@ -37,9 +38,12 @@ function UserPage(props) {
     props.history.push(`/project/${project.id}/`)
   }
 
-  function del(id) {
-    delProject(id)
-    deleteProject(id).then(() => delProject(id)).then(() => setTriggerGet(new Date().getTime()))
+  function del(project) {
+    delProject(project.id)
+    deleteProject(project.id).then(() => {
+      delProject(project.id)
+      setTriggerGet(new Date().getTime())
+    })
   }
 
   function paidToggle(project) {
@@ -65,19 +69,26 @@ function UserPage(props) {
           onContextMenu: showInfo
         }}
       />
-      <div hidden={userPage.profile}><ProjectsList
-        history={props.history}
-        projects={projects}
-        onClick={link}
-        onDelete={del}
-        title={"Актуальные проекты"}
-        onTouchHold={setPick}
-        onTouchEnd={() => setPick([])}
-        onMouseOver={setPick}
-        onMouseLeave={() => setPick([])}
-        paidToggle={paidToggle}
-      /></div>
-      <div hidden={!userPage.profile}><UserProfile user={user}/></div>
+      {userPage.profile?
+        <UserProfile user={user}/>
+        :
+        <List dense>
+          <ListSubheader disableSticky style={{textAlign: "center", color: "rgba(0, 0, 0, 0.7)"}}>{"Акутальные проекты"}</ListSubheader>
+          {projects.map(project => <ProjectItem
+            project={project}
+            key={project.id}
+
+            onClick={link}
+            onDelete={del}
+            paidToggle={paidToggle}
+
+            onTouchHold={() => setPick(Object.keys(project.days))}
+            onTouchEnd={() => setPick([])}
+            onMouseOver={() => setPick(Object.keys(project.days))}
+            onMouseLeave={() => setPick([])}
+          />)}
+        </List>
+      }
     </div>
   )
 }

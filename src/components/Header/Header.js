@@ -11,8 +11,8 @@ import Menu from "../Menu/Menu";
 export default function Header(props) {
   const auth = !!localStorage.User
   const titles = [
-    ['/projects', 'Проекты'],
-    ['/clients', 'Клиенты']
+    ['/projects', 'Мои проекты'],
+    ['/clients', 'Мои клиенты']
   ]
   function title() {
     for (const [path, name] of titles) {

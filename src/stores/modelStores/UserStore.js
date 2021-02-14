@@ -1,4 +1,4 @@
-import UserPageStore from "./UserPageStore";
+import UserPageStore from "../pageStores/UserPageStore";
 import {makeAutoObservable} from "mobx";
 import {getUser} from "../../js/fetch/user";
 import CalendarStore from "./CalendarStore";

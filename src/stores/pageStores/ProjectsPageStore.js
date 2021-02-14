@@ -8,8 +8,8 @@ class ProjectsPageStore {
   }
 
   setProjects = (projects) => {
-    for (const project of projects) this.setProject(project)
-    this.projects = [...this.projects]
+    // for (const project of projects) this.setProject(project)
+    this.projects = [...projects]
   }
 
   delProject = (id) => {

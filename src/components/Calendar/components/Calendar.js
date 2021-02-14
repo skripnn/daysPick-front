@@ -46,7 +46,9 @@ function Calendar (props) {
   // eslint-disable-next-line
   useEffect(fromPropsToContent, [props.content.days, props.content.daysOff, props.content.daysPick])
   useEffect(fromPropsOffset, [props.noOffset])
+  // eslint-disable-next-line
   useEffect(() => newWeeks(undefined, true, 0), [props.triggerNew])
+  // eslint-disable-next-line
   useEffect(() => get(state.weeks, 0), [props.triggerGet])
 
   function firstRender() {
