@@ -47,8 +47,11 @@ function ProjectItem(props) {
       {...onTouchHold.actions}
     >
       <ListItemText primary={project.title} secondary={project.client ? project.client.name : null}/>
-      <ListItemText secondary={new Intl.NumberFormat('ru-RU').format(project.money) + " ₽"}
-                    style={{textAlign: "right"}}/>
+      {(project.money === 0 || !!project.money) &&
+      <ListItemText
+        secondary={new Intl.NumberFormat('ru-RU').format(project.money) + " ₽"}
+        style={{textAlign: "right"}}/>
+      }
       {!!secondaryAction &&
       <ListItemSecondaryAction className={className}>
         {secondaryAction}

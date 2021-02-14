@@ -15,7 +15,7 @@ function ChoiceField(props) {
   const [dialog, setDialog] = React.useState(null)
   const loading = open && options.length === 0;
   const setValue = (value) => props.ProjectStore.setValue({client: value})
-  const {client} = props.ProjectStore
+  const {client } = props.ProjectStore
 
 
   React.useEffect(() => {

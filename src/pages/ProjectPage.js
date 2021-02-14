@@ -7,23 +7,25 @@ import {inject, observer} from "mobx-react";
 import {getProjectId} from "../js/functions/functions";
 
 function ProjectPage(props) {
-  const { project, calendar } = props
+  console.log()
+  // const { project, calendar } = props
+  const {id, user, setDays, dates, setProject, hidden} = props.project
   useEffect(() => {
-    if (project.id) getProject(project.id).then(project.setProject)
+    if (id) getProject(id).then(setProject)
   // eslint-disable-next-line
   },[])
 
-  if (project.hidden) return null
+  if (hidden) return null
   return (
     <div className={'project-block'}>
       <Calendar
-        trigger={project.id}
+        trigger={id}
         edit={true}
-        get={(start, end) => getCalendar(start, end, project.user, project.id)}
-        onChange={(daysPick, date) => project.setDays(daysPick, date)}
+        get={(start, end) => getCalendar(start, end, user, id)}
+        onChange={(daysPick, date) => setDays(daysPick, date)}
         content={{
-          ...calendar,
-          daysPick: project.dates
+          ...props.calendar,
+          daysPick: dates
         }}
       />
       <ProjectForm />
@@ -33,7 +35,7 @@ function ProjectPage(props) {
 
 export default inject(stores => {
   const id = getProjectId()
-  if (stores.ProjectStore.id !== id) stores.ProjectStore.default({id: id, hidden: !id})
+  if (stores.ProjectStore.id !== id) stores.ProjectStore.default({id: id, hidden: !!id})
   const calendar = {}
   if (stores.ProjectStore.user) {
     const userCalendar = stores.UsersStore.getUser(stores.ProjectStore.user).calendar

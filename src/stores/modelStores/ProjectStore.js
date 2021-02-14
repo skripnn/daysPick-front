@@ -69,10 +69,8 @@ class ProjectStore {
   setValue = (obj={}) => {
     for (const [key, value] of Object.entries(obj)) {
       this[key] = value
-      if (['dates', 'money', 'money_per_day'].includes(key)) {
-        this.setMoney()
-      }
     }
+    if (['dates', 'money', 'money_per_day'].some(r => Object.keys(obj).includes(r))) this.setMoney()
   }
 
   serializer = () => {
