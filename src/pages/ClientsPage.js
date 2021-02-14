@@ -2,7 +2,7 @@ import React, {useEffect} from "react";
 import {deleteClient, getClients} from "../js/fetch/client";
 import ClientDialog from "../components/ClientDialog/ClientDialog";
 import {inject, observer} from "mobx-react";
-import ClientItem from "../components/ClientsItem/ClientsItem";
+import ClientItem from "../components/ClientItem/ClientItem.js";
 import {List, ListSubheader} from "@material-ui/core";
 
 
