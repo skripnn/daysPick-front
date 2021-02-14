@@ -20,6 +20,10 @@ class UserStore {
     getUser(this.user.username).then(this.load)
   }
 
+  getProject = (id) => {
+    return this.projects.find(project => project.id === id)
+  }
+
   load = (obj) => {
     this.setValue(obj)
     this.userPage.setValue({loading: false})

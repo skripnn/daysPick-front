@@ -1,11 +1,12 @@
 import {newDate} from "../../extention/date";
 import "./Day.css"
-import React from "react";
+import React, {useRef} from "react";
 
 function Day(props) {
   // React.component - день
   let touch = false
   let touchTimer
+  const ref = useRef()
 
   function getDayCSS() {
     // Формирование css-класса дня из даты
@@ -34,7 +35,7 @@ function Day(props) {
   function touchStart() {
     touch = true
     clearTimeout(touchTimer)
-    touchTimer = setTimeout(onTouchHold, 500)
+    touchTimer = setTimeout(() => onTouchHold(), 500)
   }
 
   function onClick() {
@@ -43,20 +44,21 @@ function Day(props) {
 
   function onTouchHold() {
     touchFalse()
-    if (props.onTouchHold) props.onTouchHold(props.info, props.date)
+    if (props.onTouchHold) props.onTouchHold(ref.current, props.info, props.date)
   }
 
   function onMouseOver() {
-    if (props.onMouseOver) props.onMouseOver(props.info, props.date)
+    if (props.onMouseOver) props.onMouseOver(ref.current, props.info, props.date)
   }
 
   function onContextMenu(e) {
     e.preventDefault()
-    if (props.onContextMenu) props.onContextMenu(props.info, props.date)
+    if (props.onContextMenu) props.onContextMenu(ref.current, props.info, props.date)
   }
 
   return (
     <div
+      ref={ref}
       className={getDayCSS()}
       onClick={onClick}
       onContextMenu={onContextMenu}
