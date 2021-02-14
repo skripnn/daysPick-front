@@ -1,10 +1,9 @@
 import {makeAutoObservable} from "mobx";
-import {LocalUser} from "../../js/functions/functions";
 
 class ProjectStore {
   id = null
   dates = []
-  user = LocalUser()
+  user = localStorage.User
   date_start = null
   date_end = null
   days = {}
@@ -23,7 +22,7 @@ class ProjectStore {
   default = (obj) => {
     this.id = null
     this.dates = []
-    this.user = LocalUser()
+    this.user = localStorage.User
     this.date_start = null
     this.date_end = null
     this.days = {}

@@ -13,6 +13,7 @@ class UserStore {
   constructor(username) {
     this.user.setValue({username: username})
     if (username === localStorage.User) this.userPage.setValue({isSelf: true})
+    else this.userPage.setValue({profile:  true})
     makeAutoObservable(this)
   }
 

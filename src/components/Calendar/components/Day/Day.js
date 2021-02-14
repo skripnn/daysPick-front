@@ -44,16 +44,16 @@ function Day(props) {
 
   function onTouchHold() {
     touchFalse()
-    if (props.onTouchHold) props.onTouchHold(ref.current, props.info, props.date)
+    if (props.onTouchHold) props.onTouchHold(ref.current, props.info, props.date, props.off)
   }
 
   function onMouseOver() {
-    if (props.onMouseOver) props.onMouseOver(ref.current, props.info, props.date)
+    if (props.onMouseOver) props.onMouseOver(ref.current, props.info, props.date, props.off)
   }
 
   function onContextMenu(e) {
     e.preventDefault()
-    if (props.onContextMenu) props.onContextMenu(ref.current, props.info, props.date)
+    if (props.onContextMenu) props.onContextMenu(ref.current, props.info, props.date, props.off)
   }
 
   return (

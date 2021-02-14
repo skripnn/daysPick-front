@@ -1,19 +1,30 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {getProject} from "../js/fetch/project";
 import {getCalendar} from "../js/fetch/calendar";
 import Calendar from "../components/Calendar";
 import ProjectForm from "../components/ProjectForm/ProjectForm";
 import {inject, observer} from "mobx-react";
 import {getProjectId} from "../js/functions/functions";
+import PopOverDay from "../components/PopOverDay/PopOverDay";
 
 function ProjectPage(props) {
-  console.log()
-  // const { project, calendar } = props
   const {id, user, setDays, dates, setProject, hidden} = props.project
   useEffect(() => {
     if (id) getProject(id).then(setProject)
   // eslint-disable-next-line
   },[])
+
+  const [Info, setInfo] = useState(null)
+
+  function showInfo(element, info, date, dayOff) {
+    if (!info && !dayOff) return
+    setInfo(<PopOverDay
+      anchorEl={element}
+      info={info}
+      dayOff={localStorage.User === user && dayOff}
+      onClose={() => setInfo(null)}
+    />)
+  }
 
   if (hidden) return null
   return (
@@ -27,8 +38,13 @@ function ProjectPage(props) {
           ...props.calendar,
           daysPick: dates
         }}
+        onDay={{
+          onTouchHold: showInfo,
+          onContextMenu: showInfo
+        }}
       />
       <ProjectForm />
+      {Info}
     </div>
   )
 }

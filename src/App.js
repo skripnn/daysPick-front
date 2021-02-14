@@ -39,14 +39,14 @@ function App(props) {
       <Container maxWidth="md" className={"content-block"}>
         <ActionsSwitch hidden={mobile} history={history}/>
         <Switch>
-          <Route history={history} path='/clients' component={ClientsPage}/>
+          <Route history={history} path='/clients/' component={ClientsPage}/>
           <Route history={history} path='/projects/' component={ProjectsPage}/>
-          <Route history={history} path='/project/:id' component={ProjectPage}/>
+          <Route history={history} path='/project/:id/' component={ProjectPage}/>
           <Route history={history} path='/project/' component={ProjectPage}/>
-          <Route history={history} path='/login' component={LoginPage}/>
-          <Route history={history} path='/signup' component={SignUpPage}/>
-          <Route history={history} path='/confirm' component={ConfirmPage}/>
-          <Route history={history} path='/user/:username' component={UserPage}/>
+          <Route history={history} path='/login/' component={LoginPage}/>
+          <Route history={history} path='/signup/' component={SignUpPage}/>
+          <Route history={history} path='/confirm/' component={ConfirmPage}/>
+          <Route history={history} path='/user/:username/' component={UserPage}/>
           <Route history={history} path='/' component={UsersPage}/>
         </Switch>
       </Container>

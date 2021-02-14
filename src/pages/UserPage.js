@@ -5,9 +5,9 @@ import {postDaysOff} from "../js/fetch/daysOff";
 import {getCalendar} from "../js/fetch/calendar";
 import {inject, observer} from "mobx-react";
 import {deleteProject, postProject} from "../js/fetch/project";
-import {List, ListItem, ListItemIcon, ListItemText, ListSubheader, Popover} from "@material-ui/core";
+import {List, ListSubheader} from "@material-ui/core";
 import ProjectItem from "../components/ProjectItem/ProjectItem";
-import {EventBusy} from "@material-ui/icons";
+import PopOverDay from "../components/PopOverDay/PopOverDay";
 
 
 function UserPage(props) {
@@ -18,54 +18,24 @@ function UserPage(props) {
 
   useEffect(() => {
     if (user.username) getUser()
-  // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [user.username])
 
   const content = {
     days: calendar.days,
-    daysOff: userPage.edit? [] : calendar.daysOff,
-    daysPick: userPage.edit? calendar.daysOff : pick
+    daysOff: userPage.edit ? [] : calendar.daysOff,
+    daysPick: userPage.edit ? calendar.daysOff : pick
   }
 
-  function showInfo(element, info, date) {
-    const dayOff = calendar.daysOff.has(date.format())
+  function showInfo(element, info, date, dayOff) {
     if (!info && !dayOff) return
-    if (!info) info = []
-    setInfo(<Popover
-      open
+    setInfo(<PopOverDay
       anchorEl={element}
+      info={info}
+      dayOff={user.username === localStorage.User && dayOff}
       onClose={() => setInfo(null)}
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right'
-      }}
-      transformOrigin={{
-        vertical: 'bottom',
-        horizontal: 'left'
-      }}
-      style={{borderRadius: 4}}
-    >
-      <List dense disablePadding>
-        {dayOff &&
-          <ListItem divider>
-            <ListItemIcon style={{minWidth: "unset", paddingRight: 4}}>
-              <EventBusy fontSize={"small"}/>
-            </ListItemIcon>
-            <ListItemText secondary={"Выходной"}/>
-          </ListItem>
-        }
-        {info.map(i =>
-          <ListItem key={i.project.id} divider button>
-            <ListItemText
-              primary={i.project.title}
-              secondary={i.info}
-              secondaryTypographyProps={{style: {whiteSpace: "pre-line"}}}
-              onClick={() => popoverLink(i.project.id)}
-            />
-          </ListItem>
-        )}
-      </List>
-    </Popover>)
+      onClick={popoverLink}
+    />)
   }
 
   function onChange(daysPick, date) {
@@ -78,10 +48,10 @@ function UserPage(props) {
     props.history.push(`/project/${project.id}/`)
   }
 
-  function popoverLink(id) {
-    const project = getProject(id)
-    project ?  props.setProject(project) : props.default({id: id, hidden: true})
-    props.history.push(`/project/${id}/`)
+  function popoverLink(project) {
+    const p = getProject(project.id)
+    p ? props.setProject(p) : props.default({id: project.id, hidden: true})
+    props.history.push(`/project/${project.id}/`)
   }
 
   function del(project) {
@@ -115,11 +85,14 @@ function UserPage(props) {
           onContextMenu: showInfo
         }}
       />
-      {userPage.profile?
+      {userPage.profile ?
         <UserProfile user={user}/>
         :
         <List dense>
-          <ListSubheader disableSticky style={{textAlign: "center", color: "rgba(0, 0, 0, 0.7)"}}>{"Акутальные проекты"}</ListSubheader>
+          <ListSubheader disableSticky style={{
+            textAlign: "center",
+            color: "rgba(0, 0, 0, 0.7)"
+          }}>{"Акутальные проекты"}</ListSubheader>
           {projects.map(project => <ProjectItem
             project={project}
             key={project.id}
