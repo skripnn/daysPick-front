@@ -18,24 +18,27 @@ function ClientItem(props) {
   const client = props.client
   return (
     <ListItem
-      button
+      button={!props.disabled}
       className={className}
-      onClick={deleting? undefined : () => props.onClick(client)}
+      onClick={deleting || props.disabled? undefined : () => props.onClick(client)}
     >
-      <ListItemIcon>
-        <Avatar>{client.name[0].toUpperCase()}</Avatar>
+      <ListItemIcon style={{minWidth: "unset", paddingRight: 8}}>
+        <Avatar style={{zoom: 0.7}}>{client.name[0].toUpperCase()}</Avatar>
       </ListItemIcon>
-      <ListItemText primary={client.name}/>
+      <ListItemText primary={props.showCompany? client.fullname : client.name} style={{wrap: "no-wrap"}}/>
       {!!props.onDelete &&
       <ListItemSecondaryAction className={className}>
         <IconButton
           edge="end"
           disabled={deleting}
           onClick={() => {
-            setDeleting(true)
-            setTimeout(() => props.onDelete(client), 1000)
+            if (props.noTimeout) props.onDelete(client)
+            else {
+              setDeleting(true)
+              setTimeout(() => props.onDelete(client), 1000)
+            }
           }}>
-          <DeleteIcon/>
+          {props.deleteIcon || <DeleteIcon/>}
         </IconButton>
       </ListItemSecondaryAction>
       }

@@ -30,6 +30,7 @@ export default function SearchField(props) {
   return (
     <TextField
       size={"medium"}
+      label={props.label}
       value={value}
       onChange={(e) => handleChange(e.target.value)}
       InputProps={{
@@ -39,7 +40,7 @@ export default function SearchField(props) {
               {loading? <CircularProgress style={{width: 24, height: 24}} color={"inherit"}/> : <Search />}
             </IconButton>
           </InputAdornment>,
-        endAdornment: (value &&
+        endAdornment: ((value) &&
           <InputAdornment position={"end"}>
             <IconButton onClick={() => handleChange('')}>
               <Close/>

@@ -19,7 +19,7 @@ function UserProfile(props) {
       </Box>
       {self && <Box>
         <IconButton size={"small"} onClick={() => setEdit(!edit)}>
-          <Edit className={edit ? "pick" : undefined}/>
+          <Edit className={edit ? "edit-button pick" : "edit-button"}/>
         </IconButton>
       </Box>}
       </Box>

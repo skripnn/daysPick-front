@@ -2,6 +2,6 @@
     display: flex;
     flex-direction: column;
 }
-.pick {
+.edit-button.pick {
     color: #4db34b;
 }

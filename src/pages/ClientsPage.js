@@ -33,7 +33,7 @@ function ClientsPage(props) {
     <div>
       <List dense>
         <ListSubheader style={{background: 'white', lineHeight: "unset"}}>
-          <SearchField get={getClients} set={setFiltered}/>
+          <SearchField get={(v) => getClients({filter: v})} set={setFiltered}/>
         </ListSubheader>
         {convert(filtered || clients).map(i => (
           <div key={i.company}>
