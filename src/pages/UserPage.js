@@ -86,7 +86,7 @@ function UserPage(props) {
         }}
       />
       {userPage.profile ?
-        <UserProfile user={user}/>
+        <UserProfile />
         :
         <List dense>
           <ListSubheader disableSticky style={{

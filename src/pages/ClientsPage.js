@@ -31,10 +31,10 @@ function ClientsPage(props) {
 
   return (
     <div>
-      <ListSubheader style={{background: 'white', lineHeight: "unset"}}>
-        <SearchField get={getClients} set={setFiltered}/>
-      </ListSubheader>
       <List dense>
+        <ListSubheader style={{background: 'white', lineHeight: "unset"}}>
+          <SearchField get={getClients} set={setFiltered}/>
+        </ListSubheader>
         {convert(filtered || clients).map(i => (
           <div key={i.company}>
             <ListSubheader disableSticky>{i.company}</ListSubheader>

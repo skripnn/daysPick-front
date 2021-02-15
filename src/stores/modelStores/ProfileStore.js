@@ -5,6 +5,7 @@ class ProfileStore {
   full_name = null
   first_name = null
   last_name = null
+  positions = []
 
   constructor(username) {
     this.username = username
