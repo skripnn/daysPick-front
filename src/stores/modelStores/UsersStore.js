@@ -13,7 +13,7 @@ class UsersStore {
   getUser = (user) => {
     if (!user) user = parseUser()
     if (!user) document.location.href = '/'
-    if (!this.users[user]) this.users[user] = new UserStore(user)
+    if (!this.users[user]) this.users[user] = new UserStore(user).getUser()
     return this.users[user]
   }
 

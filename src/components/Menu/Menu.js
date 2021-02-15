@@ -42,7 +42,6 @@ function Menu(props) {
         <UserAvatar user={props.user} />
       </IconButton>
       <Drawer
-        {...props}
         open={open}
         onClose={close}
         anchor={'right'}

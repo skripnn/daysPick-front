@@ -30,7 +30,7 @@ export default function Header(props) {
           </Typography>
         </Box>
         {auth? (
-            <Menu user={props.user} history={props.history}/>
+            <Menu history={props.history}/>
         ) : "Sign In"}
       </Toolbar>
     </AppBar>

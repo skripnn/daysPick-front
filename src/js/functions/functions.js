@@ -31,3 +31,7 @@ export function getProjectId() {
   if (id) return Number(id[1])
   return null
 }
+
+export function isMobil() {
+  return document.body.clientWidth < 720
+}

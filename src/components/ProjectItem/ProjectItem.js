@@ -6,6 +6,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import React, {useState} from "react";
 import {CheckBox, CheckBoxOutlineBlank} from "@material-ui/icons";
 import "./ProjectItem.css"
+import {isMobil} from "../../js/functions/functions";
 
 function ProjectItem(props) {
   const onTouchHold = new TouchHold(props.onTouchHold, props.onTouchEnd)
@@ -13,7 +14,6 @@ function ProjectItem(props) {
   const past = project.date_end < newDate().format()
   const [deleting, setDeleting] = useState(false)
   const className = 'project-item' + (past ? ' past' : '') + (deleting ? ' deleting' : '')
-
 
   const paidToggle = (
     <IconButton edge="end" disabled={deleting} onClick={() => {
@@ -46,7 +46,7 @@ function ProjectItem(props) {
       onClick={deleting? undefined : () => props.onClick(project)}
       {...onTouchHold.actions}
     >
-      <ListItemText primary={project.title} secondary={project.client ? project.client.name : null}/>
+      <ListItemText primary={project.title} secondary={project.client ? (isMobil() ? project.client.name : project.client.fullname): null}/>
       {(project.money === 0 || !!project.money) &&
       <ListItemText
         secondary={new Intl.NumberFormat('ru-RU').format(project.money) + " ₽"}

@@ -12,6 +12,7 @@ import ActionsSwitch from "./components/Actions/ActionsSwitch";
 import ClientsPage from "./pages/ClientsPage";
 import Header from "./components/Header/Header";
 import ProjectsPage from "./pages/ProjectsPage";
+import {isMobil} from "./js/functions/functions";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -24,10 +25,10 @@ function ScrollToTop() {
 }
 
 function App(props) {
-  const [mobile, setMobile] = useState(document.body.clientWidth < 720)
+  const [mobile, setMobile] = useState(isMobil())
 
   useEffect(() => {
-    window.addEventListener('resize', () => setMobile(document.body.clientWidth < 720))
+    window.addEventListener('resize', () => setMobile(isMobil()))
   },[])
 
   const { history } = props

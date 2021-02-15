@@ -1,16 +1,17 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {deleteClient, getClients} from "../js/fetch/client";
 import ClientDialog from "../components/ClientDialog/ClientDialog";
 import {inject, observer} from "mobx-react";
 import ClientItem from "../components/ClientItem/ClientItem.js";
 import {List, ListSubheader} from "@material-ui/core";
-
+import SearchField from "../components/Fields/SearchField/SearchField";
 
 function ClientsPage(props) {
   const {clients, dialog, setClients, delClient, setDialog} = props.ClientsPageStore
+  const [filtered, setFiltered] = useState(null)
 
   useEffect(() => {
-    getClients().then(r => setClients(r))
+    getClients().then(setClients)
   // eslint-disable-next-line
   },[])
 
@@ -27,10 +28,14 @@ function ClientsPage(props) {
     return list
   }
 
+
   return (
     <div>
+      <ListSubheader style={{background: 'white', lineHeight: "unset"}}>
+        <SearchField get={getClients} set={setFiltered}/>
+      </ListSubheader>
       <List dense>
-        {convert(clients).map(i => (
+        {convert(filtered || clients).map(i => (
           <div key={i.company}>
             <ListSubheader disableSticky>{i.company}</ListSubheader>
             {i.clients.map(client => <ClientItem
