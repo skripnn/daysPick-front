@@ -35,3 +35,12 @@ export function getProjectId() {
 export function isMobil() {
   return document.body.clientWidth < 720
 }
+
+export function convertClients(clients=[]) {
+  const list = [{company: null, clients: []}]
+  clients.forEach(c => {
+    if (c.company !== list[list.length - 1].company) list.push({company: c.company, clients: []})
+    list[list.length - 1].clients.push(c)
+  })
+  return list
+}

@@ -23,11 +23,10 @@ function ProjectForm(props) {
           </Grid>
           <Grid item xs={12}>
             <ClientField client={client} set={(client) => setValue({client: client})}/>
-            {/*<ClientChoice />*/}
           </Grid>
           <Grid item xs={12}>
             <FormControlLabel labelPlacement="end"  name='is_paid' label='Оплачено' control={
-              <Checkbox color="primary" checked={is_paid} onChange={e => setValue({is_paid: e.target.checked})}/>
+              <Checkbox color={"default"} checked={is_paid} onChange={e => setValue({is_paid: e.target.checked})}/>
             }/>
           </Grid>
         </Grid>

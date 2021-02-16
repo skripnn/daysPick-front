@@ -9,6 +9,7 @@ function ActionsPanel(props) {
   if (props.bottom) return (
     <div className={'actions-panel bottom'}>
       {props.left}
+      {props.children}
       {props.right}
     </div>
   )

@@ -1,13 +1,14 @@
 import React, {useEffect, useState} from "react";
-import {deleteClient, getClients} from "../js/fetch/client";
+import {deleteClient, getClients, postClient} from "../js/fetch/client";
 import ClientDialog from "../components/ClientDialog/ClientDialog";
 import {inject, observer} from "mobx-react";
 import ClientItem from "../components/ClientItem/ClientItem.js";
 import {List, ListSubheader} from "@material-ui/core";
 import SearchField from "../components/Fields/SearchField/SearchField";
+import {convertClients} from "../js/functions/functions";
 
 function ClientsPage(props) {
-  const {clients, dialog, setClients, delClient, setDialog} = props.ClientsPageStore
+  const {clients, dialog, setClients, delClient, setDialog, saveClient} = props.ClientsPageStore
   const [filtered, setFiltered] = useState(null)
 
   useEffect(() => {
@@ -16,16 +17,18 @@ function ClientsPage(props) {
   },[])
 
   function del(client) {
-    deleteClient(client.id).then(() => delClient(client.id))
+    deleteClient(client.id).then(() => {
+      delClient(client.id)
+      setDialog(null)
+    })
   }
 
-  function convert(clients=[]) {
-    const list = [{company: null, clients: []}]
-    clients.forEach(c => {
-      if (c.company !== list[list.length - 1].company) list.push({company: c.company, clients: []})
-      list[list.length - 1].clients.push(c)
+  function save(client) {
+    postClient(client).then((result) => {
+      saveClient(result)
+      getClients().then(result => setClients(result))
+      setDialog(null)
     })
-    return list
   }
 
 
@@ -35,7 +38,7 @@ function ClientsPage(props) {
         <ListSubheader style={{background: 'white', lineHeight: "unset"}}>
           <SearchField get={(v) => getClients({filter: v})} set={setFiltered}/>
         </ListSubheader>
-        {convert(filtered || clients).map(i => (
+        {convertClients(filtered || clients).map(i => (
           <div key={i.company}>
             <ListSubheader disableSticky>{i.company}</ListSubheader>
             {i.clients.map(client => <ClientItem
@@ -46,9 +49,10 @@ function ClientsPage(props) {
           </div>
         ))}
       </List>
-      {!!dialog && <ClientDialog />}
+      {!!dialog && <ClientDialog onDelete={del} onSave={save} close={() => setDialog(null)}/>}
     </div>
   )
 }
+
 
 export default inject('ClientsPageStore')(observer(ClientsPage))
