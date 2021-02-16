@@ -6,13 +6,16 @@ import "./Header.css"
 import Box from "@material-ui/core/Box";
 import {Link} from "react-router-dom";
 import Menu from "../Menu/Menu";
+import LoginIcon from "../Icons/LoginIcon";
+import {IconButton, Tooltip} from "@material-ui/core";
 
 
 export default function Header(props) {
   const auth = !!localStorage.User
   const titles = [
     ['/projects', 'Мои проекты'],
-    ['/clients', 'Мои клиенты']
+    ['/clients', 'Мои клиенты'],
+    ['/profile', 'Профиль']
   ]
   function title() {
     for (const [path, name] of titles) {
@@ -31,7 +34,13 @@ export default function Header(props) {
         </Box>
         {auth? (
             <Menu history={props.history}/>
-        ) : "Sign In"}
+        ) : <Link to={'/login/'}>
+          <Tooltip title="Log In">
+            <IconButton>
+              <LoginIcon/>
+            </IconButton>
+          </Tooltip>
+        </Link>}
       </Toolbar>
     </AppBar>
   );

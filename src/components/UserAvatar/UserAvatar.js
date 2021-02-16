@@ -4,6 +4,6 @@ import "./UserAvatar.css"
 
 export default function UserAvatar(props) {
   return (
-    <Avatar className={'user-avatar'} alt={props.user.full_name} src={"/avatar.jpg"}/>
+    <Avatar className={'user-avatar'} alt={props.full_name} src={"/avatar.jpg"}/>
   )
 }

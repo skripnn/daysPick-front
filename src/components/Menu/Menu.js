@@ -14,8 +14,9 @@ import UserAvatar from "../UserAvatar/UserAvatar";
 import UserFullName from "../UserFullName/UserFullName";
 import {inject, observer} from "mobx-react";
 import Button from "@material-ui/core/Button";
-import {Group, List as ListIcon} from "@material-ui/icons";
+import {Group, List as ListIcon, PermIdentity} from "@material-ui/icons";
 import Box from "@material-ui/core/Box";
+import LogoutIcon from "../Icons/LogoutIcon";
 
 function MenuItem(props) {
   return (
@@ -39,7 +40,7 @@ function Menu(props) {
   return (
     <div>
       <IconButton onClick={() => setOpen(prevState => !prevState)} style={{marginRight: -12}}>
-        <UserAvatar user={props.user} />
+        <UserAvatar {...props.user} />
       </IconButton>
       <Drawer
         open={open}
@@ -60,6 +61,15 @@ function Menu(props) {
           <MenuItem text={'Мои проекты'} onClick={() => close(`/projects/`)} icon={<ListIcon/>}/>
           <MenuItem text={'Мои клиенты'} onClick={() => close(`/clients/`)} icon={<Group />}/>
         </List>
+        <Divider />
+        <List>
+          <MenuItem text={'Профиль'} onClick={() => close(`/profile/`)} icon={<PermIdentity />}/>
+          <MenuItem text={'Выйти'} onClick={() => {
+            localStorage.clear()
+            props.getUser()
+            close('/')
+          }} icon={<LogoutIcon />}/>
+        </List>
       </Drawer>
     </div>
   )
@@ -67,6 +77,7 @@ function Menu(props) {
 
 export default inject(stores => {
   return {
-    user: stores.UsersStore.getUser(localStorage.User).user
+    user: stores.UsersStore.getLocalUser().user,
+    getUser: stores.UsersStore.getLocalUser().getUser
   }
 })(observer(Menu))

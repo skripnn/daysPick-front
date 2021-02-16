@@ -13,6 +13,7 @@ import ClientsPage from "./pages/ClientsPage";
 import Header from "./components/Header/Header";
 import ProjectsPage from "./pages/ProjectsPage";
 import {isMobil} from "./js/functions/functions";
+import ProfilePage from "./pages/ProfilePage";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -40,6 +41,7 @@ function App(props) {
       <Container maxWidth="md" className={"content-block"}>
         <ActionsSwitch hidden={mobile} history={history}/>
         <Switch>
+          <Route history={history} path='/profile/' component={ProfilePage}/>
           <Route history={history} path='/clients/' component={ClientsPage}/>
           <Route history={history} path='/projects/' component={ProjectsPage}/>
           <Route history={history} path='/project/:id/' component={ProjectPage}/>

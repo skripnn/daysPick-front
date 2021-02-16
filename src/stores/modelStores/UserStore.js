@@ -29,6 +29,8 @@ class UserStore {
 
   load = (obj) => {
     this.setValue(obj)
+    if (this.user.username === localStorage.User) this.userPage.setValue({isSelf: true})
+    else this.userPage.setValue({isSelf: false, profile: true})
     this.userPage.setValue({loading: false})
   }
 

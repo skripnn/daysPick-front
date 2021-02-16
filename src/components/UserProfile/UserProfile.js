@@ -1,21 +1,20 @@
 import React, {useState} from "react";
 import './UserProfile.css'
-import {inject, observer} from "mobx-react";
 import PositionTags from "../PositionTags/PositionTags";
 import Box from "@material-ui/core/Box";
 import {Edit} from "@material-ui/icons";
 import {IconButton} from "@material-ui/core";
 
 function UserProfile(props) {
-  const {setValue, positions} = props.ProfileStore
-  const self = props.ProfileStore.username === localStorage.User
-  const [edit, setEdit] = useState(false)
+  const {setValue, positions, username} = props
+  const self = username === localStorage.User
+  const [edit, setEdit] = useState(!!props.edit)
 
   return (
     <div className={'user-profile'}>
       <Box display={"flex"}>
       <Box flexGrow={1}>
-      <PositionTags positions={positions} setPositions={(v) => setValue({positions: v})} edit={edit}/>
+        <PositionTags positions={positions} set={!!setValue ? (v) => setValue({positions: v}) : undefined}/>
       </Box>
       {self && <Box>
         <IconButton size={"small"} onClick={() => setEdit(!edit)}>
@@ -27,6 +26,4 @@ function UserProfile(props) {
   )
 }
 
-export default inject(stores => ({
-  ProfileStore: stores.UsersStore.getUser().user
-}))(observer(UserProfile))
+export default UserProfile

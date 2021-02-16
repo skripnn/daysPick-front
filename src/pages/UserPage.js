@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from "react";
 import Calendar from '../components/Calendar';
-import UserProfile from "../components/UserProfile/UserProfile";
 import {postDaysOff} from "../js/fetch/daysOff";
 import {getCalendar} from "../js/fetch/calendar";
 import {inject, observer} from "mobx-react";
 import {deleteProject, postProject} from "../js/fetch/project";
-import {List, ListSubheader} from "@material-ui/core";
+import {List, ListItem, ListSubheader} from "@material-ui/core";
 import ProjectItem from "../components/ProjectItem/ProjectItem";
 import PopOverDay from "../components/PopOverDay/PopOverDay";
+import PositionTags from "../components/PositionTags/PositionTags";
 
 
 function UserPage(props) {
@@ -86,7 +86,14 @@ function UserPage(props) {
         }}
       />
       {userPage.profile ?
-        <UserProfile />
+        <List dense>
+          {!!user.positions.length && <>
+            <ListSubheader>Специализации</ListSubheader>
+            <ListItem>
+              <PositionTags positions={user.positions}/>
+            </ListItem>
+          </>}
+        </List>
         :
         <List dense>
           <ListSubheader disableSticky style={{

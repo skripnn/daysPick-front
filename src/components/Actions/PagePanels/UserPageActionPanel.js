@@ -48,7 +48,7 @@ function UserPageActionPanel(props) {
     <ActionsPanel
       {...props}
       hidden={props.bottom ? props.hidden : false}
-      left={props.bottom ? [] : <UserFullName user={props.user} avatar={'left'}/>}
+      left={props.bottom ? [] : <UserFullName user={props.user} avatar={'left'} edit={isSelf}/>}
       right={props.hidden ? [] : right}
     />
   )

@@ -5,19 +5,20 @@ import {AddCircle} from "@material-ui/icons";
 import {addPosition, deletePosition, getPosition} from "../../js/fetch/user";
 
 function PositionTags(props) {
-  const {setPositions, positions, edit} = props
+  const {positions, set} = props
   const [newChip, setNewChip] = useState(null)
   const [option, setOption] = useState('')
+  if (!positions.length && !set) return null
 
   function del(position) {
     deletePosition(position).then(r => {
-      setPositions(r)
+      set(r)
     })
   }
 
   function add() {
     if (!!newChip) addPosition(newChip).then((r) => {
-      setPositions(r)
+      set(r)
       onChange(null)
     })
   }
@@ -71,7 +72,7 @@ function PositionTags(props) {
         }
       />
       }
-      {edit && newChip === null &&
+      {!!set && newChip === null &&
       <IconButton
         size={"small"}
         style={{margin: 2, color: "rgba(0, 0, 0, 0.26)"}}
@@ -80,12 +81,14 @@ function PositionTags(props) {
         <AddCircle />
       </IconButton>
       }
-      {positions.map(position => <Chip
+      {!!positions ? positions.map(position => <Chip
         style={{margin: 2}}
         variant="outlined"
         label={position}
         key={position}
-        onDelete={edit ? () => del(position) : undefined}/>)}
+        onDelete={!!set ? () => del(position) : undefined}/>) :
+        null
+      }
     </Box>
   )
 }
