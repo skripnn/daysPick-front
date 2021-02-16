@@ -19,14 +19,17 @@ import Box from "@material-ui/core/Box";
 import LogoutIcon from "../Icons/LogoutIcon";
 
 function MenuItem(props) {
+  function handleClick() {
+    if (props.onClick) props.onClick(props.link)
+  }
+
   return (
-    <ListItem button onClick={props.onClick} className={'menu-item'}>
+    <ListItem button onClick={handleClick} className={'menu-item'} selected={window.location.pathname === props.link}>
       <ListItemIcon>{props.icon}</ListItemIcon>
       <ListItemText primary={props.text} secondary={props.sub || null}/>
     </ListItem>
   )
 }
-
 
 
 function Menu(props) {
@@ -58,17 +61,17 @@ function Menu(props) {
         </Box>
         <Divider />
         <List>
-          <MenuItem text={'Мои проекты'} onClick={() => close(`/projects/`)} icon={<ListIcon/>}/>
-          <MenuItem text={'Мои клиенты'} onClick={() => close(`/clients/`)} icon={<Group />}/>
+          <MenuItem text={'Мои проекты'} icon={<ListIcon/>} link={`/projects/`} onClick={close} />
+          <MenuItem text={'Мои клиенты'} icon={<Group />} link={`/clients/`} onClick={close} />
         </List>
         <Divider />
         <List>
-          <MenuItem text={'Профиль'} onClick={() => close(`/profile/`)} icon={<PermIdentity />}/>
-          <MenuItem text={'Выйти'} onClick={() => {
+          <MenuItem text={'Профиль'} icon={<PermIdentity />} link={`/profile/`} onClick={close} />
+          <MenuItem text={'Выйти'} icon={<LogoutIcon />} link={`/`} onClick={(link) => {
             localStorage.clear()
             props.getUser()
-            close('/')
-          }} icon={<LogoutIcon />}/>
+            close(link)
+          }} />
         </List>
       </Drawer>
     </div>
