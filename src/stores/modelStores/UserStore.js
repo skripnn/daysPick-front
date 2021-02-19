@@ -11,7 +11,10 @@ class UserStore {
   userPage = new UserPageStore()
 
   constructor(username) {
-    this.user.setValue({username: username})
+    if (username.match(/[0-9]{11}/)) {
+      this.user.setValue({phone_confirm: username})
+    }
+    else this.user.setValue({username: username})
 
     if (username === localStorage.User) this.userPage.setValue({isSelf: true})
     else this.userPage.setValue({profile:  true})
@@ -19,7 +22,7 @@ class UserStore {
   }
 
   getUser = () => {
-    getUser(this.user.username).then(this.load)
+    getUser(this.user.username || this.user.phone_confirm).then(this.load)
     return this
   }
 

@@ -11,6 +11,7 @@
     "@testing-library/user-event": "^7.2.1",
     "babel-cli": "^6.26.0",
     "history": "^5.0.0",
+    "material-ui-phone-number": "^2.2.6",
     "mobx": "^6.0.4",
     "mobx-react": "^7.0.5",
     "react": "^17.0.1",

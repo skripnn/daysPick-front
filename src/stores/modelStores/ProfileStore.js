@@ -5,6 +5,10 @@ class ProfileStore {
   full_name = null
   first_name = null
   last_name = null
+  email = null
+  email_confirm = null
+  phone = null
+  phone_confirm = null
   positions = []
 
   constructor(username) {

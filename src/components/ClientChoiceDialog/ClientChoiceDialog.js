@@ -3,13 +3,12 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import {getClients, postClient} from "../../js/fetch/client";
 import ActionsPanel from "../Actions/ActionsPanel/ActionsPanel";
 import ActionButton from "../Actions/ActionButton/ActionButton";
-import {ArrowBackIos, Save} from "@material-ui/icons";
+import {ArrowBackIos, PersonAdd} from "@material-ui/icons";
 import {Dialog, DialogContent, DialogTitle, List, ListSubheader} from "@material-ui/core";
 import TextField from "../Fields/TextField/TextField";
 import {convertClients} from "../../js/functions/functions";
 import ClientItem from "../ClientItem/ClientItem";
-
-let searchTimer
+import Loader from "../../js/functions/Loader";
 
 function ClientChoiceDialog(props) {
   const [state, setState] = useState(props.client)
@@ -22,10 +21,9 @@ function ClientChoiceDialog(props) {
   }, [])
 
   function handleChange(obj) {
-    clearTimeout(searchTimer)
     const newState = {...state, ...obj}
     setState(newState)
-    searchTimer = setTimeout(() => {
+    Loader.set(() => {
       getClients(newState).then(setClients)
     }, 100)
   }
@@ -34,7 +32,7 @@ function ClientChoiceDialog(props) {
     <ActionsPanel
       bottom={fullScreen}
       left={<ActionButton onClick={props.close} label="Назад" icon={<ArrowBackIos/>}/>}
-      right={<ActionButton onClick={() => postClient(state).then(props.set)} label="Сохранить" disabled={!state.name} icon={<Save/>}/>}
+      right={<ActionButton onClick={() => postClient(state).then(props.set)} label="Создать" disabled={!state.name} icon={<PersonAdd />}/>}
     />
   )
 

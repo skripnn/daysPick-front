@@ -73,6 +73,11 @@ function UsernameField(props) {
   function checkUsername(e) {
     e.target.value = e.target.value.toLowerCase()
     const value = e.target.value
+    if (value.match(/^[^a-z]/)) {
+      setHelperText("First symbol have to be a letter")
+      setError(true)
+      return
+    }
     if (value.length < 4) {
       setHelperText("4 symbols minimum")
       return

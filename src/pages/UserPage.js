@@ -4,7 +4,7 @@ import {postDaysOff} from "../js/fetch/daysOff";
 import {getCalendar} from "../js/fetch/calendar";
 import {inject, observer} from "mobx-react";
 import {deleteProject, postProject} from "../js/fetch/project";
-import {List, ListItem, ListSubheader} from "@material-ui/core";
+import {List, ListSubheader} from "@material-ui/core";
 import ProjectItem from "../components/ProjectItem/ProjectItem";
 import PopOverDay from "../components/PopOverDay/PopOverDay";
 import PositionTags from "../components/PositionTags/PositionTags";
@@ -19,7 +19,7 @@ function UserPage(props) {
   useEffect(() => {
     if (user.username) getUser()
     // eslint-disable-next-line
-  }, [user.username])
+  }, [props.UserStore])
 
   const content = {
     days: calendar.days,
@@ -72,6 +72,7 @@ function UserPage(props) {
   return (
     <div>
       <Calendar
+        zoom={1.2}
         triggerGet={triggerGet}
         triggerNew={user.username}
         content={content}
@@ -86,20 +87,13 @@ function UserPage(props) {
         }}
       />
       {userPage.profile ?
-        <List dense>
-          {!!user.positions.length && <>
-            <ListSubheader>Специализации</ListSubheader>
-            <ListItem>
-              <PositionTags positions={user.positions}/>
-            </ListItem>
-          </>}
-        </List>
+        <PositionTags positions={user.positions}/>
         :
         <List dense>
           <ListSubheader disableSticky style={{
             textAlign: "center",
             color: "rgba(0, 0, 0, 0.7)"
-          }}>{"Акутальные проекты"}</ListSubheader>
+          }}>{`Акутальные проекты${!projects.length ? ' отсутствуют' : ''}`}</ListSubheader>
           {projects.map(project => <ProjectItem
             project={project}
             key={project.id}
