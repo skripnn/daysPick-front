@@ -12,23 +12,27 @@ export default function SearchField(props) {
   function handleChange(v) {
     clearTimeout(searchTimer)
     setValue(v)
-    if (v) {
-      setLoading(true)
-      searchTimer = setTimeout(() => {
-        props.get(v).then(r => {
-          props.set(r)
-          setLoading(null)
-        })
-      }, props.timeout || 1000)
+    if (props.get && props.set) {
+      if (v) {
+        setLoading(true)
+        searchTimer = setTimeout(() => {
+          props.get(v).then(r => {
+            props.set(r)
+            setLoading(null)
+          })
+        }, props.timeout || 1000)
+      }
+      else {
+        props.set(null)
+        setLoading(null)
+      }
     }
-    else {
-      props.set(null)
-      setLoading(null)
-    }
+    if (props.onChange) v? props.onChange(v) : props.onChange(null)
   }
 
   return (
     <TextField
+      {...props}
       size={"medium"}
       label={props.label}
       value={value}
@@ -37,7 +41,7 @@ export default function SearchField(props) {
         startAdornment:
           <InputAdornment position={"start"}>
             <IconButton onClick={() => handleChange(value)} disabled={loading}>
-              {loading? <CircularProgress style={{width: 24, height: 24}} color={"inherit"}/> : <Search />}
+              {props.loading || loading? <CircularProgress style={{width: 24, height: 24}} color={"inherit"}/> : <Search />}
             </IconButton>
           </InputAdornment>,
         endAdornment: ((value) &&

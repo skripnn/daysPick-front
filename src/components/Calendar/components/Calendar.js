@@ -165,7 +165,7 @@ function Calendar (props) {
     for (let i = 0; i < wCount; i++) {
       let date = newDate(start).offsetWeeks(i)
       if (textWidth < mainWidth) {
-        let width = 24
+        let width = weekWidth()
         if (i === 0) {
           width -= offset
         }
@@ -290,7 +290,7 @@ function Calendar (props) {
     const start = newDate(weeks[0].key)
     const end = newDate(start).offsetWeeks(weeks.length).offsetDays(-1)
     getTimeOut = setTimeout(() => {
-      props.get(start, end).then((result) => updateContent(result, start, end))
+      if (props.get) props.get(start, end).then((result) => updateContent(result, start, end))
     }, timeout)
   }
 

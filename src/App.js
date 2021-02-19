@@ -5,7 +5,6 @@ import UserPage from "./pages/UserPage";
 import {Route, Switch, useLocation, withRouter} from "react-router-dom";
 import LoginPage from "./pages/loginPage";
 import SignUpPage from "./pages/singUpPage";
-import UsersPage from "./pages/usersPage";
 import ConfirmPage from "./pages/confirmPage";
 import './App.css'
 import ActionsSwitch from "./components/Actions/ActionsSwitch";
@@ -14,6 +13,7 @@ import Header from "./components/Header/Header";
 import ProjectsPage from "./pages/ProjectsPage";
 import {isMobil} from "./js/functions/functions";
 import ProfilePage from "./pages/ProfilePage";
+import SearchPage from "./pages/SearchPage";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -50,7 +50,7 @@ function App(props) {
           <Route history={history} path='/signup/' component={SignUpPage}/>
           <Route history={history} path='/confirm/' component={ConfirmPage}/>
           <Route history={history} path='/user/:username/' component={UserPage}/>
-          <Route history={history} path='/' component={UsersPage}/>
+          <Route history={history} path='/' component={SearchPage}/>
         </Switch>
       </Container>
       {mobile && <div className={'block static'}>

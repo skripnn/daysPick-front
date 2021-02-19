@@ -29,7 +29,8 @@ export const defaultProps = {
   onChange: () => {},
   onDay: {},
   edit: false,
-  noOffset: false
+  noOffset: false,
+  content: {}
 }
 
 function checkDateFormat(props, propName, componentName) {

@@ -5,6 +5,9 @@ class Loader {
     clearTimeout(this.timer)
     this.timer = setTimeout(f, timeout)
   }
+
+  clear = () => clearTimeout(this.timer)
+
 }
 
 export default new Loader()
