@@ -10,6 +10,7 @@ import {convertClients} from "../js/functions/functions";
 function ClientsPage(props) {
   const {clients, dialog, setClients, delClient, setDialog, saveClient} = props.ClientsPageStore
   const [filtered, setFiltered] = useState(null)
+  console.log(filtered)
 
   useEffect(() => {
     getClients().then(setClients)
@@ -36,11 +37,11 @@ function ClientsPage(props) {
     <div>
       <List dense>
         <ListSubheader style={{background: 'white', lineHeight: "unset"}}>
-          <SearchField get={(v) => getClients({filter: v})} set={setFiltered}/>
+          <SearchField get={getClients} set={setFiltered} calendar={props.calendar} user={localStorage.User}/>
         </ListSubheader>
         {convertClients(filtered || clients).map(i => (
           <div key={i.company}>
-            <ListSubheader disableSticky>{i.company}</ListSubheader>
+            <ListSubheader disableSticky>{i.company || ' '}</ListSubheader>
             {i.clients.map(client => <ClientItem
               client={client}
               key={client.id}
@@ -55,4 +56,7 @@ function ClientsPage(props) {
 }
 
 
-export default inject('ClientsPageStore')(observer(ClientsPage))
+export default inject(stores => ({
+  ClientsPageStore: stores.ClientsPageStore,
+  content: stores.UsersStore.getLocalUser().calendar
+}))(observer(ClientsPage))

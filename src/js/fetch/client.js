@@ -3,8 +3,10 @@ import {url, checkAuth, requestAuthHeaders} from "./core";
 
 export async function getClients(obj={}) {
   let urlGet = url + "/clients/?"
-  for (const [key, value] of Object.entries(obj)) {
-    urlGet += `&${key}=${value}`
+  if (obj.filter) urlGet += `&filter=${obj.filter}`
+  if (obj.days) {
+    for (const day of obj.days)
+      urlGet += `&days=${day}`
   }
   return fetch(urlGet, {headers: requestAuthHeaders()}).then(res => checkAuth(res))
 }

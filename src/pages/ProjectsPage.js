@@ -33,7 +33,7 @@ function ProjectsPage(props) {
     <div>
       <List dense>
         <ListSubheader style={{background: 'white', lineHeight: "unset"}}>
-          <SearchField get={(v) => getProjects(user, v)} set={setFiltered}/>
+          <SearchField get={(v) => getProjects(user, v)} set={setFiltered} calendar={props.calendar} user={localStorage.User}/>
         </ListSubheader>
         {(filtered || projects).map(project => <ProjectItem
           project={project}
@@ -48,5 +48,6 @@ function ProjectsPage(props) {
 
 export default inject(stores => ({
     pageStore: stores.ProjectsPageStore,
-    setProject: stores.ProjectStore.setProject
+    setProject: stores.ProjectStore.setProject,
+    calendar: stores.UsersStore.getLocalUser().calendar
 }))(observer(ProjectsPage))
