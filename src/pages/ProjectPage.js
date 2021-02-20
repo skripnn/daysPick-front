@@ -1,16 +1,15 @@
 import React, {useEffect, useState} from "react";
-import {getProject} from "../js/fetch/project";
-import {getCalendar} from "../js/fetch/calendar";
 import Calendar from "../components/Calendar";
 import ProjectForm from "../components/ProjectForm/ProjectForm";
 import {inject, observer} from "mobx-react";
 import {getProjectId} from "../js/functions/functions";
 import PopOverDay from "../components/PopOverDay/PopOverDay";
+import Fetch from "../js/Fetch";
 
 function ProjectPage(props) {
   const {id, user, setDays, dates, setProject, hidden} = props.project
   useEffect(() => {
-    if (id) getProject(id).then(setProject)
+    if (id) Fetch.get(['project', id]).then(setProject)
   // eslint-disable-next-line
   },[])
 
@@ -32,7 +31,7 @@ function ProjectPage(props) {
       <Calendar
         trigger={id}
         edit={true}
-        get={(start, end) => getCalendar(start, end, user, id)}
+        get={(start, end) => Fetch.getCalendar(start, end, user, id)}
         onChange={(daysPick, date) => setDays(daysPick, date)}
         content={{
           ...props.calendar,

@@ -1,13 +1,11 @@
 import React, {useEffect, useState} from "react";
 import Calendar from '../components/Calendar';
-import {postDaysOff} from "../js/fetch/daysOff";
-import {getCalendar} from "../js/fetch/calendar";
 import {inject, observer} from "mobx-react";
-import {deleteProject, postProject} from "../js/fetch/project";
 import {List, ListSubheader} from "@material-ui/core";
 import ProjectItem from "../components/ProjectItem/ProjectItem";
 import PopOverDay from "../components/PopOverDay/PopOverDay";
 import PositionTags from "../components/PositionTags/PositionTags";
+import Fetch from "../js/Fetch";
 
 
 function UserPage(props) {
@@ -39,7 +37,7 @@ function UserPage(props) {
   }
 
   function onChange(daysPick, date) {
-    postDaysOff(date.format()).then()
+    Fetch.post('daysoff', date.format()).then()
     calendar.setValue({daysOff: new Set(daysPick)})
   }
 
@@ -56,7 +54,7 @@ function UserPage(props) {
 
   function del(project) {
     delProject(project.id)
-    deleteProject(project.id).then(() => {
+    Fetch.delete(['project', project.id]).then(() => {
       delProject(project.id)
       setTriggerGet(new Date().getTime())
     })
@@ -64,7 +62,7 @@ function UserPage(props) {
 
   function paidToggle(project) {
     project.is_paid = !project.is_paid
-    postProject(project).then(getUser)
+    Fetch.post('project', project).then(getUser)
   }
 
   if (userPage.loading) return <></>
@@ -77,7 +75,7 @@ function UserPage(props) {
         triggerNew={user.username}
         content={content}
         setContent={calendar.setContent}
-        get={(start, end) => getCalendar(start, end, user.username)}
+        get={(start, end) => Fetch.getCalendar(start, end, user.username)}
         offset={false}
         edit={userPage.edit}
         onChange={onChange}

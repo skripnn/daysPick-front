@@ -3,9 +3,9 @@ import React from "react";
 import ActionButton from "../ActionButton/ActionButton";
 import ActionsPanel from "../ActionsPanel/ActionsPanel";
 import {inject, observer} from "mobx-react";
-import {deleteProject, postProject} from "../../../js/fetch/project";
 import { useLastLocation } from 'react-router-last-location';
 import BackOrProfileActionButton from "../BackOrProfileActionButton/BackOrProfileActionButton";
+import Fetch from "../../../js/Fetch";
 
 function ProjectPageActionPanel(props) {
   const lastLocation = useLastLocation()
@@ -17,7 +17,7 @@ function ProjectPageActionPanel(props) {
   }
 
   function del() {
-    deleteProject(id).then(back)
+    Fetch.delete('project', id).then(back)
   }
 
   function save() {
@@ -32,7 +32,7 @@ function ProjectPageActionPanel(props) {
       alert(errorsString)
     }
     else {
-      postProject(serializer()).then(
+      Fetch.post('project', serializer()).then(
         () => back(),
         (error) => alert(error)
       )

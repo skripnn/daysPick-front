@@ -16,6 +16,7 @@ import SearchPage from "./pages/SearchPage";
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 import SignupPage from "./pages/SignupPage";
+import TestPage from "./pages/TestPage";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -65,6 +66,7 @@ function App(props) {
         <Container maxWidth="md" className={"content-block"} style={{display: "flex", flexGrow: 1, flexDirection: "column"}}>
           <ActionsSwitch hidden={mobile} history={history}/>
           <Switch>
+            <Route history={history} path='/test/' component={TestPage}/>
             <Route history={history} path='/profile/' component={ProfilePage}/>
             <Route history={history} path='/clients/' component={ClientsPage}/>
             <Route history={history} path='/projects/' component={ProjectsPage}/>

@@ -1,8 +1,8 @@
 import UserPageStore from "../pageStores/UserPageStore";
 import {makeAutoObservable} from "mobx";
-import {getUser} from "../../js/fetch/user";
 import CalendarStore from "./CalendarStore";
 import ProfileStore from "./ProfileStore";
+import Fetch from "../../js/Fetch";
 
 class UserStore {
   user = new ProfileStore()
@@ -22,7 +22,7 @@ class UserStore {
   }
 
   getUser = () => {
-    getUser(this.user.username || this.user.phone_confirm).then(this.load)
+    Fetch.get(['user', (this.user.username || this.user.phone_confirm)]).then(this.load)
     return this
   }
 

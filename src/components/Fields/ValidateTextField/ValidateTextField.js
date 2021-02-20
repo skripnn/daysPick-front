@@ -6,8 +6,8 @@ import MuiPhoneNumber from "material-ui-phone-number";
 import {InfoOutlined, Visibility, VisibilityOff} from "@material-ui/icons";
 import {PopoverContent} from "react-bootstrap";
 import Typography from "@material-ui/core/Typography";
-import {getCheckEmail, getCheckPhone, getCheckUsername} from "../../../js/fetch/auth";
-import Loader from "../../../js/functions/Loader";
+import Loader from "../../../js/Loader";
+import Fetch from "../../../js/Fetch";
 
 
 export default function ValidateTextField(props) {
@@ -58,7 +58,7 @@ export function ValidatePhoneField(props) {
     if (isValid(v)) {
       setHelperTextIn(null)
       valid = true
-      Loader.set(() => getCheckPhone(v).then(r => {
+      Loader.set(() => Fetch.get('signup', {phone: v}).then(r => {
         if (r.error) {
           setExist(r.error)
           setErrorIn(true)
@@ -165,7 +165,7 @@ export function ValidateUsernameField(props) {
     if (!error && value.match(/[^a-z0-9_]/)) error = rules[2]
     if (!error) {
       setHelperText(null)
-      Loader.set(() => getCheckUsername(value).then(r => {
+      Loader.set(() => Fetch.get('signup', {username: value}).then(r => {
         setHelperText(r.error || null)
         setError(!!r.error)
       }))
@@ -219,7 +219,7 @@ export function ValidateEmailField(props) {
     const valid = isValid(v)
     if (valid) {
       setHelperText(null)
-      Loader.set(() => getCheckEmail(v).then(r => {
+      Loader.set(() => Fetch.get('signup', {email: v}).then(r => {
         setHelperText(r.error || null)
         setError(!!r.error)
       }))

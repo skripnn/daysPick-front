@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {Chip, IconButton, InputBase, List, ListItem, ListSubheader} from "@material-ui/core";
 import Box from "@material-ui/core/Box";
 import {AddCircle} from "@material-ui/icons";
-import {addPosition, deletePosition, getPosition} from "../../js/fetch/user";
+import Fetch from "../../js/Fetch";
 
 function PositionTags(props) {
   const {positions, set} = props
@@ -11,13 +11,13 @@ function PositionTags(props) {
   if (!positions.length && !set) return null
 
   function del(position) {
-    deletePosition(position).then(r => {
+    Fetch.delete(['profile', 'position', position]).then(r => {
       set(r)
     })
   }
 
   function add() {
-    if (!!newChip) addPosition(newChip).then((r) => {
+    if (!!newChip) Fetch.put(['profile', 'position', newChip]).then((r) => {
       set(r)
       onChange(null)
     })
@@ -34,7 +34,7 @@ function PositionTags(props) {
       if (!v || v.length < 3) setOption('')
       else if (!option.startsWith(v) || backspace) {
         if (!backspace) setOption('')
-        getPosition(v).then(setOption)
+        Fetch.get(['profile', 'position', v]).then(setOption)
       }
     }
   }

@@ -1,4 +1,4 @@
-import TouchHold from "../../js/functions/TouchHold";
+import TouchHold from "../../js/TouchHold";
 import {newDate} from "../../js/functions/date";
 import {ListItem, ListItemSecondaryAction, ListItemText} from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";

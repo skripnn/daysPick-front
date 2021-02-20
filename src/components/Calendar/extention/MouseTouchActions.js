@@ -1,2 +1,2 @@
-import TouchHold from "../../../js/functions/TouchHold";
+import TouchHold from "../../../js/TouchHold";
 export default TouchHold

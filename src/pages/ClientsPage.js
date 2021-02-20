@@ -1,32 +1,32 @@
 import React, {useEffect, useState} from "react";
-import {deleteClient, getClients, postClient} from "../js/fetch/client";
 import ClientDialog from "../components/ClientDialog/ClientDialog";
 import {inject, observer} from "mobx-react";
 import ClientItem from "../components/ClientItem/ClientItem.js";
 import {List, ListSubheader} from "@material-ui/core";
 import SearchField from "../components/Fields/SearchField/SearchField";
 import {convertClients} from "../js/functions/functions";
+import Fetch from "../js/Fetch";
 
 function ClientsPage(props) {
   const {clients, dialog, setClients, delClient, setDialog, saveClient} = props.ClientsPageStore
   const [filtered, setFiltered] = useState(null)
 
   useEffect(() => {
-    getClients().then(setClients)
+    Fetch.get('clients').then(setClients)
   // eslint-disable-next-line
   },[])
 
   function del(client) {
-    deleteClient(client.id).then(() => {
+    Fetch.delete(['client', client.id]).then(() => {
       delClient(client.id)
       setDialog(null)
     })
   }
 
   function save(client) {
-    postClient(client).then((result) => {
+    Fetch.post(['client', client.id], client).then(result => {
       saveClient(result)
-      getClients().then(result => setClients(result))
+      Fetch.get('clients').then(result => setClients(result))
       setDialog(null)
     })
   }
@@ -36,7 +36,7 @@ function ClientsPage(props) {
     <div>
       <List dense>
         <ListSubheader style={{background: 'white', lineHeight: "unset", padding: "unset"}}>
-          <SearchField get={getClients} set={setFiltered} calendar={props.calendar} user={localStorage.User}/>
+          <SearchField get={() => Fetch.get('clients')} set={setFiltered} calendar={props.calendar} user={localStorage.User}/>
         </ListSubheader>
         {convertClients(filtered || clients).map(i => (
           <div key={i.company}>

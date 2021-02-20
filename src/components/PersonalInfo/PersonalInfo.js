@@ -1,5 +1,4 @@
 import React, {useState} from "react";
-import {postProfile} from "../../js/fetch/user";
 import {
   Grid,
   InputAdornment,
@@ -14,6 +13,7 @@ import RefreshIcon from "../Icons/RefreshIcon";
 import {Mail, Save, Telegram} from "@material-ui/icons";
 import ValidateTextField, {ValidatePhoneField} from "../Fields/ValidateTextField/ValidateTextField";
 import TextField from "../Fields/TextField/TextField";
+import Fetch from "../../js/Fetch";
 
 function PersonalInfo(props) {
   const {first_name, last_name, email, email_confirm, phone, phone_confirm, setValue} = props
@@ -39,7 +39,7 @@ function PersonalInfo(props) {
   function save() {
     let dict = {}
     for (const [key, value] of Object.entries(v)) if (value) dict[key] = value
-    postProfile(dict).then(r => {
+    Fetch.post('profile', dict).then(r => {
       setValue(r)
       cancel()
     })
@@ -131,7 +131,7 @@ function PersonalInfo(props) {
               <Tooltip title="Повторить отправку письма">
                 <InputAdornment position="end">
                   <IconButton
-                    onClick={() => postProfile({email: email}).then(() => setEmailSend(false))}
+                    onClick={() => Fetch.post('profile', {email: email}).then(() => setEmailSend(false))}
                     size={'small'}
                     disabled={emailSend !== true}
                   >

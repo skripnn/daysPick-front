@@ -5,7 +5,6 @@ import {
   DialogTitle, List, ListItem, ListItemText, ListSubheader
 } from "@material-ui/core";
 import TextField from "../Fields/TextField/TextField";
-import {getClient} from "../../js/fetch/client";
 import {Link} from "react-router-dom";
 import './ClientDialog.css'
 import {inject, observer} from "mobx-react";
@@ -13,13 +12,14 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import ActionButton from "../Actions/ActionButton/ActionButton";
 import ActionsPanel from "../Actions/ActionsPanel/ActionsPanel";
 import {ArrowBackIos, Delete, Save} from "@material-ui/icons";
+import Fetch from "../../js/Fetch";
 
 
 function ClientDialog(props) {
   const [state, setState] = useState(props.client || props.ClientsPageStore.dialog)
 
   useEffect(() => {
-    if (state.id) getClient(state.id).then(client => setState(client))
+    if (state.id) Fetch.get('client', state.id).then(client => setState(client))
   // eslint-disable-next-line
   }, [])
 

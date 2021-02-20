@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from "react";
-import {deleteProject, getProjects} from "../js/fetch/project";
 import {inject, observer} from "mobx-react";
 import {LocalUser} from "../js/functions/functions";
 import {List, ListSubheader} from "@material-ui/core";
 import ProjectItem from "../components/ProjectItem/ProjectItem";
 import SearchField from "../components/Fields/SearchField/SearchField";
+import Fetch from "../js/Fetch";
 
 
 function ProjectsPage(props) {
@@ -17,11 +17,11 @@ function ProjectsPage(props) {
   useEffect(get, [])
 
   function get() {
-    getProjects(user).then(setProjects)
+    Fetch.get('projects', {user: user}).then(setProjects)
   }
 
   function del(project) {
-    deleteProject(project.id).then(() => delProject(project.id))
+    Fetch.delete('project', project.id).then(() => delProject(project.id))
   }
 
   function link(project) {
@@ -33,7 +33,7 @@ function ProjectsPage(props) {
     <div>
       <List dense>
         <ListSubheader style={{background: 'white', lineHeight: "unset", padding: "unset"}}>
-          <SearchField get={(v) => getProjects(user, v)} set={setFiltered} calendar={props.calendar} user={localStorage.User}/>
+          <SearchField get={(v) => Fetch.get('projects', {user: user, ...v})} set={setFiltered} calendar={props.calendar} user={localStorage.User}/>
         </ListSubheader>
         {(filtered || projects).map(project => <ProjectItem
           project={project}

@@ -5,9 +5,9 @@ import Container from "@material-ui/core/Container";
 import ValidateTextField, {ValidatePasswordField} from "../components/Fields/ValidateTextField/ValidateTextField";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
-import {postLogIn} from "../js/fetch/auth";
 import {useStyle} from "../js/core/auth";
 import {inject, observer} from "mobx-react";
+import Fetch from "../js/Fetch";
 
 
 function LoginPage(props) {
@@ -30,8 +30,9 @@ function LoginPage(props) {
     if (Object.values(data).includes(null)) setError('Заполни все поля')
     else {
       setLoading(true)
-      postLogIn(data)
+      Fetch.post('login', data)
         .then(r => {
+          console.log(r)
             if (r.token) {
               if (error) setError(null)
               props.UsersStore.setLocalUser(r)

@@ -1,8 +1,8 @@
 import SearchField from "../components/Fields/SearchField/SearchField";
 import React, {useState} from "react";
 import {List, ListSubheader,} from "@material-ui/core";
-import {getUsers} from "../js/fetch/users";
 import UserItem from "../components/UserItem/UserItem";
+import Fetch from "../js/Fetch";
 
 
 export default function SearchPage() {
@@ -11,7 +11,7 @@ export default function SearchPage() {
   return (
       <List dense>
         <ListSubheader style={{background: 'white', lineHeight: "unset", padding: "unset"}}>
-          <SearchField get={getUsers} set={setUsers} placeholder={"Кого искать?"}/>
+          <SearchField get={obj => Fetch.get('users', obj)} set={setUsers} placeholder={"Кого искать?"}/>
         </ListSubheader>
       {users && users.map(user => <UserItem user={user} key={user.username}/>)}
       </List>

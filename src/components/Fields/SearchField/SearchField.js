@@ -4,9 +4,9 @@ import TextField from "../TextField/TextField";
 import React, {useEffect, useRef, useState} from "react";
 import Box from "@material-ui/core/Box";
 import Calendar from "../../Calendar";
-import Loader from "../../../js/functions/Loader";
+import Loader from "../../../js/Loader";
 import {makeStyles} from "@material-ui/core/styles";
-import {getCalendar} from "../../../js/fetch/calendar";
+import Fetch from "../../../js/Fetch";
 
 const useStyles = makeStyles({
   root: {
@@ -93,7 +93,7 @@ export default function SearchField(props) {
           <Calendar
             edit
             onChange={v => v.length? setDays(v) : setDays(null)}
-            get={user? (start, end) => getCalendar(start, end, user) : undefined}
+            get={user? (start, end) => Fetch.getCalendar(start, end, user) : undefined}
             content={content}
             setContent={setContent}
           />

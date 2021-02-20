@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {getFromUrl} from "../js/fetch/core";
+import Fetch from "../js/Fetch";
 import {Typography} from "@material-ui/core";
 import {Link} from "react-router-dom";
 
@@ -7,7 +7,7 @@ export default function ConfirmPage() {
   const [state, setState] = useState(false)
 
   useEffect(() => {
-    getFromUrl().then((result) => {
+    Fetch.getFromUrl().then((result) => {
       if (result.result) {
         if (!localStorage.User) {
           setState(true)

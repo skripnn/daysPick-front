@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from "react";
-import { postSignUp} from "../js/fetch/auth";
 import Box from "@material-ui/core/Box";
 import Container from "@material-ui/core/Container";
 import {List, ListItem, ListSubheader} from "@material-ui/core";
@@ -11,6 +10,7 @@ import {
 } from "../components/Fields/ValidateTextField/ValidateTextField";
 import Button from "@material-ui/core/Button";
 import {useStyle} from "../js/core/auth";
+import Fetch from "../js/Fetch";
 
 
 export default function SignupPage() {
@@ -47,7 +47,7 @@ export default function SignupPage() {
     e.preventDefault()
     if (Object.values(data).includes(null) || Object.values(valid).includes(false)) return
     setLoading(true)
-    postSignUp(data)
+    Fetch.post('signup', data)
       .then(r => {
         if (r.error) {
           setLoading(false)
