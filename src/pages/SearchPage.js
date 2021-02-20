@@ -10,7 +10,7 @@ export default function SearchPage() {
 
   return (
       <List dense>
-        <ListSubheader style={{background: 'white', lineHeight: "unset"}}>
+        <ListSubheader style={{background: 'white', lineHeight: "unset", padding: "unset"}}>
           <SearchField get={getUsers} set={setUsers} placeholder={"Кого искать?"}/>
         </ListSubheader>
       {users && users.map(user => <UserItem user={user} key={user.username}/>)}

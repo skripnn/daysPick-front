@@ -45,7 +45,8 @@ function PersonalInfo(props) {
     })
   }
 
-  function handleChange(obj) {
+  function handleChange(value, prop) {
+    const obj = Object.fromEntries([[prop, value]])
     setV({...v, ...obj})
     for (const key of Object.keys(obj)) {
       const dict = Object.fromEntries([[key, null]])
@@ -89,7 +90,7 @@ function PersonalInfo(props) {
           name={'first_name'}
           value={v.first_name}
           defaultValue={first_name}
-          onChange={(value) => handleChange({first_name: value})}
+          onChange={handleChange}
           cancel={() => cancel('first_name')}
         />
       </ListItem>
@@ -99,7 +100,7 @@ function PersonalInfo(props) {
           name={'last_name'}
           value={v.last_name}
           defaultValue={last_name}
-          onChange={(value) => handleChange({last_name: value})}
+          onChange={handleChange}
           cancel={() => cancel('last_name')}
         />
       </ListItem>
@@ -113,7 +114,7 @@ function PersonalInfo(props) {
             error={e.email}
             defaultValue={email_confirm}
             convertValue={value => value.toLowerCase()}
-            onChange={(value) => handleChange({email: value})}
+            onChange={handleChange}
             onBlur={emailBlur}
             cancel={() => cancel('email')}
           />
@@ -162,7 +163,7 @@ function PersonalInfo(props) {
               value={v.phone}
               error={e.phone}
               defaultValue={phone_confirm}
-              onChange={(value) => handleChange({phone: value})}
+              onChange={handleChange}
               onBlur={phoneBlur}
               cancel={cancel}
             />

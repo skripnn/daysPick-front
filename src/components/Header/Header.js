@@ -2,7 +2,6 @@ import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import "./Header.css"
 import Box from "@material-ui/core/Box";
 import {Link} from "react-router-dom";
 import Menu from "../Menu/Menu";
@@ -24,6 +23,16 @@ export default function Header(props) {
     return 'DaysPick'
   }
 
+  const rightButton = !window.location.pathname.startsWith('/login')? (
+    <Link to={'/login/'}>
+      <Tooltip title="Log In">
+        <IconButton>
+          <LoginIcon/>
+        </IconButton>
+      </Tooltip>
+    </Link>
+  ) : null
+
   return (
     <AppBar position="static">
       <Toolbar className={'header'} variant={"dense"}>
@@ -32,15 +41,7 @@ export default function Header(props) {
             <Link to="/">{title()}</Link>
           </Typography>
         </Box>
-        {auth? (
-            <Menu history={props.history}/>
-        ) : <Link to={'/login/'}>
-          <Tooltip title="Log In">
-            <IconButton>
-              <LoginIcon/>
-            </IconButton>
-          </Tooltip>
-        </Link>}
+        {auth?  <Menu history={props.history}/> : rightButton}
       </Toolbar>
     </AppBar>
   );

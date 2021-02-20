@@ -17,11 +17,12 @@ const useStyles = makeStyles({
 })
 
 export default function SearchField(props) {
-  const {get, set, noCalendar, ...newProps} = props
+  const {get, set, noCalendar, calendar, user, ...newProps} = props
 
   const [filter, setFilter] = useState(null)
   const [loading, setLoading] = useState(false)
   const [days, setDays] = useState(null)
+  const [content, setContent] = useState(calendar? {...calendar} : {days: {}, daysOff: new Set(), daysPick: new Set()})
   // eslint-disable-next-line
   useEffect(download, [days, filter])
 
@@ -64,7 +65,6 @@ export default function SearchField(props) {
         <TextField
           {...newProps}
           size={"medium"}
-          label={props.label}
           value={filter || ''}
           onChange={(e) => setFilter(e.target.value || null)}
           InputProps={{
@@ -74,9 +74,13 @@ export default function SearchField(props) {
                   {props.loading || loading? <CircularProgress style={{width: 24, height: 24}} color={"inherit"}/> : <Search />}
                 </IconButton>
               </InputAdornment>,
-            endAdornment: ((filter) &&
+            endAdornment: ((filter || days) &&
               <InputAdornment position={"end"}>
-                <IconButton onClick={() => setFilter(null)}>
+                <IconButton onClick={() => {
+                  setFilter(null)
+                  setDays(null)
+                  setContent(prevState => ({...prevState, daysPick: new Set()}))
+                }}>
                   <Close/>
                 </IconButton>
               </InputAdornment>)}}
@@ -89,14 +93,10 @@ export default function SearchField(props) {
           <Calendar
             edit
             onChange={v => v.length? setDays(v) : setDays(null)}
-            get={props.user? (start, end) => getCalendar(start, end, props.user) : undefined}
-            content={props.content?
-              {
-                days: props.content.days,
-                daysOff: props.content.daysOff
-              } :
-              undefined
-            }/>
+            get={user? (start, end) => getCalendar(start, end, user) : undefined}
+            content={content}
+            setContent={setContent}
+          />
         </div>}
     </Box>
 

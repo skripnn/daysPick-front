@@ -3,8 +3,7 @@ import Container from "@material-ui/core/Container";
 import ProjectPage from "./pages/ProjectPage";
 import UserPage from "./pages/UserPage";
 import {Route, Switch, useLocation, withRouter} from "react-router-dom";
-import LoginPage from "./pages/loginPage";
-import SignUpPage from "./pages/singUpPage";
+import LoginPage from "./pages/LoginPage";
 import ConfirmPage from "./pages/confirmPage";
 import './App.css'
 import ActionsSwitch from "./components/Actions/ActionsSwitch";
@@ -14,6 +13,9 @@ import ProjectsPage from "./pages/ProjectsPage";
 import {isMobil} from "./js/functions/functions";
 import ProfilePage from "./pages/ProfilePage";
 import SearchPage from "./pages/SearchPage";
+import { createMuiTheme } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/styles';
+import SignupPage from "./pages/SignupPage";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -34,29 +36,52 @@ function App(props) {
 
   const { history } = props
 
+  const theme = createMuiTheme({
+    palette: {
+      primary: {
+        main: '#cae3fc'
+      },
+      secondary: {
+        main: '#404040'
+      },
+      info: {
+        main: '#ebedf0'
+      },
+      success: {
+        main: '#4db34b'
+      },
+      warning: {
+        main: '#ff6c6c'
+      }
+    },
+  });
+
+
   return (
-    <div className="App">
-      <ScrollToTop />
-      <Header history={history}/>
-      <Container maxWidth="md" className={"content-block"}>
-        <ActionsSwitch hidden={mobile} history={history}/>
-        <Switch>
-          <Route history={history} path='/profile/' component={ProfilePage}/>
-          <Route history={history} path='/clients/' component={ClientsPage}/>
-          <Route history={history} path='/projects/' component={ProjectsPage}/>
-          <Route history={history} path='/project/:id/' component={ProjectPage}/>
-          <Route history={history} path='/project/' component={ProjectPage}/>
-          <Route history={history} path='/login/' component={LoginPage}/>
-          <Route history={history} path='/signup/' component={SignUpPage}/>
-          <Route history={history} path='/confirm/' component={ConfirmPage}/>
-          <Route history={history} path='/user/:username/' component={UserPage}/>
-          <Route history={history} path='/' component={SearchPage}/>
-        </Switch>
-      </Container>
-      {mobile && <div className={'block static'}>
-        <ActionsSwitch bottom history={history}/>
-      </div>}
-    </div>
+    <ThemeProvider theme={theme}>
+      <div className="App">
+        <ScrollToTop />
+        <Header history={history}/>
+        <Container maxWidth="md" className={"content-block"} style={{display: "flex", flexGrow: 1, flexDirection: "column"}}>
+          <ActionsSwitch hidden={mobile} history={history}/>
+          <Switch>
+            <Route history={history} path='/profile/' component={ProfilePage}/>
+            <Route history={history} path='/clients/' component={ClientsPage}/>
+            <Route history={history} path='/projects/' component={ProjectsPage}/>
+            <Route history={history} path='/project/:id/' component={ProjectPage}/>
+            <Route history={history} path='/project/' component={ProjectPage}/>
+            <Route history={history} path='/login/' component={LoginPage}/>
+            <Route history={history} path='/signup/' component={SignupPage}/>
+            <Route history={history} path='/confirm/' component={ConfirmPage}/>
+            <Route history={history} path='/user/:username/' component={UserPage}/>
+            <Route history={history} path='/' component={SearchPage}/>
+          </Switch>
+        </Container>
+        {mobile && <div className={'block static'}>
+          <ActionsSwitch bottom history={history}/>
+        </div>}
+      </div>
+    </ThemeProvider>
   )
 }
 

@@ -1,76 +1,258 @@
-import React from "react";
+import React, {useState} from "react";
 import TextField from "../TextField/TextField";
-import {IconButton, InputAdornment} from "@material-ui/core";
+import {IconButton, InputAdornment, Popover} from "@material-ui/core";
 import RefreshIcon from "../../Icons/RefreshIcon";
 import MuiPhoneNumber from "material-ui-phone-number";
+import {InfoOutlined, Visibility, VisibilityOff} from "@material-ui/icons";
+import {PopoverContent} from "react-bootstrap";
+import Typography from "@material-ui/core/Typography";
+import {getCheckEmail, getCheckPhone, getCheckUsername} from "../../../js/fetch/auth";
+import Loader from "../../../js/functions/Loader";
 
 
 export default function ValidateTextField(props) {
+  const {onChange, value, defaultValue, onBlur, error, helperText, cancel, convertValue, ...newProps} = props
+
   function handleChange(e) {
     let value = e.target.value
-    if (props.convertValue) value = props.convertValue(value)
-    if (value === props.defaultValue) value = null
-    props.onChange(value)
+    if (convertValue) value = convertValue(value)
+    if (value === defaultValue) value = null
+    if (onChange) onChange(value, props.name)
   }
 
   return (
     <TextField
-      disabled={props.disabled}
-      label={props.label}
-      name={props.name}
       onChange={handleChange}
-      onBlur={props.value ? props.onBlur : undefined}
-      error={!!props.error}
-      helperText={props.helperText || props.error}
-      value={props.value || props.defaultValue || ''}
+      onBlur={value ? onBlur : undefined}
+      error={!!error}
+      helperText={helperText || error}
+      value={value || defaultValue || ''}
       onKeyDown={(e) => {
-        if (e.key === 'Escape') props.cancel()
+        if (e.key === 'Escape') cancel()
       }}
-      InputProps={!!props.value ? {
+      InputProps={!!value && cancel? {
         endAdornment: <InputAdornment position="end">
-          <IconButton onClick={props.cancel} size={'small'}>
+          <IconButton onClick={cancel} size={'small'}>
             <RefreshIcon />
           </IconButton>
         </InputAdornment>,
       } : undefined}
+      {...newProps}
     />
   )
 }
 
 export function ValidatePhoneField(props) {
-  function handleChange(value) {
-    if (props.convertValue) value = props.convertValue(value)
-    if (value === props.defaultValue || value === '+7') value = null
-    props.onChange(value)
+  const [errorIn, setErrorIn] = useState(false)
+  const [helperTextIn, setHelperTextIn] = useState(null)
+  const [exist, setExist] = useState(null)
+  const {onChange, value, convertValue, defaultValue, onBlur, error, cancel, ...newProps} = props
+
+  function handleChange(v) {
+    Loader.clear()
+    setExist(null)
+    setErrorIn(null)
+    if (convertValue) v = convertValue(v)
+    if (v === defaultValue || v === '+7') v = null
+    let valid = !helperTextIn
+    if (isValid(v)) {
+      setHelperTextIn(null)
+      valid = true
+      Loader.set(() => getCheckPhone(v).then(r => {
+        if (r.error) {
+          setExist(r.error)
+          setErrorIn(true)
+        }
+      }))
+    }
+    if (onChange) onChange(v, props.name, valid)
   }
 
-  const helperText = <>Для подтверждения используется Telegram</>
+  const isValid = (v) => /^\+\d \(([0-9]{3})\) ([0-9]{3})-([0-9]{2})-([0-9]{2})$/.test(v)
+
+  function onBlurIn() {
+    let valid = isValid(value)
+    if (valid) {
+      setErrorIn(false)
+      setHelperTextIn(null)
+    }
+    else {
+      setErrorIn(true)
+      setHelperTextIn("Неверный формат")
+    }
+    if (onBlur) onBlur(value, props.name, valid)
+  }
+
+  const helperText = "Для подтверждения используется Telegram"
+
+
+  function getHelperText() {
+    if (value || !defaultValue) {
+      if (exist) return exist
+      if (error) return error
+      if (helperTextIn) return helperTextIn
+      if (helperText) return helperText
+    }
+    return null
+  }
 
   return (
     <MuiPhoneNumber
+      color={'secondary'}
       countryCodeEditable={false}
       defaultCountry={'ru'}
       onlyCountries={['ru']}
       size="small"
       fullWidth
       autoComplete='off'
-      disabled={props.disabled}
-      label={props.label}
-      name={props.name}
       onChange={handleChange}
-      onBlur={props.value ? props.onBlur : undefined}
-      error={!!props.error}
-      helperText={(props.value || !props.defaultValue) ? props.error || helperText : undefined}
-      value={props.value || props.defaultValue || ''}
+      onBlur={value ? onBlurIn : undefined}
+      error={!!error || errorIn}
+      helperText={getHelperText()}
+      value={value || defaultValue || ''}
       onKeyDown={(e) => {
-        if (e.key === 'Escape') props.cancel()
+        if (cancel && e.key === 'Escape') cancel(props.name)
       }}
-      InputProps={!!props.value ? {
+      InputProps={!!value && !!cancel? {
         endAdornment: <InputAdornment position="end">
-          <IconButton onClick={() => props.cancel('phone')} size={'small'}>
+          <IconButton onClick={() => cancel(props.name)} size={'small'}>
             <RefreshIcon />
           </IconButton>
         </InputAdornment>,
-      } : {}}
+      } : undefined}
+      {...newProps}
     />)
+}
+
+export function ValidatePasswordField(props) {
+  const [show, setShow] = useState(false)
+
+  return (
+    <ValidateTextField
+      type={show? 'text' : 'password'}
+      InputProps={{
+      endAdornment:
+        <InputAdornment position="end">
+          <IconButton onClick={() => setShow(!show)}>
+          {show ? <Visibility /> : <VisibilityOff />}
+          </IconButton>
+        </InputAdornment>
+      }}
+      {...props}
+    />)
+}
+
+export function ValidateUsernameField(props) {
+  const [anchorEl, setAnchorEl] = useState(false)
+  const [helperText, setHelperText] = useState("Минимум 4 символа")
+  const [error, setError] = useState(false)
+
+  const {onChange, ...newProps} = props
+
+  const rules = [
+    "Первый символ - только буква латинского алфавита",
+    "Минимум 4 символа",
+    "Используй только латиницу, цифры и нижнее подчеркивание"
+  ]
+
+  function handleChange(v, name) {
+    Loader.clear()
+    const value = v.toLowerCase()
+    setError(false)
+    let error = null
+    if (value.match(/^[^a-z]/)) error = rules[0]
+    if (!error && value.length < 4) error = rules[1]
+    if (!error && value.match(/[^a-z0-9_]/)) error = rules[2]
+    if (!error) {
+      setHelperText(null)
+      Loader.set(() => getCheckUsername(value).then(r => {
+        setHelperText(r.error || null)
+        setError(!!r.error)
+      }))
+    }
+    else setHelperText(error)
+    if (onChange) onChange(value, name, !error)
+  }
+
+  return (
+    <>
+      <ValidateTextField
+        type={'username'}
+        error={error}
+        helperText={helperText}
+        onChange={handleChange}
+        InputProps={{
+          endAdornment:
+            <InputAdornment position={'end'}>
+              <IconButton onClick={(e) => setAnchorEl(e.target)}>
+                <InfoOutlined />
+              </IconButton>
+            </InputAdornment>
+        }}
+        {...newProps}
+      />
+      <Popover
+        open={!!anchorEl}
+        anchorEl={anchorEl}
+        onClose={() => setAnchorEl(null)}
+        transformOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right'
+        }}
+      >
+        <PopoverContent style={{padding: 10}}>
+          {rules.map((rule, i) => <Typography variant={'caption'} key={i}>{rule}<br/></Typography>)}
+        </PopoverContent>
+      </Popover>
+    </>
+  )
+}
+
+export function ValidateEmailField(props) {
+  const [error, setError] = useState(false)
+  const [helperText, setHelperText] = useState(null)
+  const {onChange, onBlur, ...newProps} = props
+
+  function handleChange(v, name) {
+    Loader.clear()
+    setError(false)
+    const valid = isValid(v)
+    if (valid) {
+      setHelperText(null)
+      Loader.set(() => getCheckEmail(v).then(r => {
+        setHelperText(r.error || null)
+        setError(!!r.error)
+      }))
+    }
+    if (onChange) onChange(v, name, valid)
+  }
+
+  const convertValue = (v) => v.toLowerCase()
+
+  function onBlurIn() {
+    const valid = isValid(props.value)
+    if (valid) {
+      setHelperText(null)
+      setError(false)
+    }
+    else {
+      setHelperText("Неверный формат")
+      setError(true)
+    }
+    if (onBlur) onBlur(props.value, props.name, valid)
+  }
+
+  const isValid = (v) => /^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/.test(v)
+
+  return (
+    <ValidateTextField
+      type={'email'}
+      error={error}
+      helperText={helperText}
+      convertValue={convertValue}
+      onChange={handleChange}
+      onBlur={onBlurIn}
+      {...newProps}
+    />
+  )
 }

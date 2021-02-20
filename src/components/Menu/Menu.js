@@ -24,7 +24,7 @@ function MenuItem(props) {
   }
 
   return (
-    <ListItem button onClick={handleClick} className={'menu-item'} selected={window.location.pathname === props.link}>
+    <ListItem button onClick={handleClick} className={'menu-item'} selected={!props.noSelect && window.location.pathname === props.link}>
       <ListItemIcon>{props.icon}</ListItemIcon>
       <ListItemText primary={props.text} secondary={props.sub || null}/>
     </ListItem>
@@ -67,11 +67,11 @@ function Menu(props) {
         <Divider />
         <List>
           <MenuItem text={'Профиль'} icon={<PermIdentity />} link={`/profile/`} onClick={close} />
-          <MenuItem text={'Выйти'} icon={<LogoutIcon />} link={`/`} onClick={(link) => {
+          <MenuItem text={'Выйти'} icon={<LogoutIcon />} link={`/`} noSelect onClick={(link) => {
             localStorage.clear()
             props.getUser()
             close(link)
-          }} />
+          }}/>
         </List>
       </Drawer>
     </div>

@@ -82,6 +82,8 @@ function Calendar (props) {
     }
   }
 
+
+
   function fromPropsOffset() {
     // обновление при смене props.noOffset
     updateState({offset: !props.noOffset})

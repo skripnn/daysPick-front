@@ -18,7 +18,8 @@ export function checkAuth(res) {
     window.location.href = "/login/"
     return
   }
-  return res.json()
+  if (res.status === 200) return res.json()
+  return {error: `${res.status} ${res.statusText}`}
 }
 
 

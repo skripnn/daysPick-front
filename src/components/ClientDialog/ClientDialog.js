@@ -12,7 +12,7 @@ import {inject, observer} from "mobx-react";
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import ActionButton from "../Actions/ActionButton/ActionButton";
 import ActionsPanel from "../Actions/ActionsPanel/ActionsPanel";
-import {ArrowBackIos, Clear, Save} from "@material-ui/icons";
+import {ArrowBackIos, Delete, Save} from "@material-ui/icons";
 
 
 function ClientDialog(props) {
@@ -30,7 +30,7 @@ function ClientDialog(props) {
       bottom={fullScreen}
       left={<ActionButton onClick={props.close} label="Назад" icon={<ArrowBackIos/>}/>}
       right={<>
-        <ActionButton onClick={() => props.onDelete(state)} label="Удалить" icon={<Clear/>}/>
+        <ActionButton onClick={() => props.onDelete(state)} label="Удалить" icon={<Delete/>}/>
         <ActionButton onClick={() => props.onSave(state)} label="Сохранить" disabled={!state.name} icon={<Save/>}/>
       </>}
     />

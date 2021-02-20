@@ -10,7 +10,6 @@ import {convertClients} from "../js/functions/functions";
 function ClientsPage(props) {
   const {clients, dialog, setClients, delClient, setDialog, saveClient} = props.ClientsPageStore
   const [filtered, setFiltered] = useState(null)
-  console.log(filtered)
 
   useEffect(() => {
     getClients().then(setClients)
@@ -36,7 +35,7 @@ function ClientsPage(props) {
   return (
     <div>
       <List dense>
-        <ListSubheader style={{background: 'white', lineHeight: "unset"}}>
+        <ListSubheader style={{background: 'white', lineHeight: "unset", padding: "unset"}}>
           <SearchField get={getClients} set={setFiltered} calendar={props.calendar} user={localStorage.User}/>
         </ListSubheader>
         {convertClients(filtered || clients).map(i => (
