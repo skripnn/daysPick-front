@@ -63,6 +63,7 @@ function LoginPage(props) {
               label={'Имя пользователя'}
               name={'username'}
               value={data.username}
+              convertValue={v => (v? v.toLowerCase() : v)}
               onChange={set}
             />
           </ListItem>
@@ -70,7 +71,6 @@ function LoginPage(props) {
             <ValidatePasswordField
               required
               autoComplete={"current-password"}
-              type={'password'}
               label={'Пароль'}
               name={'password'}
               value={data.password}

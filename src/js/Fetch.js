@@ -23,7 +23,7 @@ class FetchClass {
   }
 
   path = (URLs, params) => {
-    if (URLs instanceof Array) URLs = URLs.join('/')
+    if (URLs instanceof Array) URLs = URLs.filter(v => !!v).join('/')
     let path = this.url + URLs + '/'
     if (params) {
       path += '?'

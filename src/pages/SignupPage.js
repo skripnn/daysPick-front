@@ -1,16 +1,19 @@
 import React, {useEffect, useState} from "react";
 import Box from "@material-ui/core/Box";
 import Container from "@material-ui/core/Container";
-import {List, ListItem, ListSubheader} from "@material-ui/core";
+import {InputAdornment, List, ListItem, ListSubheader, Tooltip} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import {
   ValidateEmailField,
-  ValidatePasswordField,
+  ValidatePasswordField, ValidatePhoneField,
   ValidateUsernameField
 } from "../components/Fields/ValidateTextField/ValidateTextField";
 import Button from "@material-ui/core/Button";
 import {useStyle} from "../js/core/auth";
 import Fetch from "../js/Fetch";
+import IconButton from "@material-ui/core/IconButton";
+import {Telegram} from "@material-ui/icons";
+import TextField from "../components/Fields/TextField/TextField";
 
 
 export default function SignupPage() {
@@ -23,14 +26,14 @@ export default function SignupPage() {
     username: null,
     password: null,
     password2: null,
-    email: null,
-    // phone: null
+    // email: null,
+    phone: null
   })
   const [valid, setValid] = useState({
     username: false,
     password2: false,
-    email: false,
-    // phone: false
+    // email: false,
+    phone: false
   })
   useEffect(() => setError(null), [data])
 
@@ -84,6 +87,8 @@ export default function SignupPage() {
     password2Validation(value)
   }
 
+  const TeleBotLink = `https://t.me/dayspick_bot?start=${data.username}`
+
   return (
     <Box className={classNames.root}>
       <Box flexGrow={1}/>
@@ -93,6 +98,7 @@ export default function SignupPage() {
             <Typography variant={"h6"} color={'secondary'} align={'center'}>Регистрация</Typography>
             <ListItem>
               <ValidateUsernameField
+                disabled={confirm}
                 autoFocus
                 required
                 label={'Имя пользователя'}
@@ -103,6 +109,7 @@ export default function SignupPage() {
             </ListItem>
             <ListItem>
               <ValidatePasswordField
+                disabled={confirm}
                 required
                 label={'Пароль'}
                 name={'password'}
@@ -112,6 +119,7 @@ export default function SignupPage() {
             </ListItem>
             <ListItem>
               <ValidatePasswordField
+                disabled={confirm}
                 required
                 label={'Повтори пароль'}
                 name={'password2'}
@@ -121,26 +129,43 @@ export default function SignupPage() {
                 error={password2error}
               />
             </ListItem>
-            <ListItem>
-              <ValidateEmailField
-                required
-                label={'E-mail'}
-                name={'email'}
-                value={data.email}
-                onChange={set}
-                onBlur={set}
-              />
-            </ListItem>
             {/*<ListItem>*/}
-            {/*  <ValidatePhoneField*/}
+            {/*  <ValidateEmailField*/}
             {/*    required*/}
-            {/*    label={'Телефон'}*/}
-            {/*    name={'phone'}*/}
-            {/*    value={data.phone}*/}
+            {/*    label={'E-mail'}*/}
+            {/*    name={'email'}*/}
+            {/*    value={data.email}*/}
             {/*    onChange={set}*/}
             {/*    onBlur={set}*/}
             {/*  />*/}
             {/*</ListItem>*/}
+            <ListItem>
+              {!confirm?
+              <ValidatePhoneField
+                required
+                label={'Телефон'}
+                name={'phone'}
+                value={data.phone}
+                onChange={set}
+                onBlur={set}
+              /> :
+              <TextField
+                label={'Телефон на подтверждении'}
+                disabled
+                value={data.phone}
+                helperText={<>Перейди в telegram-бот <a href={TeleBotLink} target={'_blank'} rel={"noreferrer"}>@dayspick_bot</a></>}
+                InputProps={{
+                  endAdornment:
+                    <Tooltip title="@dayspick_bot">
+                      <InputAdornment position="end">
+                        <IconButton onClick={() => window.open(TeleBotLink)}>
+                          <Telegram />
+                        </IconButton>
+                      </InputAdornment>
+                    </Tooltip>
+                }}
+              />}
+            </ListItem>
             <ListItem>
               <Button
                 disabled={Object.values(data).includes(null) || Object.values(valid).includes(false) || loading}
@@ -154,7 +179,7 @@ export default function SignupPage() {
               </Button>
             </ListItem>
             {!!error && <ListSubheader className={classNames.error}>{error}</ListSubheader>}
-            {confirm && <ListSubheader className={classNames.confirm}>Подтверди аккаунт</ListSubheader>}
+            {confirm && <ListSubheader className={classNames.confirm}><>Перейди в telegram-бот <a href={TeleBotLink} target={'_blank'} rel={"noreferrer"}>@dayspick_bot</a></></ListSubheader>}
           </form>
         </List>
       </Container>
