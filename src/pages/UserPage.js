@@ -70,7 +70,6 @@ function UserPage(props) {
   return (
     <div>
       <Calendar
-        zoom={1.2}
         triggerGet={triggerGet}
         triggerNew={user.username}
         content={content}

@@ -17,6 +17,7 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 import SignupPage from "./pages/SignupPage";
 import TestPage from "./pages/TestPage";
+import MainPage from "./pages/MainPage";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -76,7 +77,8 @@ function App(props) {
             <Route history={history} path='/signup/' component={SignupPage}/>
             <Route history={history} path='/confirm/' component={ConfirmPage}/>
             <Route history={history} path='/user/:username/' component={UserPage}/>
-            <Route history={history} path='/' component={SearchPage}/>
+            <Route history={history} path='/search/' component={SearchPage}/>
+            <Route history={history} path='/' component={MainPage}/>
           </Switch>
         </Container>
         {mobile && <div className={'block static'}>

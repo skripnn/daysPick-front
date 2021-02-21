@@ -17,7 +17,7 @@ function ProjectPageActionPanel(props) {
   }
 
   function del() {
-    Fetch.delete('project', id).then(back)
+    Fetch.delete(['project', id]).then(back)
   }
 
   function save() {
@@ -32,7 +32,7 @@ function ProjectPageActionPanel(props) {
       alert(errorsString)
     }
     else {
-      Fetch.post('project', serializer()).then(
+      Fetch.post(['project', id], serializer()).then(
         () => back(),
         (error) => alert(error)
       )

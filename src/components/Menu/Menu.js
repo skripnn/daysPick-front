@@ -14,7 +14,7 @@ import UserAvatar from "../UserAvatar/UserAvatar";
 import UserFullName from "../UserFullName/UserFullName";
 import {inject, observer} from "mobx-react";
 import Button from "@material-ui/core/Button";
-import {Group, List as ListIcon, PermIdentity} from "@material-ui/icons";
+import {Group, List as ListIcon, PermIdentity, Search} from "@material-ui/icons";
 import Box from "@material-ui/core/Box";
 import LogoutIcon from "../Icons/LogoutIcon";
 
@@ -66,6 +66,7 @@ function Menu(props) {
         </List>
         <Divider />
         <List>
+          <MenuItem text={'Поиск'} icon={<Search />} link={`/search/`} onClick={close} />
           <MenuItem text={'Профиль'} icon={<PermIdentity />} link={`/profile/`} onClick={close} />
           <MenuItem text={'Выйти'} icon={<LogoutIcon />} link={`/`} noSelect onClick={(link) => {
             localStorage.clear()

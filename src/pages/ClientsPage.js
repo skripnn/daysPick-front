@@ -36,8 +36,9 @@ function ClientsPage(props) {
     <div>
       <List dense>
         <ListSubheader style={{background: 'white', lineHeight: "unset", padding: "unset"}}>
-          <SearchField get={() => Fetch.get('clients')} set={setFiltered} calendar={props.calendar} user={localStorage.User}/>
+          <SearchField get={v => Fetch.get('clients', v)} set={setFiltered} calendar={props.calendar} user={localStorage.User}/>
         </ListSubheader>
+        <div style={{height: 12}}/>
         {convertClients(filtered || clients).map(i => (
           <div key={i.company}>
             <ListSubheader disableSticky>{i.company || ' '}</ListSubheader>

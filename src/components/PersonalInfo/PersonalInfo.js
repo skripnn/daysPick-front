@@ -75,7 +75,7 @@ function PersonalInfo(props) {
 
   return (
     <List dense>
-      <ListSubheader>
+      <ListSubheader disableSticky>
         <ActionsPanel
           left={'Личная информация'}
           right={notNull(v) ? <>

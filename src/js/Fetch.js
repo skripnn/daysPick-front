@@ -1,6 +1,6 @@
 // const localhost = "localhost"
-// const localhost = "192.168.31.71"
-const localhost = "192.168.0.218"
+const localhost = "192.168.31.71"
+// const localhost = "192.168.0.218"
 // const localhost = "192.168.0.109"
 
 
@@ -22,21 +22,27 @@ class FetchClass {
     return {error: `${res.status} ${res.statusText}`}
   }
 
-  setParam = (url, key, value) => {
-    if (value instanceof Array) {
-      for (const v of value) this.setParam(url, key, v)
-    }
-    else if (value !== undefined) url.searchParams.append(key, value)
-  }
-
   path = (URLs, params) => {
     if (URLs instanceof Array) URLs = URLs.join('/')
-    const path = new URL(URLs, this.url)
-    if (params) for (const [key, value] of Object.entries(params)) this.setParam(path, key, value)
-    return path.href + (params? "" : "/")
+    let path = this.url + URLs + '/'
+    if (params) {
+      path += '?'
+      let list = []
+      for (const [key, value] of Object.entries(params)) {
+        if (!value) continue
+        if (value instanceof Array) {
+          for (const v of value) list.push(`${key}=${v}`)
+        }
+        else {
+          list.push(`${key}=${value}`)
+        }
+      }
+      path += list.join('&')
+    }
+    return path
   }
 
-  get = (URLs, params, auth=true) => {
+  get = (URLs, params={}, auth=true) => {
     return fetch(this.path(URLs, params), {
       headers: this.authHeaders()
     }).then(res => this.checkAuth(res, auth))
@@ -74,7 +80,6 @@ class FetchClass {
     user: user,
     project_id: project
   })
-
 }
 
 const Fetch = new FetchClass()

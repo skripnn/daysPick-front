@@ -19,7 +19,7 @@ function ClientDialog(props) {
   const [state, setState] = useState(props.client || props.ClientsPageStore.dialog)
 
   useEffect(() => {
-    if (state.id) Fetch.get('client', state.id).then(client => setState(client))
+    if (state.id) Fetch.get(['client', state.id]).then(client => setState(client))
   // eslint-disable-next-line
   }, [])
 

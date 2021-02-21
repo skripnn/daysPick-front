@@ -21,7 +21,7 @@ function ProjectsPage(props) {
   }
 
   function del(project) {
-    Fetch.delete('project', project.id).then(() => delProject(project.id))
+    Fetch.delete(['project', project.id]).then(() => delProject(project.id))
   }
 
   function link(project) {

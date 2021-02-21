@@ -12,7 +12,7 @@ function ProjectForm(props) {
   const {title, is_paid, client, setValue} = props.ProjectStore
 
   return (
-    <Grid container className={'project-form'} justify="space-between" alignItems="flex-start" spacing={3}>
+    <Grid container justify="space-between" alignItems="flex-start" spacing={3} style={{marginTop: 12}}>
       <Grid item xs={12} md={6}>
         <Grid container direction="row" spacing={3}>
           <Grid item xs={12}>
