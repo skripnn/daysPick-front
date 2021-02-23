@@ -11,7 +11,7 @@ export default function SearchPage() {
   return (
       <List dense>
         <ListSubheader style={{background: 'white', lineHeight: "unset", padding: "unset"}}>
-          <SearchField get={obj => Fetch.get('users', obj)} set={setUsers} placeholder={"Кого искать?"}/>
+          <SearchField get={obj => Fetch.get('users', obj)} set={setUsers} placeholder={"Кого искать?"} autoFocus/>
         </ListSubheader>
       {users && users.map(user => <UserItem user={user} key={user.username}/>)}
       </List>

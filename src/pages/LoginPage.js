@@ -32,7 +32,6 @@ function LoginPage(props) {
       setLoading(true)
       Fetch.post('login', data)
         .then(r => {
-          console.log(r)
             if (r.token) {
               if (error) setError(null)
               props.UsersStore.setLocalUser(r)
@@ -58,7 +57,6 @@ function LoginPage(props) {
             <ValidateTextField
               autoFocus
               required
-              autoComplete={"username"}
               type={'username'}
               label={'Имя пользователя'}
               name={'username'}
@@ -70,7 +68,6 @@ function LoginPage(props) {
           <ListItem>
             <ValidatePasswordField
               required
-              autoComplete={"current-password"}
               label={'Пароль'}
               name={'password'}
               value={data.password}

@@ -19,7 +19,6 @@ function PersonalInfo(props) {
   const {first_name, last_name, email, email_confirm, phone, phone_confirm, setValue} = props
   const [emailSend, setEmailSend] = useState(true)
   const TeleBotLink = `https://t.me/dayspick_bot?start=${localStorage.User}`
-  console.log(props)
 
   const [v, setV] = useState({
     first_name: null,
@@ -55,13 +54,12 @@ function PersonalInfo(props) {
   }
 
   function emailBlur() {
-    console.log('emailBlur')
     if (/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/.test(v.email)) setE({...e, email: null})
     else setE({...e, email: "Неверный формат"})
   }
 
   function phoneBlur() {
-    if (/^\+\d \(([0-9]{3})\) ([0-9]{3})-([0-9]{2})-([0-9]{2})$/.test(v.phone)) setE({...e, phone: null})
+    if (/^79[0-9]{9}$/.test(v.phone)) setE({...e, phone: null})
     else setE({...e, phone: "Неверный формат"})
   }
 
@@ -169,7 +167,7 @@ function PersonalInfo(props) {
             />
           </Grid>
           {!!phone && <Grid item xs={12} sm>
-            <TextField
+            <ValidatePhoneField
               label={'Телефон на подтверждении'}
               disabled
               value={phone}

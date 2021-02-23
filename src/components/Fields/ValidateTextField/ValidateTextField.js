@@ -52,6 +52,7 @@ export function ValidatePhoneField(props) {
     Loader.clear()
     setExist(null)
     setErrorIn(null)
+    v = reformat(v)
     if (convertValue) v = convertValue(v)
     if (v === defaultValue || v === '+7') v = null
     let valid = !helperTextIn
@@ -68,7 +69,8 @@ export function ValidatePhoneField(props) {
     if (onChange) onChange(v, props.name, valid)
   }
 
-  const isValid = (v) => /^\+\d \(([0-9]{3})\) ([0-9]{3})-([0-9]{2})-([0-9]{2})$/.test(v)
+  const isValid = (v) => /^79[0-9]{9}$/.test(v)
+  const reformat = (v) => [...v.matchAll(/[0-9]+/g)].join('')
 
   function onBlurIn() {
     let valid = isValid(value)
@@ -98,6 +100,7 @@ export function ValidatePhoneField(props) {
 
   return (
     <MuiPhoneNumber
+      disableDropdown
       color={'secondary'}
       countryCodeEditable={false}
       defaultCountry={'ru'}

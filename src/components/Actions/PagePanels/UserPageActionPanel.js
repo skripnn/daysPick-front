@@ -41,8 +41,7 @@ function UserPageActionPanel(props) {
       onClick={() => setValue({edit: false, profile: true})}
     />
   ]
-  const right = localStorage.User? buttonsBlock : []
-
+  const right = isSelf? buttonsBlock : []
 
   return (
     <ActionsPanel

@@ -50,7 +50,7 @@ function ProjectItem(props) {
       {(project.money === 0 || !!project.money) &&
       <ListItemText
         secondary={new Intl.NumberFormat('ru-RU').format(project.money) + " ₽"}
-        style={{textAlign: "right"}}/>
+        style={{textAlign: "right", whiteSpace: "nowrap"}}/>
       }
       {!!secondaryAction &&
       <ListItemSecondaryAction className={className}>

@@ -13,7 +13,6 @@ import {useStyle} from "../js/core/auth";
 import Fetch from "../js/Fetch";
 import IconButton from "@material-ui/core/IconButton";
 import {Telegram} from "@material-ui/icons";
-import TextField from "../components/Fields/TextField/TextField";
 
 
 export default function SignupPage() {
@@ -149,7 +148,7 @@ export default function SignupPage() {
                 onChange={set}
                 onBlur={set}
               /> :
-              <TextField
+              <ValidatePhoneField
                 label={'Телефон на подтверждении'}
                 disabled
                 value={data.phone}
