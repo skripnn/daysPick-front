@@ -60,3 +60,19 @@ export function getMonth(m) {
   if (mm < 10) mm = '0' + mm;
   return mm
 }
+
+export function dateRange(start, end, format=true) {
+  // Возвращает список с датами между start и end включительно. При format=false - объекты Date.
+  let date = newDate(start)
+  let finish = newDate(end).getTime()
+  if (finish < date.getTime()) {
+    finish = date.getTime()
+    date = newDate(end)
+  }
+  const dates = []
+  while (date.getTime() <= finish) {
+    dates.push(format? date.format() : newDate(date))
+    date.offsetDays(1)
+  }
+  return dates
+}

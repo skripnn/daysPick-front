@@ -3,7 +3,7 @@ import React, {useEffect, useRef, useState} from "react";
 import {propTypes, defaultProps} from '../extention/propTypes'
 import '../extention/Calendar.css'
 import "../extention/date"
-import {getMonth, newDate} from "../extention/date";
+import {getMonth, newDate, dateRange} from "../extention/date";
 import sortSet from "../extention/sortSet";
 import weeksCounter from "../extention/weeksCounter";
 import weekWidth from "../extention/weekWidth";
@@ -32,7 +32,10 @@ function Calendar (props) {
 
     offset: !props.noOffset,
     loading: true,
-    check: 0
+    check: 0,
+    lastDay: null,
+    touchDay: null,
+    shift: false
   })
   let [content, setContent] = useState({
     days: props.content ? props.content.days || {} : {},
@@ -42,7 +45,7 @@ function Calendar (props) {
   // eslint-disable-next-line
   useEffect(firstRender, [])
   // eslint-disable-next-line
-  useEffect(refreshWeeks, [content.days, content.daysOff, content.daysPick, state.check, props.edit, props.onDay])
+  useEffect(refreshWeeks, [content.days, content.daysOff, content.daysPick, state.check, props.edit, props.onDay, state.shift])
   // eslint-disable-next-line
   useEffect(fromPropsToContent, [props.content.days, props.content.daysOff, props.content.daysPick])
   useEffect(fromPropsOffset, [props.noOffset])
@@ -51,6 +54,8 @@ function Calendar (props) {
   // eslint-disable-next-line
   useEffect(() => get(state.weeks, 0), [props.triggerGet])
 
+  console.log(state.touchDay)
+
   function firstRender() {
     DeltaTouchX = new DeltaTouchClass('x')
     ref.current.addEventListener('wheel', e => wheelScroll(e), {passive: false})
@@ -58,6 +63,8 @@ function Calendar (props) {
     ref.current.addEventListener('touchmove', e => DeltaTouchX.move(e, touchScroll))
     ref.current.addEventListener('touchend', e => DeltaTouchX.end(e, touchScroll))
     window.addEventListener('resize', () => updateState({check: new Date().getTime()}))
+    window.addEventListener('keydown', (e) => {if (e.key === 'Shift') updateState({shift: true})})
+    window.addEventListener('keyup', (e) => {if (e.key === 'Shift') updateState({shift: false})})
 
     newWeeks(undefined, true, 0)
     updateState({loading: false})
@@ -247,8 +254,14 @@ function Calendar (props) {
     if (!props.edit) return
     const fDate = date.format()
     let set = new Set(content.daysPick)
-    set.has(fDate)? set.delete(fDate) : set.add(fDate)
+    if (state.lastDay && state.shift) {
+      for (const d of dateRange(state.lastDay, date)) {
+        if (d !== state.lastDay) set.has(state.lastDay)? set.add(d) : set.delete(d)
+      }
+    }
+    else set.has(fDate)? set.delete(fDate) : set.add(fDate)
     set = sortSet(set)
+    updateState({lastDay: fDate})
     const f = prevState => ({...prevState, daysPick: set})
     props.setContent? props.setContent(f) : setContent(f)
     props.onChange([...set], date)

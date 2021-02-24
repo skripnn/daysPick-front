@@ -1,3 +1,7 @@
+import Calendar from "../components/Calendar";
+
 export default function TestPage() {
-  return <></>
+  return <>
+    <Calendar edit onChange={(a, b) => console.log('change', a, b.format())}/>
+  </>
 }
