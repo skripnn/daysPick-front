@@ -10,6 +10,7 @@ class ProfileStore {
   phone = null
   phone_confirm = null
   positions = []
+  tags = []
 
   constructor(username) {
     this.username = username

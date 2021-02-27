@@ -1,9 +1,9 @@
 import {inject, observer} from "mobx-react";
 import PersonalInfo from "../components/PersonalInfo/PersonalInfo";
-import PositionTags from "../components/PositionTags/PositionTags";
+import TagsEdit from "../components/TagsEdit/TagsEdit";
 
 function ProfilePage(props) {
-  const {positions, setValue, first_name, last_name, email, email_confirm, phone, phone_confirm} = props.ProfileStore
+  const {tags, setValue, first_name, last_name, email, email_confirm, phone, phone_confirm} = props.ProfileStore
 
   if (!localStorage.User) return null
 
@@ -18,7 +18,7 @@ function ProfilePage(props) {
         phone_confirm={phone_confirm}
         setValue={setValue}
       />
-      <PositionTags positions={positions} set={(v) => setValue({positions: v})} />
+      <TagsEdit tags={tags} set={v => setValue({tags: v})}/>
     </>
   )
 }
