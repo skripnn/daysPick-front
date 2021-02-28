@@ -34,6 +34,8 @@ function ClientItem(props) {
           onClick={() => {
             if (props.noTimeout) props.onDelete(client)
             else {
+              // eslint-disable-next-line no-restricted-globals
+              if (!confirm('Удалить клиента?')) return
               setDeleting(true)
               setTimeout(() => props.onDelete(client), 1000)
             }

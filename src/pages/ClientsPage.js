@@ -50,7 +50,7 @@ function ClientsPage(props) {
           </div>
         ))}
       </List>
-      {!!dialog && <ClientDialog onDelete={del} onSave={save} close={() => setDialog(null)}/>}
+      {!!dialog && <ClientDialog autoFocus={!dialog.id} onDelete={del} onSave={save} close={() => setDialog(null)}/>}
     </div>
   )
 }

@@ -30,7 +30,8 @@ function ClientDialog(props) {
       bottom={fullScreen}
       left={<ActionButton onClick={props.close} label="Назад" icon={<ArrowBackIos/>}/>}
       right={<>
-        <ActionButton onClick={() => props.onDelete(state)} label="Удалить" icon={<Delete/>}/>
+        {/* eslint-disable-next-line no-restricted-globals */}
+        {state.id && <ActionButton onClick={() => {if (confirm('Удалить клиента?')) props.onDelete(state)}} label="Удалить" icon={<Delete/>}/>}
         <ActionButton onClick={() => props.onSave(state)} label="Сохранить" disabled={!state.name} icon={<Save/>}/>
       </>}
     />

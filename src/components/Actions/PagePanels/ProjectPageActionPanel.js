@@ -17,6 +17,8 @@ function ProjectPageActionPanel(props) {
   }
 
   function del() {
+    // eslint-disable-next-line no-restricted-globals
+    if (!confirm('Удалить проект?')) return
     Fetch.delete(['project', id]).then(back)
   }
 

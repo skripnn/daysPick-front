@@ -26,6 +26,8 @@ function ProjectItem(props) {
 
   const delProject = (
     <IconButton edge="end" disabled={deleting} onClick={() => {
+      // eslint-disable-next-line no-restricted-globals
+      if (!confirm('Удалить проект?')) return
       setDeleting(true)
       setTimeout(() => props.onDelete(project), 1000)
     }}>
