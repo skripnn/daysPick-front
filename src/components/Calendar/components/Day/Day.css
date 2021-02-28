@@ -41,6 +41,9 @@ div.calendar-day.color1 {
 div.calendar-day.color0 {
     background-color: #cae3fc;
 }
+div.calendar-day.wait {
+    background-color: #e5c659;
+}
 div.calendar-day.busy {
     background-color: #ff6c6c;
 }

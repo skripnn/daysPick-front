@@ -13,7 +13,8 @@ function Day(props) {
     let result = "calendar-day"
     result += props.date.getMonth() % 2 === 0 ? " color0" : " color1"
     if (props.date < newDate()) result += " past"
-    if (props.info) result += " busy"
+    if (props.info && props.info.some(i => (!!i.project && !!i.project.is_wait))) result += " wait"
+    if (props.info && props.info.some(i => (!!i.project && !i.project.is_wait))) result += " busy"
     else if (props.off) result += " busy"
     if (props.pick) result += " pick"
     return result

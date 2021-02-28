@@ -63,7 +63,15 @@ function UserPage(props) {
 
   function paidToggle(project) {
     project.is_paid = !project.is_paid
-    Fetch.post('project', project).then(getUser)
+    Fetch.post(['project', project.id], project).then(getUser)
+  }
+
+  function confirmProject(project) {
+    project.is_wait = false
+    Fetch.post(['project', project.id], project).then(() => {
+      getUser()
+      setTriggerGet(new Date().getTime())
+    })
   }
 
   if (userPage.loading) return <></>
@@ -107,6 +115,7 @@ function UserPage(props) {
             onClick={link}
             onDelete={del}
             paidToggle={paidToggle}
+            confirmProject={confirmProject}
 
             onTouchHold={() => setPick(Object.keys(project.days))}
             onTouchEnd={() => setPick([])}

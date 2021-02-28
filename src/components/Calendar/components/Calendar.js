@@ -34,7 +34,6 @@ function Calendar (props) {
     loading: true,
     check: 0,
     lastDay: null,
-    touchDay: null,
     shift: false
   })
   let [content, setContent] = useState({
@@ -53,8 +52,6 @@ function Calendar (props) {
   useEffect(() => newWeeks(undefined, true, 0), [props.triggerNew])
   // eslint-disable-next-line
   useEffect(() => get(state.weeks, 0), [props.triggerGet])
-
-  console.log(state.touchDay)
 
   function firstRender() {
     DeltaTouchX = new DeltaTouchClass('x')

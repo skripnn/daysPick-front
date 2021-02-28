@@ -1,10 +1,10 @@
 import TouchHold from "../../js/TouchHold";
 import {newDate} from "../../js/functions/date";
-import {ListItem, ListItemSecondaryAction, ListItemText} from "@material-ui/core";
+import {ListItem, ListItemSecondaryAction, ListItemText, Popover} from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
-import React, {useState} from "react";
-import {CheckBox, CheckBoxOutlineBlank} from "@material-ui/icons";
+import React, {useRef, useState} from "react";
+import {AssignmentTurnedIn, CheckBox, CheckBoxOutlineBlank, MoreHoriz} from "@material-ui/icons";
 import "./ProjectItem.css"
 import {isMobil} from "../../js/functions/functions";
 
@@ -23,6 +23,7 @@ function ProjectItem(props) {
       {deleting ? <CheckBox/> : <CheckBoxOutlineBlank/>}
     </IconButton>
   )
+
   const delProject = (
     <IconButton edge="end" disabled={deleting} onClick={() => {
       setDeleting(true)
@@ -32,8 +33,20 @@ function ProjectItem(props) {
     </IconButton>
   )
 
+  const confirmProject = (
+    <ActionsMenu>
+      <IconButton disabled={deleting} onClick={() => props.onDelete(project)}>
+        <DeleteIcon/>
+      </IconButton>
+      <IconButton onClick={() => props.confirmProject(project)}>
+        <AssignmentTurnedIn />
+      </IconButton>
+    </ActionsMenu>
+  )
+
   let secondaryAction = null
-  if (props.paidToggle && props.onDelete) secondaryAction = past ? paidToggle : delProject
+  if (props.confirmProject && project.is_wait) secondaryAction = confirmProject
+  else if (props.paidToggle && props.onDelete) secondaryAction = past ? paidToggle : delProject
   else if (props.onDelete) secondaryAction = delProject
   else if (props.paidToggle) secondaryAction = paidToggle
 
@@ -62,3 +75,30 @@ function ProjectItem(props) {
 }
 
 export default ProjectItem
+
+function ActionsMenu(props) {
+  const [anchorEl, setAnchorEl] = useState(null)
+  const ref = useRef()
+  return (
+    <>
+      <IconButton ref={ref} edge="end" onClick={() => setAnchorEl(ref.current)}>
+        <MoreHoriz/>
+      </IconButton>
+      <Popover
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={() => setAnchorEl(null)}
+        anchorOrigin={{
+          vertical: 'center',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'center',
+          horizontal: 'right',
+        }}
+      >
+          {props.children}
+      </Popover>
+    </>
+  )
+}

@@ -13,6 +13,7 @@ class ProjectStore {
   money_calculating = false
   client = null
   is_paid = false
+  is_wait = false
   info = ''
 
   constructor() {
@@ -32,6 +33,7 @@ class ProjectStore {
     this.money_calculating = false
     this.client = null
     this.is_paid = false
+    this.is_wait = false
     this.info = ''
     this.setValue(obj)
   }
@@ -68,6 +70,7 @@ class ProjectStore {
   setValue = (obj={}) => {
     for (const [key, value] of Object.entries(obj)) {
       this[key] = value
+      if (key === 'is_paid' && value === true) this.is_wait = false
     }
     if (['dates', 'money', 'money_per_day'].some(r => Object.keys(obj).includes(r))) this.setMoney()
   }

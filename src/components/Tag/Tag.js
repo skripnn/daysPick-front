@@ -3,7 +3,6 @@ import {AddCircle, EmojiObjectsOutlined, RemoveCircle, VolumeUpOutlined} from "@
 import React from "react";
 
 export default function Tag(props) {
-  console.log(props)
   const {tag, onClick, exist, ...newProps} = props
 
   const label = (<Box display={'flex'} alignItems={'center'}>

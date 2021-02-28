@@ -9,7 +9,7 @@ import {inject, observer} from "mobx-react";
 import ClientField from "../Fields/ClientField/ClientField";
 
 function ProjectForm(props) {
-  const {title, is_paid, client, setValue} = props.ProjectStore
+  const {title, is_paid, is_wait, client, setValue} = props.ProjectStore
 
   return (
     <Grid container justify="space-between" alignItems="flex-start" spacing={3} style={{marginTop: 12}}>
@@ -24,10 +24,17 @@ function ProjectForm(props) {
           <Grid item xs={12}>
             <ClientField client={client} set={(client) => setValue({client: client})}/>
           </Grid>
-          <Grid item xs={12}>
-            <FormControlLabel labelPlacement="end"  name='is_paid' label='Оплачено' control={
-              <Checkbox color={"default"} checked={is_paid} onChange={e => setValue({is_paid: e.target.checked})}/>
-            }/>
+          <Grid item xs={12} container wrap={'nowrap'}>
+            <Grid item xs>
+              <FormControlLabel labelPlacement="end"  name='is_paid' label='Оплачено' control={
+                <Checkbox color={"default"} checked={is_paid} onChange={e => setValue({is_paid: e.target.checked})}/>
+              }/>
+            </Grid>
+            {!is_paid && <Grid item xs style={{whiteSpace: 'nowrap'}}>
+              <FormControlLabel labelPlacement="end" name='is_paid' label='Не подтверждён' control={
+                <Checkbox color={"default"} checked={is_wait} onChange={e => setValue({is_wait: e.target.checked})}/>
+              }/>
+            </Grid>}
           </Grid>
         </Grid>
       </Grid>
