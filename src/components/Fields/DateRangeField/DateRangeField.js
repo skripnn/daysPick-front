@@ -7,6 +7,8 @@ import {Clear} from "@material-ui/icons";
 import "./DateRangeField.css"
 import {dateRange} from "../../Calendar/extention/date";
 import TextField from "../TextField/TextField";
+import moment from "moment";
+import "moment/locale/ru";
 
 
 function DateRangeField(props) {
@@ -15,6 +17,7 @@ function DateRangeField(props) {
   const refStart = createRef()
   const refEnd = createRef()
   const refInput = useRef()
+  moment.locale("ru")
 
   window.addEventListener('mousedown', e => {
     if (!e.target.closest('.date-range-field') && !e.target.closest('div[role=dialog]')) setEdit(false)
@@ -52,6 +55,7 @@ function DateRangeField(props) {
           {notNull &&
           <Box display={'flex'} alignItems={'center'} style={{position: "absolute", left: 0, bottom: 0, zIndex: 5}}>
             <KeyboardDatePicker
+              cancelLabel={'Отмена'}
               inputProps={{ref: refStart, type: 'tel', style: {width: 90}}}
               invalidDateMessage={null}
               autoFocus
@@ -71,6 +75,7 @@ function DateRangeField(props) {
             />
             <Typography color={'secondary'} style={{padding: "0 5px"}}>—</Typography>
             <KeyboardDatePicker
+              cancelLabel={'Отмена'}
               inputProps={{ref: refEnd, type: 'tel', style: {width: 90}}}
               invalidDateMessage={null}
               autoOk

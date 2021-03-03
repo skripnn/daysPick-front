@@ -13,7 +13,7 @@ import CategoryFilter from "../CategoryFilter/CategoryFilter";
 
 
 function SearchField(props) {
-  const {get, set, noFilter, categoryFilter, calendar, user, ...newProps} = props
+  const {get, set, noFilter, categoryFilter, calendar, user, minFilter, ...newProps} = props
 
   const [filter, setFilter] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -50,7 +50,8 @@ function SearchField(props) {
     if (filter) search_filter.filter = filter
     if (days) search_filter.days = days
     if (category) search_filter.category = category
-    if (search_filter.filter && search_filter.filter.length >= 3) {
+    const valid = minFilter ? search_filter.filter && search_filter.filter.length >= minFilter : !!Object.keys(search_filter).length
+    if (valid) {
       setLoading(true)
       Loader.set(() => {
         get(search_filter).then(r => {
