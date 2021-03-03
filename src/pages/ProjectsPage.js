@@ -32,7 +32,7 @@ function ProjectsPage(props) {
   return (
     <div>
       <List dense>
-        <ListSubheader style={{background: 'white', lineHeight: "unset", padding: "unset"}}>
+        <ListSubheader style={{background: 'white', lineHeight: "unset", padding: "unset"}} disableSticky>
           <SearchField get={(v) => Fetch.get('projects', {user: user, ...v})} set={setFiltered} calendar={props.calendar} user={localStorage.User}/>
         </ListSubheader>
         {(filtered || projects).map(project => <ProjectItem

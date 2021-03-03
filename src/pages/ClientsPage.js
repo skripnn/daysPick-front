@@ -35,7 +35,7 @@ function ClientsPage(props) {
   return (
     <div>
       <List dense>
-        <ListSubheader style={{background: 'white', lineHeight: "unset", padding: "unset"}}>
+        <ListSubheader style={{background: 'white', lineHeight: "unset", padding: "unset"}} disableSticky>
           <SearchField get={v => Fetch.get('clients', v)} set={setFiltered} calendar={props.calendar} user={localStorage.User}/>
         </ListSubheader>
         <div style={{height: 12}}/>

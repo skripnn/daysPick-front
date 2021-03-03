@@ -1,39 +1,56 @@
-import {CircularProgress, IconButton, InputAdornment} from "@material-ui/core";
+import {CircularProgress, Grid, IconButton, InputAdornment} from "@material-ui/core";
 import {Close, DateRange, Search} from "@material-ui/icons";
 import TextField from "../TextField/TextField";
 import React, {useEffect, useRef, useState} from "react";
 import Box from "@material-ui/core/Box";
 import Calendar from "../../Calendar";
 import Loader from "../../../js/Loader";
-import {makeStyles} from "@material-ui/core/styles";
 import Fetch from "../../../js/Fetch";
+import "./SearchField.css"
+import DateRangeField from "../DateRangeField/DateRangeField";
+import FilterIcon from "../../Icons/FilterIcon";
+import CategoryFilter from "../CategoryFilter/CategoryFilter";
 
-const useStyles = makeStyles({
-  root: {
-    overflow: "hidden",
-    transition: "height 500ms ease",
-    height: 0
-  }
-})
 
-export default function SearchField(props) {
-  const {get, set, noCalendar, calendar, user, ...newProps} = props
+function SearchField(props) {
+  const {get, set, noFilter, categoryFilter, calendar, user, ...newProps} = props
 
   const [filter, setFilter] = useState(null)
   const [loading, setLoading] = useState(false)
   const [days, setDays] = useState(null)
-  const [content, setContent] = useState(calendar? {...calendar} : {days: {}, daysOff: new Set(), daysPick: new Set()})
-  // eslint-disable-next-line
-  useEffect(download, [days, filter])
+  const [range, setRange] = useState(null)
+  const [category, setCategory] = useState(null)
+  const [content, setContent] = useState(calendar ? {...calendar} : {days: {}, daysOff: new Set(), daysPick: new Set()})
 
   const ref = useRef()
+
+  // eslint-disable-next-line
+  useEffect(download, [days, filter, category])
+
+  const changeRange = (v) => {
+    setDays(v)
+    setContent(prevState => ({...prevState, daysPick: v ? v : new Set()}))
+  }
+
+  const changeDays = (v) => {
+    setRange(null)
+    setDays(v)
+  }
+
+  const clearDays = () => {
+    setDays(null)
+    setRange(null)
+    setContent(prevState => ({...prevState, daysPick: new Set()}))
+  }
+
 
   function download() {
     Loader.clear()
     const search_filter = {}
     if (filter) search_filter.filter = filter
     if (days) search_filter.days = days
-    if (filter || days) {
+    if (category) search_filter.category = category
+    if (search_filter.filter && search_filter.filter.length >= 3) {
       setLoading(true)
       Loader.set(() => {
         get(search_filter).then(r => {
@@ -41,8 +58,7 @@ export default function SearchField(props) {
           setLoading(false)
         })
       })
-    }
-    else {
+    } else {
       set(null)
       setLoading(false)
     }
@@ -51,13 +67,11 @@ export default function SearchField(props) {
 
   function filterButtonClick() {
     if (ref.current.offsetHeight === 0) {
-      ref.current.style.height = `${ ref.current.scrollHeight }px`
+      ref.current.style.height = `${ref.current.scrollHeight}px`
     } else {
       ref.current.style.height = "0";
     }
   }
-  const classes = useStyles()
-
 
   return (
     <Box display={'flex'} flexDirection={'column'}>
@@ -71,34 +85,56 @@ export default function SearchField(props) {
             startAdornment:
               <InputAdornment position={"start"}>
                 <IconButton onClick={download} disabled={loading}>
-                  {props.loading || loading? <CircularProgress style={{width: 24, height: 24}} color={"inherit"}/> : <Search />}
+                  {props.loading || loading ? <CircularProgress style={{width: 24, height: 24}} color={"inherit"}/> :
+                    <Search/>}
                 </IconButton>
               </InputAdornment>,
-            endAdornment: ((filter || days) &&
+            endAdornment: ((filter || days || category) &&
               <InputAdornment position={"end"}>
                 <IconButton onClick={() => {
                   setFilter(null)
-                  setDays(null)
-                  setContent(prevState => ({...prevState, daysPick: new Set()}))
+                  setCategory(null)
+                  clearDays()
                 }}>
                   <Close/>
                 </IconButton>
-              </InputAdornment>)}}
+              </InputAdornment>)
+          }}
         />
-        {!noCalendar && <IconButton onClick={filterButtonClick} size={'small'} >
-          <DateRange style={days? {color: '#4db34b'} : undefined}/>
+        {!noFilter && <IconButton onClick={filterButtonClick} size={'small'}>
+          {categoryFilter ? <FilterIcon style={days || category ? {color: '#4db34b'} : {}}/> :
+            <DateRange style={days ? {color: '#4db34b'} : {}}/>}
         </IconButton>}
-        </Box>
-        {!noCalendar && <div ref={ref} className={classes.root}>
-          <Calendar
-            edit
-            onChange={v => v.length? setDays(v) : setDays(null)}
-            get={user? (start, end) => Fetch.getCalendar(start, end, user) : undefined}
-            content={content}
-            setContent={setContent}
-          />
-        </div>}
+      </Box>
+      {!noFilter && <div ref={ref} className={'filter-block'}>
+        <Grid container justify={'space-between'}>
+          <Grid item>
+            {categoryFilter && <CategoryFilter select={category} setSelect={setCategory}/>}
+          </Grid>
+          <Grid item>
+            <DateRangeField
+              set={changeRange}
+              range={range}
+              setRange={setRange}
+              clear={days ? clearDays : undefined}
+            />
+          </Grid>
+        </Grid>
+        <Calendar
+          edit
+          onChange={v => v.length ? changeDays(v) : changeDays(null)}
+          get={user ? (start, end) => Fetch.getCalendar(start, end, user) : undefined}
+          content={content}
+          setContent={setContent}
+        />
+      </div>}
     </Box>
 
   )
 }
+
+SearchField.defaultProps = {
+  set: () => {}
+}
+
+export default SearchField

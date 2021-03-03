@@ -1,0 +1,5 @@
+.filter-block {
+    overflow: hidden;
+    transition: height 500ms ease;
+    height: 0
+}

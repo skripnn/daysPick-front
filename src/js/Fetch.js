@@ -1,8 +1,8 @@
 // const localhost = "localhost"
-// const localhost = "192.168.31.71"
+const localhost = "192.168.31.71"
 // const localhost = "192.168.0.218"
 // const localhost = "192.168.0.109"
-const localhost = "172.20.10.11"
+// const localhost = "172.20.10.11"
 
 
 class FetchClass {
