@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import Container from "@material-ui/core/Container";
 import ProjectPage from "./pages/ProjectPage";
 import UserPage from "./pages/UserPage";
@@ -10,13 +10,13 @@ import ActionsSwitch from "./components/Actions/ActionsSwitch";
 import ClientsPage from "./pages/ClientsPage";
 import Header from "./components/Header/Header";
 import ProjectsPage from "./pages/ProjectsPage";
-import {isMobil} from "./js/functions/functions";
 import ProfilePage from "./pages/ProfilePage";
 import SearchPage from "./pages/SearchPage";
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 import SignupPage from "./pages/SignupPage";
 import MainPage from "./pages/MainPage";
+import {useMediaQuery} from "@material-ui/core";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -29,11 +29,8 @@ function ScrollToTop() {
 }
 
 function App(props) {
-  const [mobile, setMobile] = useState(isMobil())
 
-  useEffect(() => {
-    window.addEventListener('resize', () => setMobile(isMobil()))
-  },[])
+  const mobile = useMediaQuery('(max-width:600px)')
 
   const { history } = props
 

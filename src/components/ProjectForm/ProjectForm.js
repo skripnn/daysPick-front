@@ -13,7 +13,7 @@ function ProjectForm(props) {
 
   return (
     <Grid container justify="space-between" alignItems="flex-start" spacing={3} style={{marginTop: 12}}>
-      <Grid item xs={12} md={6}>
+      <Grid item xs={12} sm md={6}>
         <Grid container direction="row" spacing={3}>
           <Grid item xs={12}>
             <TextField label="Название" value={title} onChange={e => setValue({title: e.target.value})} required/>
@@ -38,7 +38,7 @@ function ProjectForm(props) {
           </Grid>
         </Grid>
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item xs={12} sm md={6}>
         <InfoField />
       </Grid>
     </Grid>

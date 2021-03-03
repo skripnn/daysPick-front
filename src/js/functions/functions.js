@@ -33,7 +33,7 @@ export function getProjectId() {
 }
 
 export function isMobil() {
-  return document.body.clientWidth < 720
+  return document.body.clientWidth < 600
 }
 
 export function convertClients(clients=[]) {

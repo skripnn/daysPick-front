@@ -109,10 +109,10 @@ function SearchField(props) {
       </Box>
       {!noFilter && <div ref={ref} className={'filter-block'}>
         <Grid container justify={'space-between'}>
-          <Grid item>
+          <Grid item xs={12} sm={'auto'}>
             {categoryFilter && <CategoryFilter select={category} setSelect={setCategory}/>}
           </Grid>
-          <Grid item>
+          <Grid item xs={12} sm={'auto'}>
             <DateRangeField
               set={changeRange}
               range={range}

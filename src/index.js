@@ -7,6 +7,7 @@ import {BrowserRouter} from "react-router-dom"
 import { LastLocationProvider } from 'react-router-last-location';
 import {Provider} from "mobx-react";
 import mainStore from "./stores/mainStore";
+import './normalize.css'
 
 
 ReactDOM.render(

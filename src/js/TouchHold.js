@@ -28,15 +28,15 @@ class TouchHold {
     }
   }
 
-  touchStart = () => {
+  touchStart = (e) => {
     this.touch = true
     clearTimeout(this.touchTimer)
-    this.touchTimer = setTimeout(this.onTouchHold, 500)
+    this.touchTimer = setTimeout(() => this.onTouchHold(e), 500)
   }
 
-  onTouchHold = () => {
+  onTouchHold = (e) => {
     this.touchFalse()
-    if (this.touchHold) this.touchHold()
+    if (this.touchHold) this.touchHold(e)
   }
 }
 

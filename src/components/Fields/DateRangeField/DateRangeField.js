@@ -51,12 +51,14 @@ function DateRangeField(props) {
 
   return (
     <MuiPickersUtilsProvider utils={MomentUtils} locale={'ru'}>
-        <div style={{position: "relative"}} className={'date-range-field'}>
+        <div style={{position: "relative", width: "100%"}} className={'date-range-field'}>
           {notNull &&
-          <Box display={'flex'} alignItems={'center'} style={{position: "absolute", left: 0, bottom: 0, zIndex: 5}}>
+          <Box display={'flex'} alignItems={'center'} style={{position: "absolute", left: 0, bottom: 0, zIndex: 5, width: "100%"}}>
+            <Box flexGrow={1}>
             <KeyboardDatePicker
+              fullWidth
               cancelLabel={'Отмена'}
-              inputProps={{ref: refStart, type: 'tel', style: {width: 90}}}
+              inputProps={{ref: refStart, type: 'tel', style: {minWidth: 90}}}
               invalidDateMessage={null}
               autoFocus
               error={error(range.start)}
@@ -73,10 +75,13 @@ function DateRangeField(props) {
                 if (range.start && !range.start.isValid()) updateRange({start: null})
               }}
             />
+            </Box>
             <Typography color={'secondary'} style={{padding: "0 5px"}}>—</Typography>
+            <Box flexGrow={1}>
             <KeyboardDatePicker
+              fullWidth
               cancelLabel={'Отмена'}
-              inputProps={{ref: refEnd, type: 'tel', style: {width: 90}}}
+              inputProps={{ref: refEnd, type: 'tel', style: {minWidth: 90}}}
               invalidDateMessage={null}
               autoOk
               error={error(range.end)}
@@ -94,6 +99,7 @@ function DateRangeField(props) {
                 if (e.key === 'Backspace' && !range.end && refStart) refStart.current.focus()
               }}
             />
+            </Box>
             <IconButton onClick={() => {
               updateRange({start: null, end: null})
               setEdit(false)
@@ -105,9 +111,8 @@ function DateRangeField(props) {
           </Box>
           }
           <TextField
-            fullWidth={false}
             InputLabelProps={{shrink: notNull, disabled: false}}
-            style={{width: 344.66}}
+            style={{minWidth: 340}}
             inputProps={{disabled: true, style: {cursor: 'text'}, ref: refInput}}
             label={'Диапазон дат'}
             onClick={(e) => {if (e.target === refInput.current && !notNull) setEdit(true)}}

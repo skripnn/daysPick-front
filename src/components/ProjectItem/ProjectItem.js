@@ -6,7 +6,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import React, {useRef, useState} from "react";
 import {AssignmentTurnedIn, CheckBox, CheckBoxOutlineBlank, MoreHoriz} from "@material-ui/icons";
 import "./ProjectItem.css"
-import {isMobil} from "../../js/functions/functions";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 function ProjectItem(props) {
   const onTouchHold = new TouchHold(props.onTouchHold, props.onTouchEnd)
@@ -52,8 +52,11 @@ function ProjectItem(props) {
   else if (props.onDelete) secondaryAction = delProject
   else if (props.paidToggle) secondaryAction = paidToggle
 
+  const mobile = useMediaQuery('(min-width:600px)')
+
   return (
     <ListItem
+      style={mobile? {} : {paddingLeft: 2, paddingRight: 32}}
       className={className}
       onMouseOver={props.onMouseOver}
       onMouseLeave={props.onMouseLeave}
@@ -61,14 +64,14 @@ function ProjectItem(props) {
       onClick={deleting? undefined : () => props.onClick(project)}
       {...onTouchHold.actions}
     >
-      <ListItemText primary={project.title} secondary={project.client ? (isMobil() ? project.client.name : project.client.fullname): null}/>
+      <ListItemText primary={project.title} secondary={project.client ? (!mobile ? project.client.name : project.client.fullname): null}/>
       {(project.money === 0 || !!project.money) &&
       <ListItemText
         secondary={new Intl.NumberFormat('ru-RU').format(project.money) + " ₽"}
         style={{textAlign: "right", whiteSpace: "nowrap"}}/>
       }
       {!!secondaryAction &&
-      <ListItemSecondaryAction className={className}>
+      <ListItemSecondaryAction className={className} style={mobile? {} : {right: 0}}>
         {secondaryAction}
       </ListItemSecondaryAction>
       }

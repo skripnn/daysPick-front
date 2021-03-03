@@ -16,7 +16,7 @@ function CategoryFilter(props) {
 
   return (
     <Box style={{paddingTop: 2}} display={'flex'} alignItems={'flex-end'}>
-      <FormControl>
+      <FormControl fullWidth>
         <InputLabel shrink={select > 0}>Категория</InputLabel>
         <Select
           native
@@ -29,9 +29,9 @@ function CategoryFilter(props) {
           <option value={2}>Свет</option>
         </Select>
       </FormControl>
-      <IconButton onClick={() => handleChange()} size={'small'} disabled={select === 0}>
-        {select > 0? <Clear/> : <span style={{width: 24}}/>}
-      </IconButton>
+      {select > 0 &&  <IconButton onClick={() => handleChange()} size={'small'}>
+        <Clear/>
+      </IconButton> }
     </Box>
   )
 }

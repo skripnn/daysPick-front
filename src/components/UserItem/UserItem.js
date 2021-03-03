@@ -4,6 +4,7 @@ import UserAvatar from "../UserAvatar/UserAvatar";
 import React from "react";
 import TextLoop from "react-text-loop";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import './UserItem.css'
 
 export default function UserItem(props) {
   const user = props.user
@@ -11,15 +12,15 @@ export default function UserItem(props) {
   const tags = (mobile?
     <>
       {user.tags[0].title}
-      {user.tags.length > 1 ? <>, <TextLoop children={user.tags.slice(1).map(tag => tag.title)} springConfig={{stiffness: 180, damping: 8}}/></> : ''}
+      {user.tags.length > 1 ? <>, <TextLoop children={user.tags.slice(1).map(tag => tag.title)} springConfig={{stiffness: 180, damping: 8}} className={'text-loop'}/></> : ''}
     </> :
-      <TextLoop children={user.tags.map(tag => tag.title)} springConfig={{stiffness: 180, damping: 8}}/>
+      <TextLoop children={user.tags.map(tag => tag.title)} springConfig={{stiffness: 180, damping: 8}} className={'text-loop'}/>
     )
 
 
   return (
     <Link to={`/user/${user.username}/`}>
-      <ListItem button>
+      <ListItem button style={mobile? {} : {paddingLeft: 2, paddingRight: 2}}>
         <ListItemIcon style={{minWidth: "unset", paddingRight: 8}}>
           <UserAvatar {...user}/>
         </ListItemIcon>
