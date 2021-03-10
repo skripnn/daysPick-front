@@ -62,8 +62,9 @@ function ClientDialog(props) {
           onChange={(e) => setState(prevState => ({...prevState, company: e.target.value}))}
         />
         {state.projects && !!state.projects.length &&
-        <List dense style={{maxHeight: 300, overflow: "scroll"}}>
+        <List dense>
           <ListSubheader style={{background: "white"}}>Проекты</ListSubheader>
+          <div style={{maxHeight: 270, overflow: "scroll"}}>
           {state.projects.map(project =>
             <Link to={`/project/${project.id}/`}>
               <ListItem button>
@@ -71,6 +72,7 @@ function ClientDialog(props) {
               </ListItem>
             </Link>
           )}
+          </div>
         </List>
         }
       </DialogContent>

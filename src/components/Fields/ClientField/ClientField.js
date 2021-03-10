@@ -1,13 +1,14 @@
 import ClientItem from "../../ClientItem/ClientItem";
 import TextField from "../TextField/TextField";
 import React, {useState} from "react";
-import {List} from "@material-ui/core";
+import {List, useMediaQuery} from "@material-ui/core";
 import ClearIcon from '@material-ui/icons/Clear';
-import {isMobil} from "../../../js/functions/functions";
 import ClientChoiceDialog from "../../ClientChoiceDialog/ClientChoiceDialog";
 
 function ClientField(props) {
   const [dialog, setDialog] = useState(null)
+  const mobile = useMediaQuery('(max-width:600px)')
+
 
   function set(client) {
     props.set(client)
@@ -29,16 +30,17 @@ function ClientField(props) {
         zIndex: !!props.client ? 5 : 0,
         paddingBottom: 'unset',
         paddingTop: 14,
-        marginLeft: -8,
-        marginRight: -8
+        marginLeft: 0,
+        marginRight: 0
       }}>
         <ClientItem
-          disabled
+          slim
           client={props.client}
           onDelete={() => props.set(null)}
           deleteIcon={<ClearIcon/>}
           noTimeout
-          showCompany={!isMobil()}
+          showCompany={!mobile}
+          onClick={() => setDialog({name: '', company: ''})}
         />
       </List>
       }

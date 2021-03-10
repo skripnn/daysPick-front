@@ -17,28 +17,31 @@ import Button from "@material-ui/core/Button";
 import {Group, List as ListIcon, PermIdentity, Search} from "@material-ui/icons";
 import Box from "@material-ui/core/Box";
 import LogoutIcon from "../Icons/LogoutIcon";
-
-function MenuItem(props) {
-  function handleClick() {
-    if (props.onClick) props.onClick(props.link)
-  }
-
-  return (
-    <ListItem button onClick={handleClick} className={'menu-item'} selected={!props.noSelect && window.location.pathname === props.link}>
-      <ListItemIcon>{props.icon}</ListItemIcon>
-      <ListItemText primary={props.text} secondary={props.sub || null}/>
-    </ListItem>
-  )
-}
+import Fetch from "../../js/Fetch";
 
 
 function Menu(props) {
   const [open, setOpen] = useState(false)
 
-  function close(link) {
-    if (link) props.history.push(link)
+  function close(link, set) {
+    if (link) Fetch.link(link, set)
     setOpen(false)
   }
+
+  function MenuItem(props) {
+    function handleClick() {
+      if (props.preLink) props.preLink(props.link, props.set)
+      close(props.link, props.set)
+    }
+
+    return (
+      <ListItem button onClick={handleClick} className={'menu-item'} selected={!props.noSelect && window.location.pathname === props.link}>
+        <ListItemIcon>{props.icon}</ListItemIcon>
+        <ListItemText primary={props.text} secondary={props.sub || null}/>
+      </ListItem>
+    )
+  }
+
 
   return (
     <div>
@@ -47,12 +50,12 @@ function Menu(props) {
       </IconButton>
       <Drawer
         open={open}
-        onClose={close}
+        onClose={() => close()}
         anchor={'right'}
         className={'menu'}
       >
         <Box display={'flex'} style={{height: 48, padding: "2px 0"}}>
-          <Button onClick={close} style={{minWidth: 56, borderRadius: "0 4px 4px 0"}}>
+          <Button onClick={() => close()} style={{minWidth: 56, borderRadius: "0 4px 4px 0"}}>
             <ChevronRightIcon />
           </Button>
           <ListItem button onClick={() => close(`/user/${props.user.username}/`)} className={'menu-item'} style={{paddingRight: 0, borderRadius: "4px 0 0 4px"}}>
@@ -61,17 +64,16 @@ function Menu(props) {
         </Box>
         <Divider />
         <List>
-          <MenuItem text={'Мои проекты'} icon={<ListIcon/>} link={`/projects/`} onClick={close} />
-          <MenuItem text={'Мои клиенты'} icon={<Group />} link={`/clients/`} onClick={close} />
+          <MenuItem text={'Мои проекты'} icon={<ListIcon/>} link={`projects`} set={props.setProjects} />
+          <MenuItem text={'Мои клиенты'} icon={<Group />} link={`clients`} set={props.setClients} />
         </List>
         <Divider />
         <List>
-          <MenuItem text={'Поиск'} icon={<Search />} link={`/search/`} onClick={close} />
-          <MenuItem text={'Профиль'} icon={<PermIdentity />} link={`/profile/`} onClick={close} />
-          <MenuItem text={'Выйти'} icon={<LogoutIcon />} link={`/`} noSelect onClick={(link) => {
+          <MenuItem text={'Поиск'} icon={<Search />} link={`search`} />
+          <MenuItem text={'Профиль'} icon={<PermIdentity />} link={`profile`} />
+          <MenuItem text={'Выйти'} icon={<LogoutIcon />} link={`/`} noSelect preLink={() => {
             localStorage.clear()
             props.getUser()
-            close(link)
           }}/>
         </List>
       </Drawer>
@@ -82,6 +84,8 @@ function Menu(props) {
 export default inject(stores => {
   return {
     user: stores.UsersStore.getLocalUser().user,
-    getUser: stores.UsersStore.getLocalUser().getUser
+    getUser: stores.UsersStore.getLocalUser().getUser,
+    setClients: stores.ClientsPageStore.c.set,
+    setProjects: stores.ProjectsPageStore.p.set
   }
 })(observer(Menu))

@@ -52,11 +52,10 @@ function ProjectItem(props) {
   else if (props.onDelete) secondaryAction = delProject
   else if (props.paidToggle) secondaryAction = paidToggle
 
-  const mobile = useMediaQuery('(min-width:600px)')
+  const mobile = useMediaQuery('(max-width:600px)')
 
   return (
     <ListItem
-      style={mobile? {} : {paddingLeft: 2, paddingRight: 32}}
       className={className}
       onMouseOver={props.onMouseOver}
       onMouseLeave={props.onMouseLeave}
@@ -64,14 +63,14 @@ function ProjectItem(props) {
       onClick={deleting? undefined : () => props.onClick(project)}
       {...onTouchHold.actions}
     >
-      <ListItemText primary={project.title} secondary={project.client ? (!mobile ? project.client.name : project.client.fullname): null}/>
+      <ListItemText primary={project.title} secondary={project.client ? (mobile ? project.client.name : project.client.fullname): null}/>
       {(project.money === 0 || !!project.money) &&
       <ListItemText
         secondary={new Intl.NumberFormat('ru-RU').format(project.money) + " ₽"}
         style={{textAlign: "right", whiteSpace: "nowrap"}}/>
       }
       {!!secondaryAction &&
-      <ListItemSecondaryAction className={className} style={mobile? {} : {right: 0}}>
+      <ListItemSecondaryAction className={className + ' button'}>
         {secondaryAction}
       </ListItemSecondaryAction>
       }

@@ -1,19 +1,31 @@
-import SearchField from "../components/Fields/SearchField/SearchField";
-import React, {useState} from "react";
-import {List, ListSubheader,} from "@material-ui/core";
+import React from "react";
 import UserItem from "../components/UserItem/UserItem";
-import Fetch from "../js/Fetch";
+import LazyList from "../components/LazyList/LazyList";
+import {inject, observer} from "mobx-react";
 
 
-export default function SearchPage() {
-  const [users, setUsers] = useState(null)
+function SearchPage(props) {
+  const {list, set, add} = props.f
+
 
   return (
-      <List dense>
-        <ListSubheader style={{background: 'white', lineHeight: "unset", padding: "unset"}} disableSticky>
-          <SearchField get={obj => Fetch.get('users', obj)} set={setUsers} placeholder={"Кого искать?"} autoFocus categoryFilter minFilter={3}/>
-        </ListSubheader>
-      {users && users.map(user => <UserItem user={user} key={user.username}/>)}
-      </List>
+    <LazyList
+      searchFieldParams={{
+        set: set,
+        placeHolder: "Кого искать?",
+        autoFocus: true,
+        categoryFilter: true,
+        minFilter: 3
+      }}
+      add={add}
+      getLink={'users'}
+    >
+      {list.map(user => <UserItem user={user} key={user.username}/>)}
+    </LazyList>
   )
 }
+
+export default inject(stores => ({
+  f: stores.SearchPageStore.f,
+  pageStore: stores.SearchPageStore
+}))(observer(SearchPage))

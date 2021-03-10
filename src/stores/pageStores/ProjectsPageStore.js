@@ -1,31 +1,27 @@
 import {makeAutoObservable} from "mobx";
+import ListStore from "../modelStores/ListStore";
 
 class ProjectsPageStore {
-  projects = []
+
+  p = new ListStore()
+  f = new ListStore()
 
   constructor() {
     makeAutoObservable(this)
   }
 
-  setProjects = (projects) => {
-    // for (const project of projects) this.setProject(project)
-    this.projects = [...projects]
-  }
-
   delProject = (id) => {
-    const i = this.projects.findIndex((project) => project.id === id)
-    if (i !== -1) this.projects.splice(i, 1)
-    this.projects = [...this.projects]
+    this.p.del(id)
+    this.f.del(id)
   }
 
   setProject = (project) => {
-    const i = this.projects.findIndex((p) => p.id === project.id)
-    if (i !== -1) this.projects[i] = project
-    else this.projects.push(project)
+    this.p.setItem(project)
+    this.f.setItem(project)
   }
 
   getProject = (id) => {
-    return this.projects.find(project => project.id === id)
+    return this.p.getItem(id) || this.f.getItem(id)
   }
 
 }

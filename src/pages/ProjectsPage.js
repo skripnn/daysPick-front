@@ -1,52 +1,49 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import {inject, observer} from "mobx-react";
-import {LocalUser} from "../js/functions/functions";
-import {List, ListSubheader} from "@material-ui/core";
 import ProjectItem from "../components/ProjectItem/ProjectItem";
-import SearchField from "../components/Fields/SearchField/SearchField";
 import Fetch from "../js/Fetch";
+import LazyList from "../components/LazyList/LazyList";
 
 
 function ProjectsPage(props) {
-  const user = LocalUser()
-  const {projects, setProjects, delProject} = props.pageStore
-  const [filtered, setFiltered] = useState(null)
-
-
-  // eslint-disable-next-line
-  useEffect(get, [])
-
-  function get() {
-    Fetch.get('projects', {user: user}).then(setProjects)
-  }
+  const {f, p, setProject} = props
 
   function del(project) {
-    Fetch.delete(['project', project.id]).then(() => delProject(project.id))
+    Fetch.delete(['project', project.id]).then(() => props.pageStore.delProject(project.id))
   }
 
   function link(project) {
-    props.setProject(project)
-    props.history.push(`/project/${project.id}/`)
+    Fetch.link(`project/${project.id}`, setProject)
   }
 
   return (
     <div>
-      <List dense>
-        <ListSubheader style={{background: 'white', lineHeight: "unset", padding: "unset"}} disableSticky>
-          <SearchField get={(v) => Fetch.get('projects', {user: user, ...v})} set={setFiltered} calendar={props.calendar} user={localStorage.User}/>
-        </ListSubheader>
-        {(filtered || projects).map(project => <ProjectItem
+      <LazyList
+        searchFieldParams={{
+          set: f.set,
+          calendar: props.calendar,
+          user: localStorage.User
+        }}
+        getLink={'projects'}
+        pages={f.pages || p.pages}
+        page={f.page || p.page}
+        set={p.set}
+        add={f.pages ? f.add : p.add}
+      >
+        {(f.exist() ? f.list : p.list).map((project) => <ProjectItem
           project={project}
           key={project.id}
           onClick={link}
           onDelete={del}
         />)}
-      </List>
+      </LazyList>
     </div>
   )
 }
 
 export default inject(stores => ({
+    f: stores.ProjectsPageStore.f,
+    p: stores.ProjectsPageStore.p,
     pageStore: stores.ProjectsPageStore,
     setProject: stores.ProjectStore.setProject,
     calendar: stores.UsersStore.getLocalUser().calendar

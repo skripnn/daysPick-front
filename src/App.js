@@ -17,6 +17,7 @@ import { ThemeProvider } from '@material-ui/styles';
 import SignupPage from "./pages/SignupPage";
 import MainPage from "./pages/MainPage";
 import {useMediaQuery} from "@material-ui/core";
+import Fetch from "./js/Fetch";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -33,6 +34,7 @@ function App(props) {
   const mobile = useMediaQuery('(max-width:600px)')
 
   const { history } = props
+  Fetch.history = history
 
   const theme = createMuiTheme({
     palette: {

@@ -7,6 +7,7 @@ const localhost = "192.168.31.71"
 
 class FetchClass {
   url = `${process.env.NODE_ENV === 'production' ? '' : `http://${localhost}:8000`}/api/`
+  history = null
 
   authHeaders = () => ({
     'Content-Type': 'application/json',
@@ -81,6 +82,13 @@ class FetchClass {
     user: user,
     project_id: project
   })
+
+  link = (link, set) => {
+    const pushLink = (link.startsWith('/') && link.endsWith('/')) ? link : `/${link}/`
+    const toHistory = () => this.history? this.history.push(pushLink) : window.history.push(pushLink)
+    if (!set) toHistory()
+    else this.get(link).then(set).then(toHistory)
+  }
 }
 
 const Fetch = new FetchClass()

@@ -55,5 +55,8 @@
   "main": "index.js",
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "prop-types": "^15.7.2"
+  }
 }

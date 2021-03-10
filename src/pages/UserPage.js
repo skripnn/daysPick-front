@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import Calendar from '../components/Calendar';
 import {inject, observer} from "mobx-react";
-import {List, ListItem, ListSubheader} from "@material-ui/core";
+import {List, ListSubheader} from "@material-ui/core";
 import ProjectItem from "../components/ProjectItem/ProjectItem";
 import PopOverDay from "../components/PopOverDay/PopOverDay";
 import Fetch from "../js/Fetch";
@@ -93,15 +93,13 @@ function UserPage(props) {
         }}
       />
       {userPage.profile ?
-        <List dense>
+        <>
           <ListSubheader>Специализации</ListSubheader>
-          <ListItem>
-            <Box display={"flex"} flexWrap={'wrap'} >
-              <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
-              {user.tags.map(tag => <Tag tag={tag}/>)}
-            </Box>
-          </ListItem>
-        </List>
+          <Box display={"flex"} flexWrap={'wrap'}>
+            <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+            {user.tags.map(tag => <Tag tag={tag}/>)}
+          </Box>
+        </>
         :
         <List dense>
           <ListSubheader disableSticky style={{

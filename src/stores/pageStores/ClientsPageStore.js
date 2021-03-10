@@ -1,8 +1,11 @@
 import {makeAutoObservable} from "mobx";
+import ListStore from "../modelStores/ListStore";
 
 class ClientsPageStore {
-  clients = []
   dialog = null
+
+  c = new ListStore()
+  f = new ListStore()
 
   constructor() {
     makeAutoObservable(this)
@@ -13,16 +16,14 @@ class ClientsPageStore {
     this.dialog = v
   }
 
-  saveClient = (changedClient) => {
-    this.clients = this.clients.map(client => client.id === changedClient.id ? changedClient : client)
-  }
-
-  setClients = (clients) => {
-    this.clients = clients
+  saveClient = (client) => {
+    this.c.setItem(client)
+    this.f.setItem(client)
   }
 
   delClient = (id) => {
-    this.clients = this.clients.filter(client => client.id !== id)
+    this.c.del(id)
+    this.f.del(id)
   }
 
 }
