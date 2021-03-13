@@ -1,0 +1,13 @@
+.client-choice-dialog-content {
+    overflow: scroll !important;
+}
+/*большая ширина*/
+@media screen and (min-width:600px) {
+
+}
+/*маленькая ширина*/
+@media screen and (max-width:600px) {
+    .client-choice-dialog-content {
+        padding-bottom: 50px !important;
+    }
+}

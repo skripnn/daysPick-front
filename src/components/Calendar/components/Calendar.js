@@ -251,17 +251,24 @@ function Calendar (props) {
     if (!props.edit) return
     const fDate = date.format()
     let set = new Set(content.daysPick)
+    let pick = false
+    let array
     if (state.lastDay && state.shift) {
-      for (const d of dateRange(state.lastDay, date)) {
-        if (d !== state.lastDay) set.has(state.lastDay)? set.add(d) : set.delete(d)
+      if (set.has(state.lastDay)) pick = true
+      array = dateRange(state.lastDay, fDate).filter((day) => day !== state.lastDay)
+      for (const d of array) {
+        pick? set.add(d) : set.delete(d)
       }
     }
-    else set.has(fDate)? set.delete(fDate) : set.add(fDate)
+    else {
+      if (!set.has(fDate)) pick = true
+      pick? set.add(fDate) : set.delete(fDate)
+    }
     set = sortSet(set)
     updateState({lastDay: fDate})
     const f = prevState => ({...prevState, daysPick: set})
     props.setContent? props.setContent(f) : setContent(f)
-    props.onChange([...set], date)
+    props.onChange([...set], (array || [fDate]), pick)
   }
 
   function updateContent(result, start, end) {

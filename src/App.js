@@ -18,6 +18,8 @@ import SignupPage from "./pages/SignupPage";
 import MainPage from "./pages/MainPage";
 import {useMediaQuery} from "@material-ui/core";
 import Fetch from "./js/Fetch";
+// import TestPage from "./pages/TestPage";
+// import {VkAuthPage} from "./pages/VkAuthPage";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -96,6 +98,8 @@ function App(props) {
         <Container maxWidth="md" className={"content-block"} style={{display: "flex", flexGrow: 1, flexDirection: "column"}}>
           <ActionsSwitch hidden={mobile} history={history}/>
           <Switch>
+            {/*<Route history={history} path='/vkauth/' component={VkAuthPage}/>*/}
+            {/*<Route history={history} path='/test/' component={TestPage}/>*/}
             <Route history={history} path='/profile/' component={ProfilePage}/>
             <Route history={history} path='/clients/' component={ClientsPage}/>
             <Route history={history} path='/projects/' component={ProjectsPage}/>
@@ -109,9 +113,7 @@ function App(props) {
             <Route history={history} path='/' component={MainPage}/>
           </Switch>
         </Container>
-        {mobile && <div className={'block static'}>
-          <ActionsSwitch bottom history={history}/>
-        </div>}
+        {mobile && <ActionsSwitch bottom history={history}/>}
       </div>
     </ThemeProvider>
   )

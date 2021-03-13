@@ -5,12 +5,17 @@ import PropTypes from "prop-types";
 import SearchField from "../Fields/SearchField/SearchField";
 
 function LazyList(props) {
-  const {children, set, add, pages, page, setPage, getLink, getParams, searchFieldParams, noSearchField, ...otherProps} = props
-
+  const {children, set, add, pages, page, setPage, getLink, getParams, searchFieldParams, noSearchField, observableRoot, ...otherProps} = props
   const [filter, setFilter] = useState(null)
-  const [request, setRequest] = useState(false)
 
-  let params = getParams || {}
+  const [request, setRequest] = useState(false)
+  const [element, setElement] = useState(null)
+  const [observer, setObserver] = useState(new IntersectionObserver(changeIntersection, observableRoot? {root: observableRoot} : undefined))
+  function changeIntersection(a) {
+    if (a[0].isIntersecting || (!!a[0].rootBounds && a[0].boundingClientRect.bottom < a[0].rootBounds.top)) setRequest(true)
+  }
+
+  let params = getParams? {...getParams} : {}
   params.page = page
   if (filter) params = {...params, ...filter}
 
@@ -20,35 +25,45 @@ function LazyList(props) {
     if (pages === null && set) {
       Fetch.post(getLink, {...params, page: 0}).then((r) => set(r))
     }
-    document.addEventListener('scroll', scan)
-    window.addEventListener('resize', scan)
-
     return (() => {
-      document.removeEventListener('scroll', scan)
-      window.removeEventListener('resize', scan)
-      searchFieldParams.set(null)
+      if (searchFieldParams) searchFieldParams.set(null)
+      observer.disconnect()
     })
     // eslint-disable-next-line
   }, [])
 
-  useEffect(() => {
-    if (request && page < pages) Fetch.post(getLink, params).then(r => {
-      add(r)
-      setRequest(false)
-    })
-    // eslint-disable-next-line
-  }, [request])
+  // eslint-disable-next-line
+  useEffect(fetchAndAdd, [request])
+  function fetchAndAdd() {
+    if (request && page < pages) Fetch.post(getLink, params).then(add)
+  }
 
   // eslint-disable-next-line
-  useEffect(scan, [children])
-
-  function scan() {
+  useEffect(findObservableTarget, [children])
+  function findObservableTarget() {
+    setRequest(false)
     if (!ref.current) return
-    if (request) return
     const ch = ref.current.childNodes
     let el
     if (ch.length > 5) el = ch[ch.length - 5]
-    if (el && el.getBoundingClientRect().bottom <= document.documentElement.clientHeight) setRequest(true)
+    if (el && el !== element) {
+      if (element) observer.unobserve(element)
+      setElement(el)
+    }
+  }
+
+  // eslint-disable-next-line
+  useEffect(setObservableTarget, [element])
+  function setObservableTarget() {
+    if (element) observer.observe(element)
+  }
+
+// eslint-disable-next-line
+  useEffect(setObservableRoot, [observableRoot])
+  function setObservableRoot() {
+    observer.disconnect()
+    setObserver(new IntersectionObserver(changeIntersection, observableRoot? {root: observableRoot} : undefined))
+    if (element) observer.observe(element)
   }
 
   const filterGet = (v) => Fetch.post(getLink, {...params, page: 0, ...v}).then(r => {
@@ -59,12 +74,12 @@ function LazyList(props) {
   function filterSet(v) {
     setRequest(false)
     if (v === null) setFilter(null)
-    searchFieldParams.set(v)
+    if (searchFieldParams) searchFieldParams.set(v)
   }
 
   return (
     <List dense ref={ref} {...otherProps}>
-      {!noSearchField && <ListSubheader style={{background: 'white', lineHeight: "unset", padding: "unset"}} disableSticky>
+      {!!searchFieldParams && <ListSubheader style={{background: 'white', lineHeight: "unset", padding: "unset"}} disableSticky>
         <SearchField {...searchFieldParams} get={filterGet} set={filterSet}/>
       </ListSubheader>}
       {children}
@@ -73,7 +88,6 @@ function LazyList(props) {
 }
 
 LazyList.propTypes = {
-  noSearchFiled: PropTypes.bool,
   searchFieldParams: PropTypes.shape({
     set: PropTypes.func,
     calendar: PropTypes.shape({
@@ -86,6 +100,7 @@ LazyList.propTypes = {
     categoryFilter: PropTypes.bool,
     minFilter: PropTypes.number
   }),
+  observableRoot: PropTypes.instanceOf(Element),
   children: PropTypes.node,
   set: PropTypes.func,
   add: PropTypes.func,

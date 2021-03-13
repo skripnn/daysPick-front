@@ -12,7 +12,7 @@ function SearchPage(props) {
     <LazyList
       searchFieldParams={{
         set: set,
-        placeHolder: "Кого искать?",
+        placeholder: "Кого искать?",
         autoFocus: true,
         categoryFilter: true,
         minFilter: 3

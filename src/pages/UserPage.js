@@ -37,8 +37,8 @@ function UserPage(props) {
     />)
   }
 
-  function onChange(daysPick, date) {
-    Fetch.post('daysoff', date.format()).then()
+  function onChange(daysPick, array, pick) {
+    Fetch.post('daysoff', {days: array, pick: pick}).then()
     calendar.setValue({daysOff: new Set(daysPick)})
   }
 

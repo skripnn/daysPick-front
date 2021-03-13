@@ -1,30 +1,35 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import ActionsPanel from "../Actions/ActionsPanel/ActionsPanel";
 import ActionButton from "../Actions/ActionButton/ActionButton";
 import {ArrowBackIos, PersonAdd} from "@material-ui/icons";
-import {Dialog, DialogContent, DialogTitle, List, ListSubheader} from "@material-ui/core";
+import {Dialog, DialogContent, DialogTitle, ListSubheader} from "@material-ui/core";
 import TextField from "../Fields/TextField/TextField";
 import {convertClients} from "../../js/functions/functions";
 import ClientItem from "../ClientItem/ClientItem";
 import Loader from "../../js/Loader";
 import Fetch from "../../js/Fetch";
+import LazyList from "../LazyList/LazyList";
+import {inject, observer} from "mobx-react";
+import './ClientChoiceDialog.css'
 
 function ClientChoiceDialog(props) {
   const [state, setState] = useState(props.client)
-  const [clients, setClients] = useState(null)
 
   const fullScreen = useMediaQuery('(max-width:720px)');
 
+  const ref = useRef()
+
   useEffect(() => {
-    Fetch.get('clients').then(setClients)
+    return (props.f.set(null))
+    // eslint-disable-next-line
   }, [])
 
   function handleChange(obj) {
     const newState = {...state, ...obj}
     setState(newState)
     Loader.set(() => {
-      Fetch.get('clients', newState).then(setClients)
+      Fetch.get('clients', newState).then(props.f.set)
     }, 100)
   }
 
@@ -42,9 +47,10 @@ function ClientChoiceDialog(props) {
       fullWidth
       maxWidth={'sm'}
       onClose={props.close}
-      open={true}>
+      open={true}
+    >
       {!fullScreen && <DialogTitle>{Actions}</DialogTitle>}
-      <DialogContent style={{overflow: "scroll"}}>
+      <DialogContent className={'client-choice-dialog-content'} ref={ref}>
         <TextField
           margin="dense"
           name="name"
@@ -59,25 +65,33 @@ function ClientChoiceDialog(props) {
           value={state.company}
           onChange={(e) => handleChange({company: e.target.value})}
         />
-        {!!clients &&
-        <List dense>
-          {convertClients(clients).map(i => (
-            <div key={i.company}>
-              <ListSubheader disableSticky>{i.company}</ListSubheader>
+        <LazyList
+          getLink={'clients'}
+          getParams={state}
+          set={props.f.set}
+          add={props.f.add}
+          page={props.f.page}
+          pages={props.f.pages}
+          observableRoot={ref.current || undefined}
+        >
+          {convertClients(props.f.list).map(i => (
+            <>
+              <ListSubheader disableSticky key={i.company}>{i.company}</ListSubheader>
               {i.clients.map(client => <ClientItem
                   client={client}
                   key={client.id}
                   onClick={() => props.set(client)}
                 />
               )}
-            </div>
+            </>
           ))}
-        </List>
-        }
+        </LazyList>
       </DialogContent>
       {fullScreen && Actions}
     </Dialog>
   )
 }
 
-export default ClientChoiceDialog
+export default inject(stores => ({
+  f: stores.ClientsPageStore.f
+}))(observer(ClientChoiceDialog))

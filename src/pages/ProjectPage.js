@@ -32,7 +32,7 @@ function ProjectPage(props) {
         trigger={id}
         edit={true}
         get={(start, end) => Fetch.getCalendar(start, end, user, id)}
-        onChange={(daysPick, date) => setDays(daysPick, date)}
+        onChange={setDays}
         content={{
           ...props.calendar,
           daysPick: dates

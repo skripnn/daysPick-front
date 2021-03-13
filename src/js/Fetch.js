@@ -27,6 +27,7 @@ class FetchClass {
   path = (URLs, params) => {
     if (URLs instanceof Array) URLs = URLs.filter(v => !!v).join('/')
     let path = this.url + URLs + '/'
+    if (typeof URLs === 'string' && URLs.startsWith('http')) path = URLs
     if (params) {
       path += '?'
       let list = []

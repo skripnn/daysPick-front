@@ -38,10 +38,11 @@ class ProjectStore {
     this.setValue(obj)
   }
 
-  setDays = (daysPick, date) => {
-    const d = date.format()
+  setDays = (daysPick) => {
     this.setValue({dates: daysPick})
-    if (!this['days'].hasOwnProperty(d)) this['days'][d] = null
+    for (const d of daysPick) {
+      if (!this['days'].hasOwnProperty(d)) this['days'][d] = null
+    }
   }
 
   setInfo = (value, date) => {

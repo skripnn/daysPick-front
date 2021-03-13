@@ -1,7 +1,7 @@
 .App {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    /*min-height: 100vh;*/
 
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -13,16 +13,14 @@
 }
 
 /*большая ширина*/
-@media screen and (min-width:720px) {
+@media screen and (min-width:600px) {
 
 }
 /*маленькая ширина*/
-@media screen and (max-width:720px) {
-
-}
-.block.static {
-    min-height: 49px;
-    flex: 0 0 auto;
+@media screen and (max-width:600px) {
+    .content-block {
+        padding-bottom: 50px;
+    }
 }
 a {
     color: inherit;
