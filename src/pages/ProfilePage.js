@@ -3,7 +3,7 @@ import PersonalInfo from "../components/PersonalInfo/PersonalInfo";
 import TagsEdit from "../components/TagsEdit/TagsEdit";
 
 function ProfilePage(props) {
-  const {tags, setValue, first_name, last_name, email, email_confirm, phone, phone_confirm} = props.ProfileStore
+  const {tags, setValue, first_name, last_name, email, email_confirm, phone, phone_confirm, show_email, show_phone} = props.ProfileStore
 
   if (!localStorage.User) return null
 
@@ -12,6 +12,8 @@ function ProfilePage(props) {
       <PersonalInfo
         first_name={first_name}
         last_name={last_name}
+        show_email={show_email}
+        show_phone={show_phone}
         email={email}
         email_confirm={email_confirm}
         phone={phone}

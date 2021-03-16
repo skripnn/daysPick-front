@@ -12,5 +12,13 @@ class mainStore {
     this.ProjectsPageStore = new ProjectsPageStore()
     this.SearchPageStore = new SearchPageStore()
   }
+
+  reset = () => {
+    this.UsersStore = new UsersStore()
+    this.ProjectStore = new ProjectStore()
+    this.ClientsPageStore = new ClientsPageStore()
+    this.ProjectsPageStore = new ProjectsPageStore()
+    this.SearchPageStore = new SearchPageStore()
+  }
 }
 export default new mainStore()

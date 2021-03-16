@@ -3,12 +3,14 @@ import {makeAutoObservable} from "mobx";
 import CalendarStore from "./CalendarStore";
 import ProfileStore from "./ProfileStore";
 import Fetch from "../../js/Fetch";
+import mainStore from "../mainStore";
 
 class UserStore {
   user = new ProfileStore()
   calendar = new CalendarStore()
   projects = []
   userPage = new UserPageStore()
+  error
 
   constructor(username) {
     if (username.match(/[0-9]{11}/)) {
@@ -22,7 +24,14 @@ class UserStore {
   }
 
   getUser = () => {
-    Fetch.get(['user', (this.user.username || this.user.phone_confirm)]).then(this.load)
+    Fetch.get(['user', (this.user.username || this.user.phone_confirm)]).then(r => {
+      if (r.error && this.user.username === localStorage.User) {
+        localStorage.clear()
+        mainStore.reset()
+        Fetch.link('login')
+      }
+      else this.load(r)
+    })
     return this
   }
 

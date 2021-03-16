@@ -14,7 +14,7 @@ import UserAvatar from "../UserAvatar/UserAvatar";
 import UserFullName from "../UserFullName/UserFullName";
 import {inject, observer} from "mobx-react";
 import Button from "@material-ui/core/Button";
-import {Group, List as ListIcon, PermIdentity, Search} from "@material-ui/icons";
+import {Group, List as ListIcon, PermIdentity, Search, SettingsOutlined} from "@material-ui/icons";
 import Box from "@material-ui/core/Box";
 import LogoutIcon from "../Icons/LogoutIcon";
 import Fetch from "../../js/Fetch";
@@ -35,7 +35,7 @@ function Menu(props) {
     }
 
     return (
-      <ListItem button onClick={handleClick} className={'menu-item'} selected={!props.noSelect && window.location.pathname === props.link}>
+      <ListItem button onClick={handleClick} className={'menu-item'} selected={!props.noSelect && window.location.pathname.match(props.link)}>
         <ListItemIcon>{props.icon}</ListItemIcon>
         <ListItemText primary={props.text} secondary={props.sub || null}/>
       </ListItem>
@@ -71,6 +71,7 @@ function Menu(props) {
         <List>
           <MenuItem text={'Поиск'} icon={<Search />} link={`search`} />
           <MenuItem text={'Профиль'} icon={<PermIdentity />} link={`profile`} />
+          <MenuItem text={'Настройки'} icon={<SettingsOutlined />} link={`settings`} />
           <MenuItem text={'Выйти'} icon={<LogoutIcon />} link={`/`} noSelect preLink={() => {
             localStorage.clear()
             props.getUser()

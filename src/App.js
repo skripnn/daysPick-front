@@ -16,6 +16,7 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 import SignupPage from "./pages/SignupPage";
 import MainPage from "./pages/MainPage";
+import SettingsPage from "./pages/SettingsPage";
 import {useMediaQuery} from "@material-ui/core";
 import Fetch from "./js/Fetch";
 // import TestPage from "./pages/TestPage";
@@ -100,6 +101,7 @@ function App(props) {
           <Switch>
             {/*<Route history={history} path='/vkauth/' component={VkAuthPage}/>*/}
             {/*<Route history={history} path='/test/' component={TestPage}/>*/}
+            <Route history={history} path='/settings/' component={SettingsPage}/>
             <Route history={history} path='/profile/' component={ProfilePage}/>
             <Route history={history} path='/clients/' component={ClientsPage}/>
             <Route history={history} path='/projects/' component={ProjectsPage}/>

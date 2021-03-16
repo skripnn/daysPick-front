@@ -31,6 +31,10 @@ class UsersStore {
       const phone = this.users[user].user.phone_confirm
       this.phones[phone] = this.users[user]
     }
+    if (!!this.users[user].error) {
+      delete this.users[user]
+      return null
+    }
     return this.users[user]
   }
 
@@ -41,6 +45,14 @@ class UsersStore {
     localStorage.setItem("Authorization", `Token ${r.token}`)
     localStorage.setItem("User", username)
     this.users[username] = new UserStore(username).load(r.user)
+  }
+
+  changeLocalUsername = (r) => {
+    const oldUsername = localStorage.User
+    localStorage.User = r.username
+    this.users[r.username] = this.users[oldUsername]
+    this.users[r.username].setValue({user: r})
+    delete this.users[oldUsername]
   }
 
 }

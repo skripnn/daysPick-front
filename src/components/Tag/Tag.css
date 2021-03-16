@@ -1,0 +1,7 @@
+.tag {
+    margin: 2px;
+}
+.tag > * {
+    padding-right: 9px !important;
+    padding-left: 9px !important;
+}

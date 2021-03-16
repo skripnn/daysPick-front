@@ -11,7 +11,7 @@ import Fetch from "../../../js/Fetch";
 
 
 export default function ValidateTextField(props) {
-  const {onChange, value, defaultValue, onBlur, error, helperText, cancel, convertValue, ...newProps} = props
+  const {onChange, value, defaultValue, onBlur, error, helperText, cancel, convertValue, endAdornment, ...newProps} = props
 
   function handleChange(e) {
     let value = e.target.value
@@ -26,17 +26,22 @@ export default function ValidateTextField(props) {
       onBlur={value ? onBlur : undefined}
       error={!!error}
       helperText={helperText || error}
-      value={value || defaultValue || ''}
+      value={value === null? defaultValue || '' : value}
       onKeyDown={(e) => {
         if (e.key === 'Escape') cancel()
       }}
-      InputProps={!!value && cancel? {
+      InputProps={value !== null && cancel? {
         endAdornment: <InputAdornment position="end">
           <IconButton onClick={cancel} size={'small'}>
             <RefreshIcon />
           </IconButton>
         </InputAdornment>,
-      } : undefined}
+      } : endAdornment?
+        {
+          endAdornment: <InputAdornment position="end">
+            {endAdornment}
+          </InputAdornment>,
+        } : undefined}
       {...newProps}
     />
   )
@@ -46,7 +51,7 @@ export function ValidatePhoneField(props) {
   const [errorIn, setErrorIn] = useState(false)
   const [helperTextIn, setHelperTextIn] = useState(null)
   const [exist, setExist] = useState(null)
-  const {onChange, value, convertValue, defaultValue, onBlur, error, cancel, ...newProps} = props
+  const {onChange, value, convertValue, defaultValue, onBlur, error, cancel, endAdornment, ...newProps} = props
 
   function handleChange(v) {
     Loader.clear()
@@ -54,7 +59,7 @@ export function ValidatePhoneField(props) {
     setErrorIn(null)
     v = reformat(v)
     if (convertValue) v = convertValue(v)
-    if (v === defaultValue || v === '+7') v = null
+    if (v === defaultValue || v === '+7' || v === '7') v = null
     let valid = !helperTextIn
     if (isValid(v)) {
       setHelperTextIn(null)
@@ -66,6 +71,7 @@ export function ValidatePhoneField(props) {
         }
       }))
     }
+    else if (!v) setHelperTextIn(null)
     if (onChange) onChange(v, props.name, valid)
   }
 
@@ -122,6 +128,10 @@ export function ValidatePhoneField(props) {
             <RefreshIcon />
           </IconButton>
         </InputAdornment>,
+      } : endAdornment? {
+        endAdornment: <InputAdornment position="end">
+          {endAdornment}
+        </InputAdornment>,
       } : undefined}
       {...newProps}
     />)
@@ -158,8 +168,15 @@ export function ValidateUsernameField(props) {
     "Используй только латиницу, цифры и нижнее подчеркивание"
   ]
 
+  const defaultValue = props.defaultValue && !props.value
+
   function handleChange(v, name) {
     Loader.clear()
+    if (v === null) {
+      setHelperText(null)
+      if (onChange) onChange(v, name, true)
+      return
+    }
     const value = v.toLowerCase()
     setError(false)
     let error = null
@@ -182,16 +199,16 @@ export function ValidateUsernameField(props) {
       <ValidateTextField
         type={'username'}
         error={error}
-        helperText={helperText}
+        helperText={!defaultValue? helperText : undefined}
         onChange={handleChange}
-        InputProps={{
+        InputProps={!defaultValue ? {
           endAdornment:
             <InputAdornment position={'end'}>
               <IconButton onClick={(e) => setAnchorEl(e.target)}>
                 <InfoOutlined />
               </IconButton>
             </InputAdornment>
-        }}
+        } : undefined}
         {...newProps}
       />
       <Popover

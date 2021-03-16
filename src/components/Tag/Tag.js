@@ -1,6 +1,7 @@
 import {Box, Chip} from "@material-ui/core";
 import {AddCircle, EmojiObjectsOutlined, RemoveCircle, VolumeUpOutlined} from "@material-ui/icons";
 import React from "react";
+import "./Tag.css"
 
 export default function Tag(props) {
   const {tag, onClick, exist, ...newProps} = props
@@ -10,7 +11,7 @@ export default function Tag(props) {
   </Box>)
 
   return (<Chip
-    style={{margin: 2}}
+    className={'tag'}
     variant="outlined"
     deleteIcon={onClick? (exist? <RemoveCircle /> : <AddCircle />) : undefined}
     onDelete={onClick? () => onClick(tag) : undefined}
@@ -21,7 +22,7 @@ export default function Tag(props) {
 
 export const category = (category) => {
   if (!category) return null
-  return <Box display={'flex'} alignItems={'center'} style={{zoom: 0.9, marginRight: 5, color: "rgba(0, 0, 0, 0.26)"}}>{categoryIcon(category)}</Box>
+  return <Box display={'flex'} alignItems={'center'} style={{zoom: 0.8, marginRight: 5, color: "rgba(0, 0, 0, 0.26)"}}>{categoryIcon(category)}</Box>
 }
 
 export const categoryIcon = (category) => {

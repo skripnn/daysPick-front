@@ -10,13 +10,13 @@ import {
 import ActionsPanel from "../Actions/ActionsPanel/ActionsPanel";
 import IconButton from "@material-ui/core/IconButton";
 import RefreshIcon from "../Icons/RefreshIcon";
-import {Mail, Save, Telegram} from "@material-ui/icons";
+import {Mail, Save, Telegram, Visibility, VisibilityOff} from "@material-ui/icons";
 import ValidateTextField, {ValidatePhoneField} from "../Fields/ValidateTextField/ValidateTextField";
 import TextField from "../Fields/TextField/TextField";
 import Fetch from "../../js/Fetch";
 
 function PersonalInfo(props) {
-  const {first_name, last_name, email, email_confirm, phone, phone_confirm, setValue} = props
+  const {first_name, last_name, email, email_confirm, phone, phone_confirm, setValue, show_email, show_phone} = props
   const [emailSend, setEmailSend] = useState(true)
   const TeleBotLink = `https://t.me/dayspick_bot?start=${localStorage.User}`
 
@@ -115,6 +115,10 @@ function PersonalInfo(props) {
             onChange={handleChange}
             onBlur={emailBlur}
             cancel={() => cancel('email')}
+            endAdornment={email_confirm?
+              <IconButton onClick={() => Fetch.post('profile', {show_email: !show_email}).then(setValue)} size={'small'}>
+                {show_email? <Visibility/> : <VisibilityOff/>}
+              </IconButton> : undefined}
           />
         </Grid>
       {!!email && <Grid item xs={12} sm>
@@ -164,6 +168,10 @@ function PersonalInfo(props) {
               onChange={handleChange}
               onBlur={phoneBlur}
               cancel={cancel}
+              endAdornment={phone_confirm?
+                <IconButton onClick={() => Fetch.post('profile', {show_phone: !show_phone}).then(setValue)} size={'small'}>
+                  {show_phone? <Visibility/> : <VisibilityOff/>}
+                </IconButton> : undefined}
             />
           </Grid>
           {!!phone && <Grid item xs={12} sm>

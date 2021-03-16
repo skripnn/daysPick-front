@@ -11,6 +11,9 @@ class ProfileStore {
   phone_confirm = null
   positions = []
   tags = []
+  is_public = false
+  show_email = true
+  show_phone = true
 
   constructor(username) {
     this.username = username
