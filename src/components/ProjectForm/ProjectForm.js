@@ -1,12 +1,11 @@
 import React from "react";
 import Grid from "@material-ui/core/Grid";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 import MoneyField from "../Fields/MoneyField/MoneyField";
 import InfoField from "../Fields/InfoField/InfoField";
 import TextField from "../Fields/TextField/TextField";
 import {inject, observer} from "mobx-react";
 import ClientField from "../Fields/ClientField/ClientField";
+import CheckBoxField from "../Fields/CheckBoxField/CheckBoxField";
 
 function ProjectForm(props) {
   const {title, is_paid, is_wait, client, setValue} = props.ProjectStore
@@ -26,14 +25,10 @@ function ProjectForm(props) {
           </Grid>
           <Grid item xs={12} container wrap={'nowrap'}>
             <Grid item xs>
-              <FormControlLabel labelPlacement="end"  name='is_paid' label='Оплачено' control={
-                <Checkbox color={"default"} checked={is_paid} onChange={e => setValue({is_paid: e.target.checked})}/>
-              }/>
+              <CheckBoxField name={'is_paid'} label={'Оплачено'} checked={is_paid} onChange={v => setValue({is_paid: v})}/>
             </Grid>
             {!is_paid && <Grid item xs style={{whiteSpace: 'nowrap'}}>
-              <FormControlLabel labelPlacement="end" name='is_paid' label='Не подтверждён' control={
-                <Checkbox color={"default"} checked={is_wait} onChange={e => setValue({is_wait: e.target.checked})}/>
-              }/>
+              <CheckBoxField name={'is_wait'} label={'Не подтверждён'} checked={is_wait} onChange={v => setValue({is_wait: v})}/>
             </Grid>}
           </Grid>
         </Grid>

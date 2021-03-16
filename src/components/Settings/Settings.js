@@ -1,13 +1,11 @@
-import {CircularProgress, FormControl, FormHelperText, List, ListItem} from "@material-ui/core";
+import {CircularProgress, List, ListItem} from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import {Save} from "@material-ui/icons";
 import ValidateTextField, {ValidatePasswordField} from "../Fields/ValidateTextField/ValidateTextField";
 import React, {useEffect, useState} from "react";
 import Loader from "../../js/Loader";
 import Fetch from "../../js/Fetch";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Typography from "@material-ui/core/Typography";
+import CheckBoxField from "../Fields/CheckBoxField/CheckBoxField";
 
 
 function Settings(props) {
@@ -108,12 +106,6 @@ function Settings(props) {
     )
   }
 
-  const isPublicCheckBox = <Checkbox
-    color={"default"}
-    checked={is_public}
-    onChange={e => Fetch.post('profile', {is_public: e.target.checked}).then(setValue)}
-  />
-
   return (
     <List dense>
       <ListItem>
@@ -154,20 +146,16 @@ function Settings(props) {
         />
       </ListItem>}
       <ListItem>
-        <FormControl>
-          <FormControlLabel
-            labelPlacement="end"
-            name='is_public'
-            label={<Typography color={"textPrimary"}>Публичный профиль (доступен через поиск)</Typography>}
-            control={isPublicCheckBox}
-            disabled={is_public_disabled}
-
-          />
-          {is_public_disabled && <FormHelperText style={{marginTop: -9}}>Необходимо подтвердить номер телефона</FormHelperText>}
-        </FormControl>
+        <CheckBoxField
+          name={'is_public'}
+          label={'Публичный профиль (доступен через поиск)'}
+          checked={is_public}
+          onChange={v => Fetch.post('profile', {is_public: v}).then(setValue)}
+          disabled={is_public_disabled}
+          helperText={is_public_disabled? 'Необходимо подтвердить номер телефона' : undefined}
+        />
       </ListItem>
     </List>
-
   )
 }
 
