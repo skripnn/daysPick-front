@@ -8,10 +8,7 @@
 }
 .actions-panel.bottom {
     justify-content: space-around;
-    position: fixed;
-    bottom: 0;
     width: 100%;
     box-shadow: 0 0 5px rgba(0,0,0,0.5);
-    z-index: 50;
     background: white;
 }

@@ -26,9 +26,6 @@
 }
 /*маленькая ширина*/
 @media screen and (max-width:600px) {
-    .content-block {
-        margin-bottom: 50px;
-    }
 }
 a {
     color: inherit;

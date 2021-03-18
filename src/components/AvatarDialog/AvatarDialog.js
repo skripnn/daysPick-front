@@ -87,6 +87,7 @@ export default function AvatarDialog(props) {
           label={'Выбери файл'}
           width={fullScreen? document.documentElement.clientWidth - 52 : 548}
           height={fullScreen? document.documentElement.clientHeight - 102 : 366}
+          imageWidth={fullScreen? document.documentElement.clientWidth : undefined}
           onCrop={setPreview}
           onClose={() => {
             setPreview(null)
