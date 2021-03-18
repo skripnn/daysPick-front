@@ -4,7 +4,7 @@ import Container from "@material-ui/core/Container";
 import {InputAdornment, List, ListItem, ListSubheader, Tooltip} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import {
-  ValidateEmailField,
+  // ValidateEmailField,
   ValidatePasswordField, ValidatePhoneField,
   ValidateUsernameField
 } from "../components/Fields/ValidateTextField/ValidateTextField";
