@@ -18,6 +18,7 @@ import {Group, List as ListIcon, PermIdentity, Search, SettingsOutlined} from "@
 import Box from "@material-ui/core/Box";
 import LogoutIcon from "../Icons/LogoutIcon";
 import Fetch from "../../js/Fetch";
+import {useSwipeable} from "react-swipeable";
 
 
 function Menu(props) {
@@ -42,6 +43,10 @@ function Menu(props) {
     )
   }
 
+  const handlers = useSwipeable({
+    onSwipedRight: () => close(),
+    trackMouse: true
+  });
 
   return (
     <div>
@@ -53,6 +58,7 @@ function Menu(props) {
         onClose={() => close()}
         anchor={'right'}
         className={'menu'}
+        {...handlers}
       >
         <Box display={'flex'} className={'menu-item-top'}>
           <Button onClick={() => close()}>
