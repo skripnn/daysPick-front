@@ -1,12 +1,5 @@
-.menu-item-top {
-    height: 48px;
-    padding: 2px 0;
-}
-.menu-item-top > *:first-child {
-    min-width: 56px;
-    border-radius: 0 4px 4px 0;
-}
-.menu-item-top > *:last-child {
-    padding-right: 0;
-    border-radius: 4px 0 0 4px;
+@media screen and (min-width:600px) {
+    .menu-item-top {
+        padding-right: 24px !important;
+    }
 }

@@ -9,13 +9,10 @@ import {
 } from "@material-ui/core";
 import "./Menu.css"
 import IconButton from "@material-ui/core/IconButton";
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import UserAvatar from "../UserAvatar/UserAvatar";
 import UserFullName from "../UserFullName/UserFullName";
 import {inject, observer} from "mobx-react";
-import Button from "@material-ui/core/Button";
 import {Group, List as ListIcon, PermIdentity, Search, SettingsOutlined} from "@material-ui/icons";
-import Box from "@material-ui/core/Box";
 import LogoutIcon from "../Icons/LogoutIcon";
 import Fetch from "../../js/Fetch";
 import {useSwipeable} from "react-swipeable";
@@ -36,7 +33,7 @@ function Menu(props) {
     }
 
     return (
-      <ListItem button onClick={handleClick} className={'menu-item'} selected={!props.noSelect && !!window.location.pathname.match(props.link)}>
+      <ListItem button onClick={handleClick} className={props.className || 'menu-item'} selected={!props.noSelect && !!window.location.pathname.match(props.link)} >
         {!!props.icon && <ListItemIcon>{props.icon}</ListItemIcon>}
         <ListItemText primary={props.text} secondary={props.sub || null}/>
       </ListItem>
@@ -60,12 +57,7 @@ function Menu(props) {
         className={'menu'}
         {...handlers}
       >
-        <Box display={'flex'} className={'menu-item-top'}>
-          <Button onClick={() => close()}>
-            <ChevronRightIcon />
-          </Button>
-          <MenuItem text={<UserFullName user={props.user} avatar={'right'}/>} link={`user/${props.user.username}`} set={props.setUser} noSelect/>
-        </Box>
+        <MenuItem text={<UserFullName user={props.user} avatar={'right'}/>} link={`user/${props.user.username}`} set={props.setUser} noSelect className={'menu-item-top'}/>
         <Divider />
         <List>
           <MenuItem text={'Мои проекты'} icon={<ListIcon/>} link={`projects`} set={props.setProjects} />
