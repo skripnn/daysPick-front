@@ -127,8 +127,9 @@ function Settings(props) {
       <ListItem>
         <div style={{width: "100%", display: 'flex', alignItems: 'flex-start', height: 46}}>
         <ValidatePasswordField
+          autoComplete="new-password"
           label={'Новый пароль'}
-          name={'password'}
+          name={'new-password'}
           value={v.password}
           onChange={passwordChange}
           error={!!e.password2}

@@ -15,7 +15,8 @@ export default function Header(props) {
   const titles = [
     ['/projects', 'Мои проекты'],
     ['/clients', 'Мои клиенты'],
-    ['/profile', 'Профиль']
+    ['/profile', 'Профиль'],
+    ['/settings', 'Настройки']
   ]
   function title() {
     for (const [path, name] of titles) {

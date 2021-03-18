@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Container from "@material-ui/core/Container";
 import ProjectPage from "./pages/ProjectPage";
 import UserPage from "./pages/UserPage";
@@ -22,12 +22,12 @@ import Fetch from "./js/Fetch";
 // import TestPage from "./pages/TestPage";
 // import {VkAuthPage} from "./pages/VkAuthPage";
 
-function ScrollToTop() {
+function ScrollToTop(props) {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
+    props.container? props.container.scrollTo(0, 0) : window.scrollTo(0, 0);
+  }, [pathname, props.container]);
 
   return null;
 }
@@ -90,13 +90,22 @@ function App(props) {
     }
   });
 
+  const [height, setHeight] = useState(window.innerHeight)
+  useEffect(() => {
+    const changeHeight = () => setHeight(window.innerHeight)
+    window.addEventListener('resize', changeHeight)
+    return (
+      window.removeEventListener('resize', changeHeight)
+    )
+  }, [])
+  const ref = useRef()
 
   return (
     <ThemeProvider theme={theme}>
-      <div className="App">
-        <ScrollToTop />
+      <div className="App" style={{height: `${height}px`}}>
+        <ScrollToTop container={ref.current}/>
         <Header history={history}/>
-        <Container maxWidth="md" className={"content-block"} style={{display: "flex", flexGrow: 1, flexDirection: "column"}}>
+        <Container maxWidth="md" className={"content-block"} ref={ref}>
           <ActionsSwitch hidden={mobile} history={history}/>
           <Switch>
             {/*<Route history={history} path='/vkauth/' component={VkAuthPage}/>*/}

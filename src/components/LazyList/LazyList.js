@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import Fetch from "../../js/Fetch";
-import {List, ListSubheader} from "@material-ui/core";
+import {CircularProgress, List, ListSubheader} from "@material-ui/core";
 import PropTypes from "prop-types";
 import SearchField from "../Fields/SearchField/SearchField";
 
@@ -83,6 +83,7 @@ function LazyList(props) {
         <SearchField {...searchFieldParams} get={filterGet} set={filterSet}/>
       </ListSubheader>}
       {children}
+      {page < pages && <div style={{display: "flex", justifyContent: 'center', opacity: 0.5}}><CircularProgress size={24} color={'secondary'} /></div>}
     </List>
   )
 }

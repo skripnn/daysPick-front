@@ -6,7 +6,8 @@ const localhost = "192.168.31.71"
 
 
 class FetchClass {
-  url = `${process.env.NODE_ENV === 'production' ? '' : `http://${localhost}:8000`}/api/`
+  host = `${process.env.NODE_ENV === 'production' ? '' : `http://${localhost}:8000`}`
+  url = `${process.env.NODE_ENV === 'production' ? '' : `${this.host}`}/api/`
   history = null
 
   authHeaders = () => ({
@@ -45,6 +46,31 @@ class FetchClass {
     return path
   }
 
+  toBase64 = file => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
+
+  fromBase64 = data => {
+    let arr = data.split(','),
+      mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]),
+      n = bstr.length,
+      u8arr = new Uint8Array(n);
+
+    while(n--){
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+
+    return new Blob([u8arr], {type:mime});
+  }
+
+  getImage = async (path) => {
+    return await this.toBase64(await fetch(Fetch.host + path).then(r => r.blob()))
+  }
+
   get = (URLs, params={}, auth=true) => {
     return fetch(this.path(URLs, params), {
       headers: this.authHeaders()
@@ -56,6 +82,14 @@ class FetchClass {
       method: 'POST',
       headers: this.authHeaders(),
       body: JSON.stringify(data)
+    }).then(res => this.checkAuth(res, auth))
+  }
+
+  postForm = (URLs, data, auth=true) => {
+    return fetch(this.path(URLs), {
+      method: 'POST',
+      headers: {'Authorization': localStorage.getItem("Authorization")},
+      body: data
     }).then(res => this.checkAuth(res, auth))
   }
 

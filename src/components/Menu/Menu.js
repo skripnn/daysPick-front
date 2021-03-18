@@ -35,8 +35,8 @@ function Menu(props) {
     }
 
     return (
-      <ListItem button onClick={handleClick} className={'menu-item'} selected={!props.noSelect && window.location.pathname.match(props.link)}>
-        <ListItemIcon>{props.icon}</ListItemIcon>
+      <ListItem button onClick={handleClick} className={'menu-item'} selected={!props.noSelect && !!window.location.pathname.match(props.link)}>
+        {!!props.icon && <ListItemIcon>{props.icon}</ListItemIcon>}
         <ListItemText primary={props.text} secondary={props.sub || null}/>
       </ListItem>
     )
@@ -54,13 +54,11 @@ function Menu(props) {
         anchor={'right'}
         className={'menu'}
       >
-        <Box display={'flex'} style={{height: 48, padding: "2px 0"}}>
-          <Button onClick={() => close()} style={{minWidth: 56, borderRadius: "0 4px 4px 0"}}>
+        <Box display={'flex'} className={'menu-item-top'}>
+          <Button onClick={() => close()}>
             <ChevronRightIcon />
           </Button>
-          <ListItem button onClick={() => close(`/user/${props.user.username}/`)} className={'menu-item'} style={{paddingRight: 0, borderRadius: "4px 0 0 4px"}}>
-              <UserFullName user={props.user} avatar={'right'}/>
-          </ListItem>
+          <MenuItem text={<UserFullName user={props.user} avatar={'right'}/>} link={`user/${props.user.username}`} set={props.setUser} noSelect/>
         </Box>
         <Divider />
         <List>
@@ -86,6 +84,7 @@ export default inject(stores => {
   return {
     user: stores.UsersStore.getLocalUser().user,
     getUser: stores.UsersStore.getLocalUser().getUser,
+    setUser: stores.UsersStore.setUser,
     setClients: stores.ClientsPageStore.c.set,
     setProjects: stores.ProjectsPageStore.p.set
   }

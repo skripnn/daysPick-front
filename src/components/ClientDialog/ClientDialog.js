@@ -17,22 +17,42 @@ import Fetch from "../../js/Fetch";
 
 function ClientDialog(props) {
   const [state, setState] = useState(props.client || props.ClientsPageStore.dialog)
+  const [loading, setLoading] = useState(null)
 
   useEffect(() => {
     if (state.id) Fetch.get(['client', state.id]).then(client => setState(client))
-  // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [])
 
   const fullScreen = useMediaQuery('(max-width:720px)');
 
+  function load(command) {
+    setLoading(command)
+    if (command === 'del') props.onDelete(state)
+    else if (command === 'save') props.onSave(state)
+  }
+
   const Actions = (
     <ActionsPanel
       bottom={fullScreen}
-      left={<ActionButton onClick={props.close} label="Назад" icon={<ArrowBackIos/>}/>}
+      left={<ActionButton
+        onClick={props.close}
+        label="Назад"
+        icon={<ArrowBackIos/>}
+      />}
       right={<>
-        {/* eslint-disable-next-line no-restricted-globals */}
-        {state.id && <ActionButton onClick={() => {if (confirm('Удалить клиента?')) props.onDelete(state)}} label="Удалить" icon={<Delete/>}/>}
-        <ActionButton onClick={() => props.onSave(state)} label="Сохранить" disabled={!state.name} icon={<Save/>}/>
+        {state.id && <ActionButton
+          // eslint-disable-next-line no-restricted-globals
+          onClick={() => {if (confirm('Удалить клиента?')) load('del')}}
+          label="Удалить" icon={<Delete/>}
+          disabled={!!loading}
+          loading={loading === 'del'}/>}
+        <ActionButton
+          onClick={() => load('save')}
+          label="Сохранить"
+          disabled={!state.name || !!loading}
+          icon={<Save/>}
+          loading={loading === 'save'}/>
       </>}
     />
   )
@@ -65,13 +85,13 @@ function ClientDialog(props) {
         <List dense>
           <ListSubheader style={{background: "white"}}>Проекты</ListSubheader>
           <div style={{maxHeight: 270, overflow: "scroll"}}>
-          {state.projects.map(project =>
-            <Link to={`/project/${project.id}/`}>
-              <ListItem button>
-                <ListItemText primary={project.title}/>
-              </ListItem>
-            </Link>
-          )}
+            {state.projects.map(project =>
+              <Link to={`/project/${project.id}/`}>
+                <ListItem button>
+                  <ListItemText primary={project.title}/>
+                </ListItem>
+              </Link>
+            )}
           </div>
         </List>
         }

@@ -14,6 +14,8 @@ class ProfileStore {
   is_public = false
   show_email = true
   show_phone = true
+  avatar = null
+  photo = null
 
   constructor(username) {
     this.username = username

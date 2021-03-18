@@ -1,14 +1,17 @@
 import {AccountCircle, EventBusy, List, PostAdd} from "@material-ui/icons";
-import React from "react";
+import React, {useState} from "react";
 import ActionButton from "../ActionButton/ActionButton";
 import ActionsPanel from "../ActionsPanel/ActionsPanel";
 import {inject, observer} from "mobx-react";
 import UserFullName from "../../UserFullName/UserFullName";
 import {parseUser} from "../../../js/functions/functions";
+import {Dialog, DialogContent} from "@material-ui/core";
+import Fetch from "../../../js/Fetch";
 
 
 function UserPageActionPanel(props) {
   const {isSelf, edit, dayOffOver, profile, setValue} = props.userPage
+  const [image, setImage] = useState(null)
 
   const buttonsBlock = [
     <ActionButton
@@ -41,16 +44,25 @@ function UserPageActionPanel(props) {
       onClick={() => setValue({edit: false, profile: true})}
     />
   ]
-  const right = isSelf? buttonsBlock : []
+  const right = isSelf ? buttonsBlock : []
 
-  return (
+  function loadImage() {
+    if (props.user.photo) Fetch.getImage(props.user.photo).then(setImage)
+  }
+
+  return (<>
     <ActionsPanel
       {...props}
       hidden={props.bottom ? props.hidden : false}
-      left={props.bottom ? [] : <UserFullName user={props.user} avatar={'left'} edit={isSelf}/>}
+      left={props.bottom ? [] : <UserFullName user={props.user} avatar={'left'} edit={isSelf} avatarClick={loadImage}/>}
       right={props.hidden ? [] : right}
     />
-  )
+    {<Dialog open={!!image} onClose={() => setImage(null)} maxWidth={"sm"} scroll={'body'} style={{maxHeight: '95vh'}}>
+      <DialogContent style={{padding: 10}}>
+        <img src={image} style={{maxWidth: '100%', maxHeight: '100%'}} alt={props.user.full_name}/>
+      </DialogContent>
+    </Dialog>}
+  </>)
 }
 
 export default inject(stores => stores.UsersStore.getUser(parseUser()))(observer(UserPageActionPanel))

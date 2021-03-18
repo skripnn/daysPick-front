@@ -10,13 +10,20 @@ import {
 import ActionsPanel from "../Actions/ActionsPanel/ActionsPanel";
 import IconButton from "@material-ui/core/IconButton";
 import RefreshIcon from "../Icons/RefreshIcon";
-import {Mail, Save, Telegram, Visibility, VisibilityOff} from "@material-ui/icons";
+import {
+  Mail,
+  Save,
+  Telegram,
+  Visibility,
+  VisibilityOff
+} from "@material-ui/icons";
 import ValidateTextField, {ValidatePhoneField} from "../Fields/ValidateTextField/ValidateTextField";
 import TextField from "../Fields/TextField/TextField";
 import Fetch from "../../js/Fetch";
+import AvatarField from "../Fields/AvatarField/AvatarField";
 
 function PersonalInfo(props) {
-  const {first_name, last_name, email, email_confirm, phone, phone_confirm, setValue, show_email, show_phone} = props
+  const {first_name, last_name, email, email_confirm, phone, phone_confirm, setValue, show_email, show_phone, avatar, full_name, photo} = props
   const [emailSend, setEmailSend] = useState(true)
   const TeleBotLink = `https://t.me/dayspick_bot?start=${localStorage.User}`
 
@@ -82,6 +89,9 @@ function PersonalInfo(props) {
           </> : undefined}
         />
       </ListSubheader>
+      <ListItem>
+        <AvatarField value={avatar} onChange={setValue} full_name={full_name} photo={photo}/>
+      </ListItem>
       <ListItem>
         <ValidateTextField
           label={'Имя'}

@@ -1,25 +1,33 @@
 .App {
     display: flex;
     flex-direction: column;
-    /*min-height: 100vh;*/
+    overflow: hidden;
 
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+
 }
 .content-block {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
     padding: 10px 15px 10px;
+    overflow: scroll;
+    -webkit-overflow-scrolling: touch;
+}
+.content-block::-webkit-scrollbar {
+    display: none;
 }
 
 /*большая ширина*/
 @media screen and (min-width:600px) {
-
 }
 /*маленькая ширина*/
 @media screen and (max-width:600px) {
     .content-block {
-        padding-bottom: 50px;
+        margin-bottom: 50px;
     }
 }
 a {

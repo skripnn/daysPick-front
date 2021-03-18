@@ -38,6 +38,12 @@ class UsersStore {
     return this.users[user]
   }
 
+  setUser = (r) => {
+    const username = r.user.username
+    if (!this.users[username]) this.users[username] = new UserStore(username)
+    this.users[username].load(r)
+  }
+
   getLocalUser = () => this.getUser(localStorage.User)
 
   setLocalUser = (r) => {

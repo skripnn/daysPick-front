@@ -2,6 +2,7 @@ import Button from "@material-ui/core/Button";
 import React from "react";
 import {Link} from "react-router-dom";
 import './ActionButton.css'
+import {CircularProgress} from "@material-ui/core";
 
 export default function ActionButton(props) {
   if (props.hidden) return null
@@ -11,7 +12,7 @@ export default function ActionButton(props) {
   const actionButton = (
     <Button size={"small"} onClick={props.onClick} className={className} disabled={props.disabled}>
       <div className={"action-button"}>
-        {props.icon}
+        {props.loading? <CircularProgress size={24} color={'inherit'}/> : props.icon}
         {props.label}
       </div>
     </Button>

@@ -1,5 +1,5 @@
 import {Delete, Save} from "@material-ui/icons";
-import React from "react";
+import React, {useState} from "react";
 import ActionButton from "../ActionButton/ActionButton";
 import ActionsPanel from "../ActionsPanel/ActionsPanel";
 import {inject, observer} from "mobx-react";
@@ -10,6 +10,7 @@ import Fetch from "../../../js/Fetch";
 function ProjectPageActionPanel(props) {
   const lastLocation = useLastLocation()
   const {id, dates, title, user, serializer} = props.ProjectStore
+  const [loading, setLoading] = useState(null)
 
   function back() {
     props.history.push(lastLocation? lastLocation.pathname : `/user/${user}/`)
@@ -19,6 +20,7 @@ function ProjectPageActionPanel(props) {
   function del() {
     // eslint-disable-next-line no-restricted-globals
     if (!confirm('Удалить проект?')) return
+    setLoading('del')
     Fetch.delete(['project', id]).then(back)
   }
 
@@ -34,9 +36,13 @@ function ProjectPageActionPanel(props) {
       alert(errorsString)
     }
     else {
+      setLoading('save')
       Fetch.post(['project', id], serializer()).then(
         () => back(),
-        (error) => alert(error)
+        (error) => {
+          setLoading(null)
+          alert(error)
+        }
       )
     }
   }
@@ -49,13 +55,16 @@ function ProjectPageActionPanel(props) {
       label={"Удалить"}
       icon={<Delete />}
       onClick={del}
-      disabled={!id}
+      disabled={!id || !!loading}
+      loading={loading === 'del'}
     />,
     <ActionButton
       key={"Сохранить"}
       label={"Сохранить"}
       icon={<Save />}
       onClick={save}
+      disabled={!!loading}
+      loading={loading === 'save'}
     />,
   ]
 

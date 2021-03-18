@@ -5,19 +5,21 @@ import UserAvatar from "../UserAvatar/UserAvatar";
 import {Link} from "react-router-dom";
 import {Edit} from "@material-ui/icons";
 import {IconButton} from "@material-ui/core";
+import Fetch from "../../js/Fetch";
+import {inject, observer} from "mobx-react";
 
-export default function UserFullName(props) {
+function UserFullName(props) {
   if (!props.user.full_name) return null
 
   function click() {
-    if (props.link) window.location.href = `/user/${props.user.username}/`
+    if (props.link) Fetch.link(`/user/${props.user.username}/`, props.setUser)
   }
 
   return (
     <div className={'user-full-name'} onClick={click}>
-      {props.avatar === 'left' && <Box><UserAvatar {...props.user}/></Box>}
+      {props.avatar === 'left' && <Box><UserAvatar {...props.user} onClick={props.avatarClick}/></Box>}
       <Box>{props.user.full_name}</Box>
-      {props.avatar === 'right' && <Box><UserAvatar {...props.user}/></Box>}
+      {props.avatar === 'right' && <Box><UserAvatar {...props.user} onClick={props.avatarClick}/></Box>}
       {props.edit && <Link to='/profile/'>
         <IconButton size={"small"}>
           <Edit className={"edit-button"}/>
@@ -26,3 +28,7 @@ export default function UserFullName(props) {
     </div>
   )
 }
+
+export default inject(stores => ({
+  setUser: stores.UsersStore.setUser
+}))(observer(UserFullName))

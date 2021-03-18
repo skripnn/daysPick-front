@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import Calendar from '../components/Calendar';
 import {inject, observer} from "mobx-react";
 import {IconButton,
@@ -25,11 +25,6 @@ function UserPage(props) {
   const phone = p? `+${p[0]} (${p.slice(1,4)}) ${p.slice(4,7)}-${p.slice(7,9)}-${p.slice(9)}` : p
 
   const [copied, setCopied] = useState(null)
-
-  useEffect(() => {
-    if (user.username) getUser()
-    // eslint-disable-next-line
-  }, [props.UserStore])
 
   const content = {
     days: calendar.days,
@@ -152,11 +147,13 @@ function UserPage(props) {
       />
       {userPage.profile ?
         <>
-          <ListSubheader>Специализации</ListSubheader>
-          <Box display={"flex"} flexWrap={'wrap'}>
-            <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
-            {user.tags.map(tag => <Tag tag={tag} key={tag.id}/>)}
-          </Box>
+          {!!user.tags.length && <>
+            <ListSubheader>Специализации</ListSubheader>
+            <Box display={"flex"} flexWrap={'wrap'}>
+              <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+              {user.tags.map(tag => <Tag tag={tag} key={tag.id}/>)}
+            </Box>
+          </>}
           {(!!user.show_email || !!user.show_phone) &&
           <List dense>
             <ListSubheader>Контакты</ListSubheader>
