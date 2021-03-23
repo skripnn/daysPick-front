@@ -21,9 +21,12 @@ import ValidateTextField, {ValidatePhoneField} from "../Fields/ValidateTextField
 import TextField from "../Fields/TextField/TextField";
 import Fetch from "../../js/Fetch";
 import AvatarField from "../Fields/AvatarField/AvatarField";
+import FacebookField from "../Fields/FacebookField/FacebookField";
+import {toJS} from "mobx";
 
 function PersonalInfo(props) {
-  const {first_name, last_name, email, email_confirm, phone, phone_confirm, setValue, show_email, show_phone, avatar, full_name, photo} = props
+  console.log(toJS(props))
+  const {first_name, last_name, email, email_confirm, phone, phone_confirm, setValue, show_email, show_phone, avatar, full_name, photo, facebook_account} = props
   const [emailSend, setEmailSend] = useState(true)
   const TeleBotLink = `https://t.me/dayspick_bot?start=${localStorage.User}`
 
@@ -203,8 +206,12 @@ function PersonalInfo(props) {
             /> </Grid>}
         </Grid>
       </ListItem>
+      <ListItem>
+        <FacebookField value={facebook_account} set={setValue}/>
+      </ListItem>
     </List>
   )
 }
 
 export default PersonalInfo
+

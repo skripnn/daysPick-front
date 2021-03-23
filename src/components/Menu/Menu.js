@@ -33,7 +33,7 @@ function Menu(props) {
     }
 
     return (
-      <ListItem button onClick={handleClick} className={props.className || 'menu-item'} selected={!props.noSelect && !!window.location.pathname.match(props.link)} >
+      <ListItem button onClick={props.onClick || handleClick} className={props.className || 'menu-item'} selected={!props.noSelect && !!window.location.pathname.match(props.link)} >
         {!!props.icon && <ListItemIcon>{props.icon}</ListItemIcon>}
         <ListItemText primary={props.text} secondary={props.sub || null}/>
       </ListItem>
@@ -68,9 +68,9 @@ function Menu(props) {
           <MenuItem text={'Поиск'} icon={<Search />} link={`search`} />
           <MenuItem text={'Профиль'} icon={<PermIdentity />} link={`profile`} />
           <MenuItem text={'Настройки'} icon={<SettingsOutlined />} link={`settings`} />
-          <MenuItem text={'Выйти'} icon={<LogoutIcon />} link={`/`} noSelect preLink={() => {
+          <MenuItem text={'Выйти'} icon={<LogoutIcon />} noSelect onClick={() => {
             localStorage.clear()
-            props.getUser()
+            window.location.href = '/search/'
           }}/>
         </List>
       </Drawer>

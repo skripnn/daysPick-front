@@ -31,3 +31,6 @@ a {
     color: inherit;
     text-decoration: inherit;
 }
+.facebook-button:hover {
+    color: #3b5998;
+}

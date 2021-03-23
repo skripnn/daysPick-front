@@ -22,7 +22,7 @@ function Quote({ item, itemProps, index }) {
           {...provided.draggableProps}
           {...provided.dragHandleProps}
         >
-          <Tag tag={item} {...itemProps}/>
+          <Tag tag={item} {...itemProps} className={'tag dnd'}/>
         </div>
       )}
     </Draggable>

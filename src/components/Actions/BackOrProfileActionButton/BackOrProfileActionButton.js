@@ -2,6 +2,7 @@ import ActionButton from "../ActionButton/ActionButton";
 import {AccountCircle, ArrowBackIos} from "@material-ui/icons";
 import React from "react";
 import {useLastLocation} from "react-router-last-location";
+import Fetch from "../../../js/Fetch";
 
 export default function BackOrProfileActionButton(props) {
   const lastLocation = useLastLocation()
@@ -11,7 +12,7 @@ export default function BackOrProfileActionButton(props) {
       key={"Назад"}
       label={"Назад"}
       icon={<ArrowBackIos />}
-      onClick={props.onClick || (() => props.history.goBack())}
+      onClick={props.onClick || (() => Fetch.back())}
     />
   )
 
@@ -20,7 +21,7 @@ export default function BackOrProfileActionButton(props) {
       key={"Профиль"}
       label={"Профиль"}
       icon={<AccountCircle />}
-      onClick={props.onClick || (() => props.history.push(`/user/${localStorage.User}/`))}
+      onClick={props.onClick || (() => Fetch.link(`/user/${localStorage.User}/`))}
     />
   ) : null
 

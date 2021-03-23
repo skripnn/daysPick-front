@@ -56,7 +56,6 @@ function App(props) {
     else favicon.href = favicon.href.replace('favicon-black.ico', 'favicon.ico')
   }, [lightTheme])
 
-
   return (
     <ThemeProvider theme={theme}>
       <div className="App" style={{height: `${height}px`}}>

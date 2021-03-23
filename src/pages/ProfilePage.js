@@ -16,7 +16,8 @@ function ProfilePage(props) {
     show_phone,
     avatar,
     full_name,
-    photo
+    photo,
+    facebook_account
   } = props.ProfileStore
 
   if (!localStorage.User) return null
@@ -36,6 +37,7 @@ function ProfilePage(props) {
         setValue={setValue}
         avatar={avatar}
         photo={photo}
+        facebook_account={facebook_account}
       />
       <TagsEdit tags={tags} set={v => setValue({tags: v})}/>
     </>

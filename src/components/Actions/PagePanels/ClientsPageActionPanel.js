@@ -8,7 +8,7 @@ import BackOrProfileActionButton from "../BackOrProfileActionButton/BackOrProfil
 
 function ClientsPageActionPanel(props) {
 
-  const left = <BackOrProfileActionButton type={'profile'} history={props.history}/>
+  const left = <BackOrProfileActionButton type={'profile'}/>
 
   const right = [
     <ActionButton

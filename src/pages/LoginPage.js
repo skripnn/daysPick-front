@@ -6,11 +6,12 @@ import ValidateTextField, {ValidatePasswordField} from "../components/Fields/Val
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import {useStyle} from "../js/core/auth";
-import {inject, observer} from "mobx-react";
 import Fetch from "../js/Fetch";
+import mainStore from "../stores/mainStore";
+import SocialLogin from "../components/SocialLogin/SocialLogin";
 
 
-function LoginPage(props) {
+function LoginPage() {
   const classNames = useStyle()
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -19,6 +20,9 @@ function LoginPage(props) {
     password: null
   })
   useEffect(() => setError(null), [data])
+  useEffect(() => {
+    if (localStorage.Authorization && localStorage.User) Fetch.autoLink(`user/${localStorage.User}`)
+  }, [])
 
   function set(value, key) {
     const obj = Object.fromEntries([[key, value]])
@@ -34,8 +38,8 @@ function LoginPage(props) {
         .then(r => {
             if (r.token) {
               if (error) setError(null)
-              props.UsersStore.setLocalUser(r)
-              props.history.push(`/user/${localStorage.User}/`)
+              mainStore.UsersStore.setLocalUser(r)
+              Fetch.link(['user', localStorage.User])
             }
             else {
               setLoading(false)
@@ -89,10 +93,13 @@ function LoginPage(props) {
               variant={'outlined'}
               color={'secondary'}
               fullWidth
-              onClick={() => props.history.push('/signup/')}
+              onClick={() => Fetch.link('signup')}
             >
               Регистрация
             </Button>
+          </ListItem>
+          <ListItem>
+            <SocialLogin />
           </ListItem>
           {!!error && <ListSubheader className={classNames.error}>{error}</ListSubheader>}
           </form>
@@ -103,4 +110,4 @@ function LoginPage(props) {
   )
 }
 
-export default inject('UsersStore')(observer(LoginPage))
+export default LoginPage

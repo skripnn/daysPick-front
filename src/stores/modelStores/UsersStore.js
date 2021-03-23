@@ -47,10 +47,11 @@ class UsersStore {
   getLocalUser = () => this.getUser(localStorage.User)
 
   setLocalUser = (r) => {
-    const username = r.user.user.username
+    const username = r.user.username
     localStorage.setItem("Authorization", `Token ${r.token}`)
     localStorage.setItem("User", username)
-    this.users[username] = new UserStore(username).load(r.user)
+    delete r.token
+    this.users[username] = new UserStore(username).load(r)
   }
 
   changeLocalUsername = (r) => {

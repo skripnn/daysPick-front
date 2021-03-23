@@ -1,4 +1,6 @@
 // const localhost = "localhost"
+import mainStore from "../stores/mainStore";
+
 const localhost = "192.168.31.71"
 // const localhost = "192.168.0.218"
 // const localhost = "192.168.0.109"
@@ -119,10 +121,26 @@ class FetchClass {
   })
 
   link = (link, set) => {
-    const pushLink = (link.startsWith('/') && link.endsWith('/')) ? link : `/${link}/`
+    if (link instanceof Array) link = link.filter(v => !!v).join('/')
+    let l = link
+    if (l !== '/') {
+      if (l.startsWith('/')) l = l.slice(1)
+      if (l.endsWith('/')) l = l.slice(0, l.length - 1)
+    }
+    const pushLink = l === '/'? l : `/${l}/`
     const toHistory = () => this.history? this.history.push(pushLink) : window.history.push(pushLink)
     if (!set) toHistory()
-    else this.get(link).then(set).then(toHistory)
+    else this.get(l).then(set).then(toHistory)
+  }
+
+  autoLink = (link) => {
+    if (link.search(/projects/) > 0) this.link(link, mainStore.UsersStore.getLocalUser().setProjects)
+    else if (link.search(/user\//) > 0) this.link(link, mainStore.UsersStore.setUser)
+    else this.link(link)
+  }
+
+  back = () => {
+    this.history? this.history.goBack() : window.history.goBack()
   }
 }
 

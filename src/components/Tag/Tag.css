@@ -5,3 +5,6 @@
     padding-right: 9px !important;
     padding-left: 9px !important;
 }
+.tag.dnd:hover {
+    cursor: grab;
+}

@@ -13,7 +13,7 @@ function ProjectPageActionPanel(props) {
   const [loading, setLoading] = useState(null)
 
   function back() {
-    props.history.push(lastLocation? lastLocation.pathname : `/user/${user}/`)
+    Fetch.autoLink(lastLocation? lastLocation.pathname : `/user/${user}/`)
     props.ProjectStore.default()
   }
 

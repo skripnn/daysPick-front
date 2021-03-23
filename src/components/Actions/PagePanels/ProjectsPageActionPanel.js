@@ -7,14 +7,14 @@ import BackOrProfileActionButton from "../BackOrProfileActionButton/BackOrProfil
 
 function ProjectsPageActionPanel(props) {
 
-  const left = <BackOrProfileActionButton type={'profile'} history={props.history}/>
+  const left = <BackOrProfileActionButton type={'profile'} />
 
   const right = [
     <ActionButton
       key={'Добавить'}
       label={'Добавить'}
       icon={<PostAdd/>}
-      link={'/project/'}
+      link={'project'}
     />,
   ]
 
