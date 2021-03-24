@@ -76,7 +76,7 @@ function SearchField(props) {
 
   return (
     <Box display={'flex'} flexDirection={'column'}>
-      <Box display={'flex'}>
+      <Box display={'flex'} className={'search-field'}>
         <TextField
           {...newProps}
           size={"medium"}
@@ -85,14 +85,14 @@ function SearchField(props) {
           InputProps={{
             startAdornment:
               <InputAdornment position={"start"}>
-                <IconButton onClick={download} disabled={loading}>
+                <IconButton onClick={download} disabled={loading} size={'small'}>
                   {props.loading || loading ? <CircularProgress style={{width: 24, height: 24}} color={"inherit"}/> :
                     <Search/>}
                 </IconButton>
               </InputAdornment>,
             endAdornment: ((filter || days || category) &&
               <InputAdornment position={"end"}>
-                <IconButton onClick={() => {
+                <IconButton size={'small'} onClick={() => {
                   setFilter(null)
                   setCategory(null)
                   clearDays()
@@ -102,7 +102,7 @@ function SearchField(props) {
               </InputAdornment>)
           }}
         />
-        {!noFilter && <IconButton onClick={filterButtonClick} size={'small'}>
+        {!noFilter && <IconButton onClick={filterButtonClick} size={'small'} style={{height: "max-content", marginTop: 1}}>
           {categoryFilter ? <FilterIcon style={days || category ? {color: '#4db34b'} : {}}/> :
             <DateRange style={days ? {color: '#4db34b'} : {}}/>}
         </IconButton>}

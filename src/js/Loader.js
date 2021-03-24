@@ -1,4 +1,4 @@
-class Loader {
+export class Loader {
   timer
 
   set = (f, timeout=500) => {

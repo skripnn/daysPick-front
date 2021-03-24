@@ -29,7 +29,7 @@ export default function Header(props) {
     <Link to={'/login/'}>
       <Tooltip title="Log In">
         <IconButton>
-          <LoginIcon/>
+          <LoginIcon className={'pulse'}/>
         </IconButton>
       </Tooltip>
     </Link>

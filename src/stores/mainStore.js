@@ -3,6 +3,7 @@ import ProjectStore from "./modelStores/ProjectStore";
 import ClientsPageStore from "./pageStores/ClientsPageStore";
 import ProjectsPageStore from "./pageStores/ProjectsPageStore";
 import SearchPageStore from "./pageStores/SearchPageStore";
+import InfoBarStore from "./modelStores/InfoBarStore";
 
 class mainStore {
   constructor() {
@@ -11,6 +12,7 @@ class mainStore {
     this.ClientsPageStore = new ClientsPageStore()
     this.ProjectsPageStore = new ProjectsPageStore()
     this.SearchPageStore = new SearchPageStore()
+    this.InfoBarStore = new InfoBarStore()
   }
 
   reset = () => {

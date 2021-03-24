@@ -15,12 +15,13 @@ function SearchPage(props) {
         placeholder: "Кого искать?",
         autoFocus: true,
         categoryFilter: true,
-        minFilter: 3
+        minFilter: 3,
+        helperText: 'Введи имя, телефон или специализацию'
       }}
       add={add}
       getLink={'users'}
     >
-      {list.map(user => <UserItem user={user} key={user.username}/>)}
+      {!!list && list.map(user => <UserItem user={user} key={user.username}/>)}
     </LazyList>
   )
 }

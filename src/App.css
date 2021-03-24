@@ -31,6 +31,28 @@ a {
     color: inherit;
     text-decoration: inherit;
 }
-.facebook-button:hover {
-    color: #3b5998;
+
+.pulse {
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 1);
+    border-radius: 10px;
+    transform: scale(1);
+    animation: pulse-animation 5s infinite;
+}
+
+@keyframes pulse-animation {
+    80% {
+        transform: scale(1);
+    }
+    85% {
+        transform: scale(1.25);
+    }
+    90% {
+        transform: scale(1.125);
+    }
+    95% {
+        transform: scale(1.25);
+    }
+    100% {
+        transform: scale(1);
+    }
 }

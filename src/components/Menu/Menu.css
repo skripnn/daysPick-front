@@ -3,3 +3,6 @@
         padding-right: 24px !important;
     }
 }
+.menu-item-top > div > span {
+    float: right;
+}

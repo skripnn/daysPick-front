@@ -12,6 +12,14 @@ class FetchClass {
   url = `${process.env.NODE_ENV === 'production' ? '' : `${this.host}`}/api/`
   history = null
 
+  errorAlert = (e) => {
+    let error
+    if (e.name === 'TypeError') error = {error: 'Нет связи с сервером'}
+    else error = {error: e.message}
+    mainStore.InfoBarStore.add(error)
+    return error
+  }
+
   authHeaders = () => ({
     'Content-Type': 'application/json',
     'Authorization': localStorage.getItem("Authorization")
@@ -76,7 +84,10 @@ class FetchClass {
   get = (URLs, params={}, auth=true) => {
     return fetch(this.path(URLs, params), {
       headers: this.authHeaders()
-    }).then(res => this.checkAuth(res, auth))
+    }).then(
+      res => this.checkAuth(res, auth),
+      this.errorAlert
+    )
   }
 
   post = (URLs, data={}, auth=true) => {
@@ -84,7 +95,10 @@ class FetchClass {
       method: 'POST',
       headers: this.authHeaders(),
       body: JSON.stringify(data)
-    }).then(res => this.checkAuth(res, auth))
+    }).then(
+      res => this.checkAuth(res, auth),
+      this.errorAlert
+    )
   }
 
   postForm = (URLs, data, auth=true) => {
@@ -92,7 +106,10 @@ class FetchClass {
       method: 'POST',
       headers: {'Authorization': localStorage.getItem("Authorization")},
       body: data
-    }).then(res => this.checkAuth(res, auth))
+    }).then(
+      res => this.checkAuth(res, auth),
+      this.errorAlert
+    )
   }
 
   put = (URLs, data, auth=true) => {
@@ -100,7 +117,10 @@ class FetchClass {
       method: 'PUT',
       headers: this.authHeaders(),
       body: JSON.stringify(data)
-    }).then(res => this.checkAuth(res, auth))
+    }).then(
+      res => this.checkAuth(res, auth),
+      this.errorAlert
+    )
   }
 
   delete = (URLs, data, auth=true) => {
@@ -108,7 +128,10 @@ class FetchClass {
       method: 'DELETE',
       headers: this.authHeaders(),
       body: JSON.stringify(data)
-    }).then(res => this.checkAuth(res, auth))
+    }).then(
+      res => this.checkAuth(res, auth),
+      this.errorAlert
+    )
   }
 
   getFromUrl = () => this.get(window.location.pathname)

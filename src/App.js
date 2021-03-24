@@ -19,8 +19,8 @@ import SettingsPage from "./pages/SettingsPage";
 import {useMediaQuery} from "@material-ui/core";
 import Fetch from "./js/Fetch";
 import theme from "./js/theme";
+import InfoBar from "./components/InfoBar/InfoBar";
 // import TestPage from "./pages/TestPage";
-// import {VkAuthPage} from "./pages/VkAuthPage";
 
 function ScrollToTop(props) {
   const { pathname } = useLocation();
@@ -64,7 +64,6 @@ function App(props) {
         <Container maxWidth="md" className={"content-block"} ref={ref}>
           <ActionsSwitch hidden={mobile} history={history}/>
           <Switch>
-            {/*<Route history={history} path='/vkauth/' component={VkAuthPage}/>*/}
             {/*<Route history={history} path='/test/' component={TestPage}/>*/}
             <Route history={history} path='/settings/' component={SettingsPage}/>
             <Route history={history} path='/profile/' component={ProfilePage}/>
@@ -81,6 +80,7 @@ function App(props) {
           </Switch>
         </Container>
         {mobile && <ActionsSwitch bottom history={history}/>}
+        <InfoBar/>
       </div>
     </ThemeProvider>
   )
