@@ -33,12 +33,11 @@ function ScrollToTop(props) {
 }
 
 function App(props) {
-
   const mobile = useMediaQuery('(max-width:600px)')
 
   const { history } = props
   Fetch.history = history
-
+  document.cookie = "vk_app_7786320=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
   const [height, setHeight] = useState(window.innerHeight)
   useEffect(() => {
     const changeHeight = () => setHeight(window.innerHeight)

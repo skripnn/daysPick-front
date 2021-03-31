@@ -86,7 +86,8 @@ export default function SignupPage() {
     password2Validation(value)
   }
 
-  const TeleBotLink = `https://t.me/dayspick_bot?start=${data.username}`
+  const TeleBotName = process.env.NODE_ENV === 'production'? 'dayspick_bot' : 'skripnn_test_bot'
+  const TeleBotLink = `https://t.me/${TeleBotName}?start=${data.username}`
 
   return (
     <Box className={classNames.root}>

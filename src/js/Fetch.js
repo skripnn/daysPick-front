@@ -1,6 +1,6 @@
-// const localhost = "localhost"
 import mainStore from "../stores/mainStore";
 
+// const localhost = 'localhost'
 const localhost = "192.168.31.71"
 // const localhost = "192.168.0.218"
 // const localhost = "192.168.0.109"
@@ -32,6 +32,7 @@ class FetchClass {
       return
     }
     if (res.status === 200) return res.json()
+    mainStore.InfoBarStore.add({error: `${res.status} ${res.statusText}`})
     return {error: `${res.status} ${res.statusText}`}
   }
 
@@ -157,6 +158,8 @@ class FetchClass {
   }
 
   autoLink = (link) => {
+    if (link === '/') link = localStorage.User? ['user', localStorage.User] : 'search'
+    if (link instanceof Array) link = link.filter(v => !!v).join('/')
     if (link.search(/projects/) > 0) this.link(link, mainStore.UsersStore.getLocalUser().setProjects)
     else if (link.search(/user\//) > 0) this.link(link, mainStore.UsersStore.setUser)
     else this.link(link)

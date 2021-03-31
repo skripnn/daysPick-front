@@ -8,6 +8,7 @@ import Menu from "../Menu/Menu";
 import LoginIcon from "../Icons/LoginIcon";
 import {IconButton, Tooltip} from "@material-ui/core";
 import {Search} from "@material-ui/icons";
+import Fetch from "../../js/Fetch";
 
 
 export default function Header(props) {
@@ -27,7 +28,7 @@ export default function Header(props) {
 
   const rightButton = !window.location.pathname.startsWith('/login')? (
     <Link to={'/login/'}>
-      <Tooltip title="Log In">
+      <Tooltip title="Войти">
         <IconButton>
           <LoginIcon className={'pulse'}/>
         </IconButton>
@@ -39,9 +40,7 @@ export default function Header(props) {
     <AppBar position="static">
       <Toolbar className={'header'} variant={"dense"}>
         <Box flexGrow={1} display={'flex'} alignItems={'center'}>
-          <Typography variant="h6">
-            <Link to="/">{title()}</Link>
-          </Typography>
+          <Typography variant="h6" onClick={() => Fetch.autoLink('/')} style={{cursor: 'pointer'}}>{title()}</Typography>
           {!window.location.pathname.startsWith('/search')  &&
           <IconButton onClick={() => props.history.push('/search/')}>
             <Search/>

@@ -37,7 +37,7 @@ export default function AvatarField(props) {
             <UserAvatar avatar={props.value} full_name={props.full_name}/>
           </ListItemIcon>
           <ListItemText primary={" "} style={{whiteSpace: "nowrap", overflow: "hidden"}}/>
-          <ListItemSecondaryAction style={{right: 0}}>
+          <ListItemSecondaryAction style={{right: 3}}>
             <IconButton
               size={'small'}
               edge="end"

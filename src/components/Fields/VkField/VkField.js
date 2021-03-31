@@ -1,10 +1,9 @@
 import Fetch from "../../../js/Fetch";
 import TextField from "../TextField/TextField";
 import {Avatar, List, ListItem, ListItemIcon, ListItemSecondaryAction, ListItemText} from "@material-ui/core";
-import IconButton from "@material-ui/core/IconButton";
-import {Clear} from "@material-ui/icons";
 import React from "react";
 import VkLogin from "../../SocialLogin/VkLogin/VkLogin";
+
 
 export default function VkField(props) {
   const {value, set} = props
@@ -38,21 +37,14 @@ export default function VkField(props) {
           <ListItemText primary={value.name} style={{whiteSpace: "nowrap", overflow: "hidden"}}/>
           {!!props.set &&
           <ListItemSecondaryAction style={{right: 0}}>
-            <IconButton
-              size={'small'}
-              edge="end"
-              onClick={() => onChange(null)}
-            >
-              {<Clear/>}
-            </IconButton>
+            <VkLogin onClick={() => onChange(null)} logOut/>
           </ListItemSecondaryAction>
           }
         </ListItem>
       </List>
       }
       {!!set ?
-        <VkLogin id={7786320} onClick={onChange}
-                       children={field}/>
+        <VkLogin onClick={onChange} children={field}/>
         : {field}
       }
     </div>

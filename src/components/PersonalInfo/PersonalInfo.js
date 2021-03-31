@@ -27,7 +27,8 @@ import VkField from "../Fields/VkField/VkField";
 function PersonalInfo(props) {
   const {first_name, last_name, email, email_confirm, phone, phone_confirm, setValue, show_email, show_phone, avatar, full_name, photo, facebook_account, vk_account} = props
   const [emailSend, setEmailSend] = useState(true)
-  const TeleBotLink = `https://t.me/dayspick_bot?start=${localStorage.User}`
+  const TeleBotName = process.env.NODE_ENV === 'production'? 'dayspick_bot' : 'skripnn_test_bot'
+  const TeleBotLink = `https://t.me/${TeleBotName}?start=${localStorage.User}`
 
   const [v, setV] = useState({
     first_name: null,
@@ -208,9 +209,9 @@ function PersonalInfo(props) {
       <ListItem>
         <FacebookField value={facebook_account} set={setValue}/>
       </ListItem>
-      <ListItem>
-        <VkField value={vk_account} set={setValue}/>
-      </ListItem>
+      {/*<ListItem>*/}
+      {/*  <VkField value={vk_account} set={setValue}/>*/}
+      {/*</ListItem>*/}
     </List>
   )
 }

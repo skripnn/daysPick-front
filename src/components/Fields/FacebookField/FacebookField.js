@@ -37,7 +37,7 @@ export default function FacebookField(props) {
           </ListItemIcon>
           <ListItemText primary={value.name} style={{whiteSpace: "nowrap", overflow: "hidden"}}/>
           {!!props.set &&
-          <ListItemSecondaryAction style={{right: 0}}>
+          <ListItemSecondaryAction style={{right: 3}}>
             <IconButton
               size={'small'}
               edge="end"
@@ -51,8 +51,7 @@ export default function FacebookField(props) {
       </List>
       }
       {!!set ?
-        <FacebookLogin id={171090181356627} onClick={onChange}
-                       children={field}/>
+        <FacebookLogin onClick={onChange} children={field}/>
         : {field}
       }
     </div>

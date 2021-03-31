@@ -2,12 +2,26 @@ import React, {useEffect, useState} from "react";
 import {CircularProgress, IconButton} from "@material-ui/core";
 import VkIcon from "../../Icons/VkIcon";
 import PropTypes from "prop-types";
+import mainStore from "../../../stores/mainStore";
+import {Clear} from "@material-ui/icons";
+
+const vkId = process.env.NODE_ENV === 'production' ? 7786320 : 7802338
+
 
 function VkLogin(props) {
-  const {id, onClick, disabled, children, ...rest} = props
+  const {id, onClick, disabled, children, logOut, ...rest} = props
   const [loading, setLoading] = useState(!document.getElementById('vk-jssdk'))
 
   useEffect(() => {
+    if (window.VK) window.VK.Auth.logout()
+  }, [window.VK])
+
+  useEffect(() => {
+    if (!document.getElementById("vk_api_transport")) {
+      const el = document.createElement('div')
+      el.id = "vk_api_transport"
+      document.body.appendChild(el)
+    }
     if (!loading) return
     setInitAsync()
     loadSdkAsync()
@@ -21,13 +35,27 @@ function VkLogin(props) {
     };
   }
 
+  function clear() {
+    setLoading(true)
+    window.VK.Auth.getLoginStatus(clearing)
+  }
+
+  function clearing(response) {
+    if (!response) error('Ошибка подключения к API ВКонтакте')
+    if (response.status === 'connected') window.VK.Auth.logout()
+    setLoading(false)
+    onClick()
+
+  }
+
+
   function loadSdkAsync() {
     const el = document.createElement('script');
     el.type = 'text/javascript';
     el.src = 'https://vk.com/js/api/openapi.js?139';
     el.async = true;
     el.id = 'vk-jssdk';
-    document.getElementsByTagName('head')[0].appendChild(el);
+    document.getElementById("vk_api_transport").appendChild(el);
   }
 
   function onComplete(user) {
@@ -35,28 +63,42 @@ function VkLogin(props) {
     if (onClick) onClick(user)
   }
 
-  function processing(response) {
-    if (!response.session) onComplete(null)
-    if (response.session) {
-      const user = response.session.user
-      window.VK.api('users.get', {
-        user_ids: `${user.id}`,
-        fields: "photo_50,email",
-        v: "5.130"
-      }, (data) => onComplete((data.response && data.response.length)? {...user, picture: data.response[0]['photo_50']}: user))
-    }
+  function onAuth(response) {
+    if (response.session) getUser()
+    else error('Ошибка авторизации')
   }
 
   function handleClick() {
     if (loading) return
     setLoading(true);
-    window.VK.Auth.login(processing);
+    window.VK.Auth.getLoginStatus(test)
   }
 
-  return (<>
-    {children? <div onClick={handleClick}>{children}</div> :
+  function getUser(id) {
+    window.VK.api('users.get', {
+      fields: "photo_50,domain",
+      v: "5.130"
+    }, (data) => {
+      onComplete(data.response[0])
+    })
+  }
+
+  function error(message) {
+    setLoading(false);
+    mainStore.InfoBarStore.add({error: message? message : 'Непредвиденная ошибка'})
+  }
+
+  function test(response) {
+    if (!response) error('Ошибка подключения к API ВКонтакте')
+    if (response.status === 'connected') getUser()
+    else window.VK.Auth.login(onAuth);
+  }
+
+  if (!!children) return <div onClick={logOut? clear : handleClick}>{children}</div>
+
+  return (
     <IconButton
-      onClick={handleClick}
+      onClick={logOut? clear : handleClick}
       size={"small"}
       disabled={disabled || loading}
       {...rest}
@@ -64,15 +106,20 @@ function VkLogin(props) {
       {loading?
         <CircularProgress size={24} color={'inherit'}/>
         :
-        <VkIcon type={'hovered'}/>
+        (logOut? <Clear /> : <VkIcon type={'hovered'}/>)
       }
-    </IconButton>}
-    </>);
+    </IconButton>
+    );
 }
 
 VkLogin.propTypes = {
   id: PropTypes.number.isRequired,
-  onClick: PropTypes.func
+  onClick: PropTypes.func,
+  logOut: PropTypes.bool
+}
+
+VkLogin.defaultProps = {
+  id: vkId
 }
 
 export default VkLogin
