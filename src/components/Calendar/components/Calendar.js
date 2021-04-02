@@ -26,16 +26,15 @@ function Calendar (props) {
   const scrollOffset = weekWidth(weeksOffset)  // значение scrollLeft, позволяющее скрыть weeksOffset за пределы блока
 
   const [state, setState] = useState({
-    weeks: <span style={{width: window.innerWidth + scrollOffset}} key={'temp'}/>,
-    texts: {},
-
     offset: !props.noOffset,
     loading: true,
     check: 0,
     lastDay: null,
     shift: false
   })
-  let [content, setContent] = useState({
+  const [weeks, setWeeks] = useState(<span style={{width: window.innerWidth + scrollOffset}} key={'temp'}/>)
+  const [texts, setTexts] = useState({})
+  const [content, setContent] = useState({
     days: props.content ? props.content.days || {} : {},
     daysOff: sortSet(props.content ? props.content.daysOff : []),
     daysPick: sortSet(props.content ? props.content.daysPick : []),
@@ -50,7 +49,7 @@ function Calendar (props) {
   // eslint-disable-next-line
   useEffect(() => newWeeks(undefined, true, 0), [props.triggerNew])
   // eslint-disable-next-line
-  useEffect(() => get(state.weeks, 0), [props.triggerGet])
+  useEffect(() => get(weeks, 0), [props.triggerGet])
 
   const [intersection, setIntersection] = useState(false)
   const [el, setEl] = useState(null)
@@ -60,12 +59,12 @@ function Calendar (props) {
   }
 
   useEffect(() => {
-    if (intersection) newWeeks(state.weeks, true)
+    if (intersection) newWeeks(weeks, true)
   // eslint-disable-next-line
   }, [intersection])
 
   // eslint-disable-next-line
-  useEffect(newElement, [state.weeks])
+  useEffect(newElement, [weeks])
   function newElement() {
     if (observer && el) {
       observer.unobserve(el[0])
@@ -120,8 +119,8 @@ function Calendar (props) {
         if (e.key === 'Shift') updateState({shift: false})
       })
       if (observer) {
-        observer[0].disconnect()
-        observer[1].disconnect()
+        if (observer[0]) observer[0].disconnect()
+        if (observer[1]) observer[1].disconnect()
       }
     })
   }
@@ -205,7 +204,7 @@ function Calendar (props) {
     return weeks
   }
 
-  function getTexts(newWeeks = state.weeks) {
+  function getTexts(newWeeks = weeks) {
     // получение новых текстовых компонентов
     let years = []
     let months = []
@@ -275,10 +274,10 @@ function Calendar (props) {
     tempYear.width -= width
     years.push(<YearText key={tempYear.year} {...tempYear}/>)
 
-    return {
+    setTexts({
       years: years,
       months: months
-    }
+    })
   }
 
   function week(start) {
@@ -323,6 +322,10 @@ function Calendar (props) {
       pick ? set.add(fDate) : set.delete(fDate)
     }
     set = sortSet(set)
+    if (props.maxPick && set.size > props.maxPick) {
+      props.onError('Превышено количество выбираемых дат')
+      return
+    }
     updateState({lastDay: fDate})
     const f = prevState => ({...prevState, daysPick: set})
     props.setContent ? props.setContent(f) : setContent(f)
@@ -378,7 +381,7 @@ function Calendar (props) {
 
   function refreshWeeks() {
     // обновление недель
-    setState(prevState => ({...prevState, weeks: getWeeks(prevState.weeks)}))
+    setWeeks(prevState => getWeeks(prevState))
   }
 
 
@@ -395,27 +398,10 @@ function Calendar (props) {
     ref.current.scrollLeft += delta
   }
 
-  function onScroll() {
-    // реакция на скролл
-    // if (first || last) {
-    //   newWeeks(state.weeks, true)
-    // }
-    // if (ref.current.scrollLeft === 0 || ref.current.scrollLeft === ref.current.scrollWidth - ref.current.clientWidth) {
-      // newWeeks(state.weeks, true)
-    // } else {
-      updateState({
-        texts: getTexts()
-      })
-    // }
-  }
-
   function newWeeks(weeks, download = false, timeout) {
     const newWeeks = getWeeks(weeks)
     if (download && props.get) get(newWeeks, timeout)
-    updateState({
-      // texts: getTexts(newWeeks),
-      weeks: newWeeks
-    })
+    setWeeks(newWeeks)
   }
 
   return (
@@ -425,12 +411,12 @@ function Calendar (props) {
         <DaysNames/>
       </div>
       <div className="calendar-right">
-        <TextLine children={state.texts.years}/>
-        <TextLine children={state.texts.months}/>
+        <TextLine children={texts.years}/>
+        <TextLine children={texts.months}/>
         <div className="calendar-scroll"
-             onScroll={onScroll}
+             onScroll={() => getTexts()}
              ref={ref}>
-          <Days children={state.weeks}/>
+          <Days children={weeks}/>
         </div>
       </div>
     </div>

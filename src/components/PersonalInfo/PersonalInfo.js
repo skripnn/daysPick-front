@@ -21,14 +21,13 @@ import ValidateTextField, {ValidatePhoneField} from "../Fields/ValidateTextField
 import TextField from "../Fields/TextField/TextField";
 import Fetch from "../../js/Fetch";
 import AvatarField from "../Fields/AvatarField/AvatarField";
-import FacebookField from "../Fields/FacebookField/FacebookField";
-import VkField from "../Fields/VkField/VkField";
+import {inject, observer} from "mobx-react";
+import Keys from "../../js/Keys";
 
 function PersonalInfo(props) {
-  const {first_name, last_name, email, email_confirm, phone, phone_confirm, setValue, show_email, show_phone, avatar, full_name, photo, facebook_account, vk_account} = props
+  const {first_name, last_name, email, email_confirm, phone, phone_confirm, setValue, show_email, show_phone, avatar, full_name, photo} = props.ProfileStore
   const [emailSend, setEmailSend] = useState(true)
-  const TeleBotName = process.env.NODE_ENV === 'production'? 'dayspick_bot' : 'skripnn_test_bot'
-  const TeleBotLink = `https://t.me/${TeleBotName}?start=${localStorage.User}`
+  const TeleBotLink = `https://t.me/${Keys.telegramBot}?start=${localStorage.User}`
 
   const [v, setV] = useState({
     first_name: null,
@@ -206,15 +205,11 @@ function PersonalInfo(props) {
             /> </Grid>}
         </Grid>
       </ListItem>
-      <ListItem>
-        <FacebookField value={facebook_account} set={setValue}/>
-      </ListItem>
-      {/*<ListItem>*/}
-      {/*  <VkField value={vk_account} set={setValue}/>*/}
-      {/*</ListItem>*/}
     </List>
   )
 }
 
-export default PersonalInfo
+export default inject(stores => ({
+  ProfileStore: stores.UsersStore.getLocalUser().user
+}))(observer(PersonalInfo))
 

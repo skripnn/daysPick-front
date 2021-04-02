@@ -1,23 +1,15 @@
 import mainStore from "../stores/mainStore";
-
-// const localhost = 'localhost'
-const localhost = "192.168.31.71"
-// const localhost = "192.168.0.218"
-// const localhost = "192.168.0.109"
-// const localhost = "172.20.10.11"
+import Keys from "./Keys";
+import Info from "./Info";
 
 
 class FetchClass {
-  host = `${process.env.NODE_ENV === 'production' ? '' : `http://${localhost}:8000`}`
-  url = `${process.env.NODE_ENV === 'production' ? '' : `${this.host}`}/api/`
+  host = Keys.fetchHost
+  url = `${this.host}/api/`
   history = null
 
   errorAlert = (e) => {
-    let error
-    if (e.name === 'TypeError') error = {error: 'Нет связи с сервером'}
-    else error = {error: e.message}
-    mainStore.InfoBarStore.add(error)
-    return error
+    return Info.error(e.name === 'TypeError' ? 'Нет связи с сервером' : e.message)
   }
 
   authHeaders = () => ({
@@ -32,8 +24,7 @@ class FetchClass {
       return
     }
     if (res.status === 200) return res.json()
-    mainStore.InfoBarStore.add({error: `${res.status} ${res.statusText}`})
-    return {error: `${res.status} ${res.statusText}`}
+    return Info.error(`${res.status} ${res.statusText}`)
   }
 
   path = (URLs, params) => {

@@ -17,6 +17,6 @@ export default function SocialLogin() {
 
   return (<div style={{display: 'flex'}}>
     <FacebookLogin onClick={(v) => post('facebook', v)}/>
-    {/*<VkLogin onClick={(v) => post('vk', v)}/>*/}
+    <VkLogin onClick={(v) => post('vk', v)}/>
   </div>)
 }

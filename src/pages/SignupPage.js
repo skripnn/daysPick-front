@@ -13,6 +13,7 @@ import {useStyle} from "../js/core/auth";
 import Fetch from "../js/Fetch";
 import IconButton from "@material-ui/core/IconButton";
 import {Telegram} from "@material-ui/icons";
+import Keys from "../js/Keys";
 
 
 export default function SignupPage() {
@@ -86,8 +87,7 @@ export default function SignupPage() {
     password2Validation(value)
   }
 
-  const TeleBotName = process.env.NODE_ENV === 'production'? 'dayspick_bot' : 'skripnn_test_bot'
-  const TeleBotLink = `https://t.me/${TeleBotName}?start=${data.username}`
+  const TeleBotLink = `https://t.me/${Keys.telegramBot}?start=${data.username}`
 
   return (
     <Box className={classNames.root}>

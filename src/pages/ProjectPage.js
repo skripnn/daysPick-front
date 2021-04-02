@@ -5,6 +5,7 @@ import {inject, observer} from "mobx-react";
 import {getProjectId} from "../js/functions/functions";
 import PopOverDay from "../components/PopOverDay/PopOverDay";
 import Fetch from "../js/Fetch";
+import Info from "../js/Info"
 
 function ProjectPage(props) {
   const {id, user, setDays, dates, setProject, hidden} = props.project
@@ -13,15 +14,15 @@ function ProjectPage(props) {
   // eslint-disable-next-line
   },[])
 
-  const [Info, setInfo] = useState(null)
+  const [DayInfo, setDayInfo] = useState(null)
 
   function showInfo(element, info, date, dayOff) {
     if (!info && !dayOff) return
-    setInfo(<PopOverDay
+    setDayInfo(<PopOverDay
       anchorEl={element}
       info={info}
       dayOff={localStorage.User === user && dayOff}
-      onClose={() => setInfo(null)}
+      onClose={() => setDayInfo(null)}
     />)
   }
 
@@ -41,9 +42,10 @@ function ProjectPage(props) {
           onTouchHold: showInfo,
           onContextMenu: showInfo
         }}
+        onError={Info.error}
       />
       <ProjectForm />
-      {Info}
+      {DayInfo}
     </div>
   )
 }

@@ -13,7 +13,6 @@ class InfoBarStore {
     const obj = {}
     const time = new Date().getTime().toString()
     for (const [key, value] of Object.entries(alert)) {
-
       obj[time] = {severity: key, children: value}
     }
     this.list = {...this.list, ...obj}

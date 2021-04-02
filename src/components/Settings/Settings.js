@@ -1,4 +1,4 @@
-import {CircularProgress, List, ListItem} from "@material-ui/core";
+import {CircularProgress, List, ListItem, ListSubheader} from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import {Save} from "@material-ui/icons";
 import ValidateTextField, {ValidatePasswordField} from "../Fields/ValidateTextField/ValidateTextField";
@@ -6,10 +6,14 @@ import React, {useEffect, useState} from "react";
 import Loader from "../../js/Loader";
 import Fetch from "../../js/Fetch";
 import CheckBoxField from "../Fields/CheckBoxField/CheckBoxField";
+import FacebookField from "../Fields/FacebookField/FacebookField";
+import VkField from "../Fields/VkField/VkField";
+import {inject, observer} from "mobx-react";
 
 
 function Settings(props) {
-  const {changeLocalUsername, username, setValue, is_public, is_public_disabled} = props
+  const {changeLocalUsername} = props
+  const {username, setValue, facebook_account, vk_account, is_public, phone_confirm} = props.store
 
   const [v, setV] = useState({
     username: null,
@@ -152,12 +156,22 @@ function Settings(props) {
           label={'Публичный профиль (доступен через поиск)'}
           checked={is_public}
           onChange={v => Fetch.post('profile', {is_public: v}).then(setValue)}
-          disabled={is_public_disabled}
-          helperText={is_public_disabled? 'Необходимо подтвердить номер телефона' : undefined}
+          disabled={!phone_confirm}
+          helperText={!phone_confirm? 'Необходимо подтвердить номер телефона' : undefined}
         />
+      </ListItem>
+      <ListSubheader>Вход через социальные сети</ListSubheader>
+      <ListItem>
+        <FacebookField value={facebook_account} set={setValue}/>
+      </ListItem>
+      <ListItem>
+        <VkField value={vk_account} set={setValue}/>
       </ListItem>
     </List>
   )
 }
 
-export default Settings
+export default inject(stores => ({
+  store: stores.UsersStore.getLocalUser().user,
+  changeLocalUsername: stores.UsersStore.changeLocalUsername
+}))(observer(Settings))

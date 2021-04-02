@@ -10,6 +10,7 @@ import "./SearchField.css"
 import DateRangeField from "../DateRangeField/DateRangeField";
 import FilterIcon from "../../Icons/FilterIcon";
 import CategoryFilter from "../CategoryFilter/CategoryFilter";
+import Info from "../../../js/Info";
 
 
 function SearchField(props) {
@@ -127,6 +128,7 @@ function SearchField(props) {
           get={user ? (start, end) => Fetch.getCalendar(start, end, user) : undefined}
           content={content}
           setContent={setContent}
+          onError={Info.error}
         />
       </div>}
     </Box>

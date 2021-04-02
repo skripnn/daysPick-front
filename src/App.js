@@ -20,7 +20,8 @@ import {useMediaQuery} from "@material-ui/core";
 import Fetch from "./js/Fetch";
 import theme from "./js/theme";
 import InfoBar from "./components/InfoBar/InfoBar";
-// import TestPage from "./pages/TestPage";
+import TestPage from "./pages/TestPage";
+import Keys from "./js/Keys";
 
 function ScrollToTop(props) {
   const { pathname } = useLocation();
@@ -63,7 +64,7 @@ function App(props) {
         <Container maxWidth="md" className={"content-block"} ref={ref}>
           <ActionsSwitch hidden={mobile} history={history}/>
           <Switch>
-            {/*<Route history={history} path='/test/' component={TestPage}/>*/}
+            {Keys.env === 'dev' && <Route history={history} path='/test/' component={TestPage}/>}
             <Route history={history} path='/settings/' component={SettingsPage}/>
             <Route history={history} path='/profile/' component={ProfilePage}/>
             <Route history={history} path='/clients/' component={ClientsPage}/>

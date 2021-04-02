@@ -2,19 +2,13 @@ import React, {useEffect, useState} from "react";
 import {CircularProgress, IconButton} from "@material-ui/core";
 import VkIcon from "../../Icons/VkIcon";
 import PropTypes from "prop-types";
-import mainStore from "../../../stores/mainStore";
 import {Clear} from "@material-ui/icons";
-
-const vkId = process.env.NODE_ENV === 'production' ? 7786320 : 7802338
-
+import Keys from "../../../js/Keys";
+import Info from "../../../js/Info";
 
 function VkLogin(props) {
   const {id, onClick, disabled, children, logOut, ...rest} = props
   const [loading, setLoading] = useState(!document.getElementById('vk-jssdk'))
-
-  useEffect(() => {
-    if (window.VK) window.VK.Auth.logout()
-  }, [window.VK])
 
   useEffect(() => {
     if (!document.getElementById("vk_api_transport")) {
@@ -74,7 +68,7 @@ function VkLogin(props) {
     window.VK.Auth.getLoginStatus(test)
   }
 
-  function getUser(id) {
+  function getUser() {
     window.VK.api('users.get', {
       fields: "photo_50,domain",
       v: "5.130"
@@ -85,7 +79,7 @@ function VkLogin(props) {
 
   function error(message) {
     setLoading(false);
-    mainStore.InfoBarStore.add({error: message? message : 'Непредвиденная ошибка'})
+    Info.error(message)
   }
 
   function test(response) {
@@ -119,7 +113,7 @@ VkLogin.propTypes = {
 }
 
 VkLogin.defaultProps = {
-  id: vkId
+  id: Keys.vk
 }
 
 export default VkLogin

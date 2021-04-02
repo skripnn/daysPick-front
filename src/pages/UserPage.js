@@ -14,13 +14,14 @@ import Tag from "../components/Tag/Tag";
 import {Call, Mail} from "@material-ui/icons";
 import TextField from "../components/Fields/TextField/TextField";
 import Loader from "../js/Loader";
+import Info from "../js/Info";
 
 
 function UserPage(props) {
   const [pick, setPick] = useState([])
   const [triggerGet, setTriggerGet] = useState(new Date().getTime())
   const {userPage, user, projects, calendar, getUser, delProject, getProject} = props.UserStore
-  const [Info, setInfo] = useState(null);
+  const [DayInfo, setDayInfo] = useState(null);
   const p = user.phone_confirm
   const phone = p? `+${p[0]} (${p.slice(1,4)}) ${p.slice(4,7)}-${p.slice(7,9)}-${p.slice(9)}` : p
 
@@ -34,11 +35,11 @@ function UserPage(props) {
 
   function showInfo(element, info, date, dayOff) {
     if (!info && !dayOff) return
-    setInfo(<PopOverDay
+    setDayInfo(<PopOverDay
       anchorEl={element}
       info={info}
       dayOff={user.username === localStorage.User && dayOff}
-      onClose={() => setInfo(null)}
+      onClose={() => setDayInfo(null)}
       onClick={popoverLink}
     />)
   }
@@ -144,6 +145,7 @@ function UserPage(props) {
           onTouchHold: showInfo,
           onContextMenu: showInfo
         }}
+        onError={Info.error}
       />
       {userPage.profile ?
         <>
@@ -223,7 +225,7 @@ function UserPage(props) {
           />)}
         </List>
       }
-      {Info}
+      {DayInfo}
     </div>
   )
 }

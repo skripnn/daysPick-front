@@ -4,15 +4,14 @@ import {CircularProgress} from "@material-ui/core";
 import PropTypes from 'prop-types'
 import React from "react";
 import FacebookIcon from "../../Icons/FacebookIcon";
-import mainStore from "../../../stores/mainStore";
-
-const fbId = process.env.NODE_ENV === 'production' ? 171090181356627 : 269078168271491
+import Keys from "../../../js/Keys";
+import Info from "../../../js/Info";
 
 
 function FacebookLogin(props) {
   const {id, onClick, disabled, children, ...rest} = props
 
-  const handleError = (e) => mainStore.InfoBarStore.add({error: e.message})
+  const handleError = (e) => Info.error(e.message)
 
   return (
     <FacebookProvider appId={props.id.toString()}>
@@ -48,7 +47,7 @@ FacebookLogin.propTypes = {
 }
 
 FacebookLogin.defaultProps = {
-  id: fbId
+  id: Keys.fb
 }
 
 export default FacebookLogin
