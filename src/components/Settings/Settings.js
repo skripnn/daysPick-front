@@ -7,7 +7,7 @@ import Loader from "../../js/Loader";
 import Fetch from "../../js/Fetch";
 import CheckBoxField from "../Fields/CheckBoxField/CheckBoxField";
 import FacebookField from "../Fields/FacebookField/FacebookField";
-import VkField from "../Fields/VkField/VkField";
+// import VkField from "../Fields/VkField/VkField";
 import {inject, observer} from "mobx-react";
 
 
@@ -164,9 +164,9 @@ function Settings(props) {
       <ListItem>
         <FacebookField value={facebook_account} set={setValue}/>
       </ListItem>
-      <ListItem>
-        <VkField value={vk_account} set={setValue}/>
-      </ListItem>
+      {/*<ListItem>*/}
+      {/*  <VkField value={vk_account} set={setValue}/>*/}
+      {/*</ListItem>*/}
     </List>
   )
 }

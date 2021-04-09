@@ -2,7 +2,7 @@ import mainStore from "../../stores/mainStore";
 import Fetch from "../../js/Fetch";
 import FacebookLogin from "./FacebookLogin/FacebookLogin";
 import React from "react";
-import VkLogin from "./VkLogin/VkLogin";
+// import VkLogin from "./VkLogin/VkLogin";
 
 export default function SocialLogin() {
   function onComplete(r) {
@@ -17,6 +17,6 @@ export default function SocialLogin() {
 
   return (<div style={{display: 'flex'}}>
     <FacebookLogin onClick={(v) => post('facebook', v)}/>
-    <VkLogin onClick={(v) => post('vk', v)}/>
+    {/*<VkLogin onClick={(v) => post('vk', v)}/>*/}
   </div>)
 }

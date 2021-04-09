@@ -6,6 +6,8 @@ import AutosizeInput from "react-input-autosize/lib/AutosizeInput";
 import Tag from "../Tag/Tag";
 import "./TagsEdit.css"
 
+let dragState = false
+
 export default function TagsEdit(props) {
 
   const {value, setValue} = props
@@ -38,13 +40,22 @@ export default function TagsEdit(props) {
       window.removeEventListener('touchcancel', () => setDrag(null))
     })
   }, [])
+
+  const test = e => {
+    if (dragState) e.preventDefault()
+  }
+
   useEffect(() => {
     if (drag) {
-      window.addEventListener('mousemove', onDrag)
-      window.addEventListener('touchmove', onDrag)
+      dragState = true
+      document.addEventListener('touchmove', test, {passive: false})
+      document.addEventListener('mousemove', onDrag)
+      document.addEventListener('touchmove', onDrag)
     } else {
-      window.removeEventListener('mousemove', onDrag)
-      window.removeEventListener('touchmove', onDrag)
+      dragState = false
+      document.removeEventListener('touchmove', test)
+      document.removeEventListener('mousemove', onDrag)
+      document.removeEventListener('touchmove', onDrag)
       setCoordinates({x: 0, y: 0})
       setSize({width: 0, height: 0})
     }
@@ -137,6 +148,7 @@ export default function TagsEdit(props) {
   }
 
   function onTake(e, el, i) {
+    if (e instanceof TouchEvent) e = e.touches[0]
     const c = el.getBoundingClientRect()
     setCoordinates({
       x: e.pageX - c.width / 2 - 1,
@@ -151,6 +163,8 @@ export default function TagsEdit(props) {
 
 
   function onDrag(e) {
+    if (!drag) return
+    if (e instanceof TouchEvent) e = e.touches[0]
     setCoordinates({
       x: e.pageX - size.width / 2 - 1,
       y: e.pageY - size.height / 2 - 1
