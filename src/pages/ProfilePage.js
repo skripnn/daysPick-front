@@ -1,6 +1,6 @@
 import {inject, observer} from "mobx-react";
 import PersonalInfo from "../components/PersonalInfo/PersonalInfo";
-import TagsEdit from "../components/TagEdit/TagsEdit";
+import TagsEdit from "../components/TagsEdit/TagsEdit";
 
 function ProfilePage(props) {
   const {
@@ -14,7 +14,6 @@ function ProfilePage(props) {
     <>
       <PersonalInfo/>
       <TagsEdit value={tags} setValue={v => setValue({tags: v})}/>
-      {/*<TagsEditOld tags={tags} set={v => setValue({tags: v})}/>*/}
     </>
   )
 }

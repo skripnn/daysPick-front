@@ -4,7 +4,7 @@ import {Chip, IconButton, ListSubheader, Paper} from "@material-ui/core";
 import {AddCircle, ClearOutlined} from "@material-ui/icons";
 import AutosizeInput from "react-input-autosize/lib/AutosizeInput";
 import Tag from "../Tag/Tag";
-import "./TagEdit.css"
+import "./TagsEdit.css"
 
 export default function TagsEdit(props) {
 
