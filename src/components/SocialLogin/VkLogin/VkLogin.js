@@ -38,8 +38,7 @@ function VkLogin(props) {
     if (!response) error('Ошибка подключения к API ВКонтакте')
     if (response.status === 'connected') window.VK.Auth.logout()
     setLoading(false)
-    onClick()
-
+    if (onClick) onClick()
   }
 
 
@@ -58,6 +57,8 @@ function VkLogin(props) {
   }
 
   function onAuth(response) {
+    alert(JSON.stringify(response))
+    alert(JSON.stringify(['3', window.VK._session], null, 4))
     if (response.session) getUser()
     else error('Ошибка авторизации')
   }
@@ -84,6 +85,10 @@ function VkLogin(props) {
 
   function test(response) {
     if (!response) error('Ошибка подключения к API ВКонтакте')
+    alert(JSON.stringify(['1', response], null, 4))
+    alert(JSON.stringify(['2', window.VK.Cookie], null, 4))
+    alert(document.cookie.match('\\bvk_app_' + window.VK._apiId + '=([^;]*)\\b'))
+    alert(JSON.stringify(['4', window.VK.Observer._subscribersMap], null, 4))
     if (response.status === 'connected') getUser()
     else window.VK.Auth.login(onAuth);
   }

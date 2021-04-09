@@ -20,8 +20,8 @@ import {useMediaQuery} from "@material-ui/core";
 import Fetch from "./js/Fetch";
 import theme from "./js/theme";
 import InfoBar from "./components/InfoBar/InfoBar";
-import TestPage from "./pages/TestPage";
 import Keys from "./js/Keys";
+import TestPage from "./pages/TestPage";
 
 function ScrollToTop(props) {
   const { pathname } = useLocation();

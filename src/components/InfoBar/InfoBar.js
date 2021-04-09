@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {inject, observer} from "mobx-react";
-import {Snackbar} from "@material-ui/core";
+import {Dialog, DialogActions, DialogContent, DialogContentText, Snackbar} from "@material-ui/core";
 import {Alert} from "@material-ui/lab";
+import ActionButton from "../Actions/ActionButton/ActionButton";
 
 function InfoBar(props) {
-  const {list, del} = props.InfoBarStore
+  const {list, del, confirm, setConfirm} = props.InfoBarStore
   const [open, setOpen] = useState([])
   useEffect(() => {
     setOpen(Object.keys(list).filter(id => !list[id].close))
@@ -16,6 +17,24 @@ function InfoBar(props) {
         <Alert {...list[id]} close={undefined} onClose={() => del(id)}/>
       </Snackbar>
     )}
+    <Dialog open={!!confirm} onClose={() => setConfirm(null)}>
+      {!!confirm && <DialogContent>
+        <DialogContentText>{confirm.message}</DialogContentText>
+        <DialogActions>
+          <ActionButton
+            onClick={() => setConfirm(null)}
+            label={'Отмена'}
+          />
+          <ActionButton
+            onClick={() => {
+              confirm.action()
+              setConfirm(null)
+            }}
+            label={'Ок'}
+          />
+        </DialogActions>
+      </DialogContent>}
+    </Dialog>
   </>)
 }
 

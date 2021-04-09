@@ -1,32 +1,25 @@
-import {Box, Chip} from "@material-ui/core";
-import {AddCircle, EmojiObjectsOutlined, RemoveCircle, VolumeUpOutlined} from "@material-ui/icons";
-import React from "react";
+import {Chip} from "@material-ui/core";
+import React, {useRef} from "react";
 import "./Tag.css"
 
+
 export default function Tag(props) {
-  const {tag, onClick, exist, ...newProps} = props
+  const ref = useRef()
+  const onTake = (e) => {
+    if (!props.edit) return
+    if (e.target !== ref.current && e.target !== ref.current.firstElementChild) return
+    props.onTake(e, ref.current, props.tag)
+  }
 
-  const label = (<Box display={'flex'} alignItems={'center'}>
-    {category(tag.category)}{tag.title}
-  </Box>)
-
-  return (<Chip
-    className={'tag'}
-    variant="outlined"
-    deleteIcon={onClick? (exist? <RemoveCircle /> : <AddCircle />) : undefined}
-    onDelete={onClick? () => onClick(tag) : undefined}
-    label={label}
-    {...newProps}
-  />)
-}
-
-export const category = (category) => {
-  if (!category) return null
-  return <Box display={'flex'} alignItems={'center'} style={{zoom: 0.8, marginRight: 5, color: "rgba(0, 0, 0, 0.26)"}}>{categoryIcon(category)}</Box>
-}
-
-export const categoryIcon = (category) => {
-  if (category === 1) return <VolumeUpOutlined />
-  if (category === 2) return <EmojiObjectsOutlined />
-  return null
+  return (
+      <Chip
+        ref={ref}
+        className={'tag' + (props.edit? ' edit' : '') + (props.hidden ? ' hidden' : '')}
+        variant="outlined"
+        label={props.tag.title}
+        onDelete={props.onDelete}
+        onMouseDown={onTake}
+        onTouchStart={e => onTake(e.touches[0])}
+      />
+  )
 }

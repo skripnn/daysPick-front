@@ -4,6 +4,7 @@ import {Loader} from "../../js/Loader";
 class InfoBarStore {
   list = {}
   loader = new Loader()
+  confirm = null
 
   constructor() {
     makeAutoObservable(this)
@@ -23,6 +24,10 @@ class InfoBarStore {
     obj[time] = {...this.list[time], close: true}
     this.list = {...this.list, ...obj}
     this.loader.set(() => delete this.list[time], 1000)
+  }
+
+  setConfirm = (obj) => {
+    this.confirm = obj
   }
 
 }

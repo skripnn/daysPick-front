@@ -1,0 +1,54 @@
+.tag.drag {
+    position: absolute;
+    cursor: grabbing;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+.tag.hidden {
+    visibility: hidden;
+}
+.tag-input {
+    border: 0;
+    outline: 0;
+}
+.tag-input:focus {
+    outline: none !important;
+}
+.tag-options {
+    display: flex;
+    overflow: hidden;
+    position: relative;
+    padding-top: 5px;
+}
+.tag-options:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 16px;
+    height: 100%;
+    background: linear-gradient(90deg, white, rgba(0,0,0,0));
+}
+.tag-options:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 16px;
+    height: 100%;
+    background: linear-gradient(270deg, white, rgba(0,0,0,0));
+}
+.tag-options > div {
+    display: flex;
+    overflow: scroll;
+}
+.tag-options > div:before {
+    content: "";
+    min-width: 16px;
+}
+.tag-options > div:after {
+    content: "";
+    min-width: 16px;
+}
+.tag-options > div::-webkit-scrollbar {
+    display: none;
+}

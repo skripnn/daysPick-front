@@ -21,6 +21,10 @@ class InfoClass {
     return this.add('success', message)
   }
 
+  confirm = (message, action) => {
+    mainStore.InfoBarStore.setConfirm({message: message, action: action})
+  }
+
   add = (type, message) => {
     const obj = Object.fromEntries([[type, message]])
     mainStore.InfoBarStore.add(obj)
