@@ -9,6 +9,7 @@ class FetchClass {
   history = null
 
   errorAlert = (e) => {
+    Info.loading(false)
     return Info.error(e.name === 'TypeError' ? 'Нет связи с сервером' : e.message)
   }
 
@@ -18,6 +19,7 @@ class FetchClass {
   })
 
   checkAuth = (res, redirect) => {
+    Info.loading(false)
     if (redirect && res.status === 401) {
       localStorage.removeItem('User')
       window.location.href = "/login/"
@@ -136,6 +138,7 @@ class FetchClass {
   })
 
   link = (link, set) => {
+    Info.loading(true)
     if (link instanceof Array) link = link.filter(v => !!v).join('/')
     let l = link
     if (l !== '/') {
@@ -143,7 +146,10 @@ class FetchClass {
       if (l.endsWith('/')) l = l.slice(0, l.length - 1)
     }
     const pushLink = l === '/'? l : `/${l}/`
-    const toHistory = () => this.history? this.history.push(pushLink) : window.history.push(pushLink)
+    const toHistory = () => {
+      this.history ? this.history.push(pushLink) : window.history.push(pushLink)
+      Info.loading(false)
+    }
     if (!set) toHistory()
     else this.get(l).then(set).then(toHistory)
   }

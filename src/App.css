@@ -1,21 +1,15 @@
 .App {
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-
+    min-height: calc(100vh - 49px);
 }
 .content-block {
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
+    overflow: hidden;
     padding: 10px 15px 10px;
-    overflow: scroll;
-    -webkit-overflow-scrolling: touch;
 }
 .content-block::-webkit-scrollbar {
     display: none;

@@ -31,6 +31,10 @@ class InfoClass {
     return obj
   }
 
+  loading = (bool) => {
+    mainStore.InfoBarStore.setLoading(bool)
+  }
+
 }
 
 const Info = new InfoClass()

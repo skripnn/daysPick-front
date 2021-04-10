@@ -6,12 +6,13 @@ import Box from "@material-ui/core/Box";
 import {Link} from "react-router-dom";
 import Menu from "../Menu/Menu";
 import LoginIcon from "../Icons/LoginIcon";
-import {IconButton, Tooltip} from "@material-ui/core";
+import {IconButton, LinearProgress, Tooltip} from "@material-ui/core";
 import {Search} from "@material-ui/icons";
 import Fetch from "../../js/Fetch";
+import {inject, observer} from "mobx-react";
 
 
-export default function Header(props) {
+function Header(props) {
   const auth = !!localStorage.User
   const titles = [
     ['/projects', 'Мои проекты'],
@@ -37,12 +38,13 @@ export default function Header(props) {
   ) : null
 
   return (
-    <AppBar position="static">
+    <AppBar position="sticky">
+      {props.InfoBarStore.loading && <LinearProgress style={{position: 'absolute', top: 0, width: "100%"}}/>}
       <Toolbar className={'header'} variant={"dense"}>
         <Box flexGrow={1} display={'flex'} alignItems={'center'}>
           <Typography variant="h6" onClick={() => Fetch.autoLink('/')} style={{cursor: 'pointer'}}>{title()}</Typography>
           {!window.location.pathname.startsWith('/search')  &&
-          <IconButton onClick={() => props.history.push('/search/')}>
+          <IconButton onClick={() => Fetch.link('search')}>
             <Search/>
           </IconButton>}
         </Box>
@@ -51,4 +53,6 @@ export default function Header(props) {
     </AppBar>
   );
 }
+
+export default inject('InfoBarStore')(observer(Header))
 

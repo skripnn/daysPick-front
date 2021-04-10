@@ -5,6 +5,7 @@ class InfoBarStore {
   list = {}
   loader = new Loader()
   confirm = null
+  loading = false
 
   constructor() {
     makeAutoObservable(this)
@@ -28,6 +29,10 @@ class InfoBarStore {
 
   setConfirm = (obj) => {
     this.confirm = obj
+  }
+
+  setLoading = (bool) => {
+    this.loading = bool
   }
 
 }

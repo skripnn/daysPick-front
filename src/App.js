@@ -38,15 +38,14 @@ function App(props) {
 
   const { history } = props
   Fetch.history = history
-  document.cookie = "vk_app_7786320=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-  const [height, setHeight] = useState(window.innerHeight)
-  useEffect(() => {
-    const changeHeight = () => setHeight(window.innerHeight)
-    window.addEventListener('resize', changeHeight)
-    return (
-      window.removeEventListener('resize', changeHeight)
-    )
-  }, [])
+  // const [height, setHeight] = useState(window.innerHeight)
+  // useEffect(() => {
+  //   const changeHeight = () => setHeight(window.innerHeight)
+  //   window.addEventListener('resize', changeHeight)
+  //   return (
+  //     window.removeEventListener('resize', changeHeight)
+  //   )
+  // }, [])
   const ref = useRef()
 
   const lightTheme = useMediaQuery('(prefers-color-scheme: light)')
@@ -58,7 +57,8 @@ function App(props) {
 
   return (
     <ThemeProvider theme={theme}>
-      <div className="App" style={{height: `${height}px`}}>
+      {/*<div className="App" style={{height: `${height}px`}}>*/}
+      <div className="App">
         <ScrollToTop container={ref.current}/>
         <Header history={history}/>
         <Container maxWidth="md" className={"content-block"} ref={ref}>
@@ -79,9 +79,10 @@ function App(props) {
             <Route history={history} path='/' component={MainPage}/>
           </Switch>
         </Container>
-        {mobile && <ActionsSwitch bottom history={history}/>}
+        {/*{mobile && <ActionsSwitch bottom history={history}/>}*/}
         <InfoBar/>
       </div>
+      {mobile && <ActionsSwitch bottom history={history}/>}
     </ThemeProvider>
   )
 }
