@@ -8,25 +8,22 @@ import Loader from "../../../js/Loader";
 import Fetch from "../../../js/Fetch";
 import "./SearchField.css"
 import DateRangeField from "../DateRangeField/DateRangeField";
-import FilterIcon from "../../Icons/FilterIcon";
-import CategoryFilter from "../CategoryFilter/CategoryFilter";
 import Info from "../../../js/Info";
 
 
 function SearchField(props) {
-  const {get, set, noFilter, categoryFilter, calendar, user, minFilter, ...newProps} = props
+  const {get, set, noFilter, calendar, user, minFilter, ...newProps} = props
 
   const [filter, setFilter] = useState(null)
   const [loading, setLoading] = useState(false)
   const [days, setDays] = useState(null)
   const [range, setRange] = useState(null)
-  const [category, setCategory] = useState(null)
   const [content, setContent] = useState(calendar ? {...calendar} : {days: {}, daysOff: new Set(), daysPick: new Set()})
 
   const ref = useRef()
 
   // eslint-disable-next-line
-  useEffect(download, [days, filter, category])
+  useEffect(download, [days, filter])
 
   const changeRange = (v) => {
     setDays(v)
@@ -49,8 +46,7 @@ function SearchField(props) {
     Loader.clear()
     const search_filter = {}
     if (filter) search_filter.filter = filter
-    if (days) search_filter.days = days
-    if (category) search_filter.category = category
+    if (days && days.length) search_filter.days = days
     const valid = minFilter ? search_filter.filter && search_filter.filter.length >= minFilter : !!Object.keys(search_filter).length
     if (valid) {
       setLoading(true)
@@ -91,11 +87,10 @@ function SearchField(props) {
                     <Search/>}
                 </IconButton>
               </InputAdornment>,
-            endAdornment: ((filter || days || category) &&
+            endAdornment: ((filter || days) &&
               <InputAdornment position={"end"}>
                 <IconButton size={'small'} onClick={() => {
                   setFilter(null)
-                  setCategory(null)
                   clearDays()
                 }}>
                   <Close/>
@@ -104,15 +99,12 @@ function SearchField(props) {
           }}
         />
         {!noFilter && <IconButton onClick={filterButtonClick} size={'small'} style={{height: "max-content", marginTop: 1}}>
-          {categoryFilter ? <FilterIcon style={days || category ? {color: '#4db34b'} : {}}/> :
-            <DateRange style={days ? {color: '#4db34b'} : {}}/>}
+          <DateRange style={days ? {color: '#4db34b'} : {}}/>
         </IconButton>}
       </Box>
       {!noFilter && <div ref={ref} className={'filter-block'}>
         <Grid container justify={'space-between'}>
-          <Grid item xs={12} sm={'auto'}>
-            {categoryFilter && <CategoryFilter select={category} setSelect={setCategory}/>}
-          </Grid>
+          <Grid item xs={12} sm={'auto'}/>
           <Grid item xs={12} sm={'auto'}>
             <DateRangeField
               set={changeRange}

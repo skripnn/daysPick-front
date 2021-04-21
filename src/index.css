@@ -5,13 +5,27 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow: -moz-scrollbars-none;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 html {
   overflow: scroll;
   overflow: -moz-scrollbars-none;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
   -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 ::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 0 !important;
+  height: 0 !important;
+  display: none;
+  background: transparent
+}
+body::-webkit-scrollbar {
+  -webkit-appearance: none;
   width: 0 !important;
   height: 0 !important;
   display: none;

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+import {useLocation} from 'react-router-dom';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -20,12 +21,20 @@ function Header(props) {
     ['/profile', 'Профиль'],
     ['/settings', 'Настройки']
   ]
-  function title() {
+
+  const { pathname } = useLocation();
+  const [title, setTitle] = useState(getTitle())
+  // eslint-disable-next-line
+  useEffect(() => setTitle(getTitle()), [pathname])
+
+  function getTitle() {
     for (const [path, name] of titles) {
       if (window.location.pathname.startsWith(path)) return name
     }
     return 'DaysPick'
   }
+
+
 
   const rightButton = !window.location.pathname.startsWith('/login')? (
     <Link to={'/login/'}>
@@ -42,13 +51,13 @@ function Header(props) {
       {props.InfoBarStore.loading && <LinearProgress style={{position: 'absolute', top: 0, width: "100%"}}/>}
       <Toolbar className={'header'} variant={"dense"}>
         <Box flexGrow={1} display={'flex'} alignItems={'center'}>
-          <Typography variant="h6" onClick={() => Fetch.autoLink('/')} style={{cursor: 'pointer'}}>{title()}</Typography>
+          <Typography variant="h6" onClick={() => Fetch.autoLink('/')} style={{cursor: 'pointer'}}>{title}</Typography>
           {!window.location.pathname.startsWith('/search')  &&
           <IconButton onClick={() => Fetch.link('search')}>
             <Search/>
           </IconButton>}
         </Box>
-        {auth?  <Menu history={props.history}/> : rightButton}
+        {auth?  <Menu /> : rightButton}
       </Toolbar>
     </AppBar>
   );

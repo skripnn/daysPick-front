@@ -2,10 +2,11 @@ import {FacebookProvider, Login} from "react-facebook";
 import IconButton from "@material-ui/core/IconButton";
 import {CircularProgress} from "@material-ui/core";
 import PropTypes from 'prop-types'
-import React from "react";
+import React, {useState} from "react";
 import FacebookIcon from "../../Icons/FacebookIcon";
 import Keys from "../../../js/Keys";
 import Info from "../../../js/Info";
+import Button from "@material-ui/core/Button";
 
 
 function FacebookLogin(props) {
@@ -23,18 +24,7 @@ function FacebookLogin(props) {
         onError={handleError}
       >
         {({ loading, handleClick }) => (<>
-          {children? <div onClick={handleClick}>{children}</div> : <IconButton
-            size={"small"}
-            onClick={handleClick}
-            disabled={disabled || loading}
-            {...rest}
-          >
-            {loading ?
-              <CircularProgress size={24} color={'inherit'}/>
-              :
-              <FacebookIcon type={'hovered'}/>
-            }
-          </IconButton>}
+          {children? <div onClick={handleClick}>{children}</div> : <FbButton onClick={handleClick} loading={loading} disabled={disabled} {...rest}/>}
         </>)}
       </Login>
     </FacebookProvider>
@@ -51,3 +41,42 @@ FacebookLogin.defaultProps = {
 }
 
 export default FacebookLogin
+
+function FbButton(props) {
+  const {loading, icon, ...rest} = props
+  const [hover, setHover] = useState(false)
+
+  if (icon) return (
+    <IconButton
+      size={"small"}
+      onClick={props.onClick}
+      disabled={props.disabled || loading}
+      {...rest}
+    >
+      {loading ?
+        <CircularProgress size={24} color={'inherit'}/>
+        :
+        <FacebookIcon type={'hovered'}/>
+      }
+    </IconButton>
+  )
+
+  return (
+    <Button
+      onMouseOver={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      onTouchStart={() => setHover(true)}
+      onTouchEnd={() => setHover(false)}
+      style={{zoom: 0.8}}
+      variant={"text"}
+      color={'secondary'}
+      size={"small"}
+      fullWidth
+      onClick={props.onClick}
+      disabled={props.disabled || loading}
+      startIcon={loading ? <CircularProgress size={24} color={'inherit'}/> : <FacebookIcon type={hover? 'solid' : undefined}/>}
+    >
+      Продолжить с Facebook
+    </Button>
+  )
+}

@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from "react";
-import Box from "@material-ui/core/Box";
 import Container from "@material-ui/core/Container";
 import {InputAdornment, List, ListItem, ListSubheader, Tooltip} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
@@ -90,100 +89,96 @@ export default function SignupPage() {
   const TeleBotLink = `https://t.me/${Keys.telegramBot}?start=${data.username}`
 
   return (
-    <Box className={classNames.root}>
-      <Box flexGrow={1}/>
-      <Container maxWidth={'xs'}>
-        <List>
-          <form noValidate>
-            <Typography variant={"h6"} color={'secondary'} align={'center'}>Регистрация</Typography>
-            <ListItem>
-              <ValidateUsernameField
-                disabled={confirm}
-                autoFocus
-                required
-                label={'Имя пользователя'}
-                name={'username'}
-                value={data.username}
-                onChange={set}
-              />
-            </ListItem>
-            <ListItem>
-              <ValidatePasswordField
-                disabled={confirm}
-                required
-                label={'Пароль'}
-                name={'password'}
-                value={data.password}
-                onChange={passwordChange}
-              />
-            </ListItem>
-            <ListItem>
-              <ValidatePasswordField
-                disabled={confirm}
-                required
-                label={'Повтори пароль'}
-                name={'password2'}
-                value={data.password2}
-                onChange={password2Change}
-                onBlur={() => password2Validation(data.password)}
-                error={password2error}
-              />
-            </ListItem>
-            {/*<ListItem>*/}
-            {/*  <ValidateEmailField*/}
-            {/*    required*/}
-            {/*    label={'E-mail'}*/}
-            {/*    name={'email'}*/}
-            {/*    value={data.email}*/}
-            {/*    onChange={set}*/}
-            {/*    onBlur={set}*/}
-            {/*  />*/}
-            {/*</ListItem>*/}
-            <ListItem>
-              {!confirm?
-              <ValidatePhoneField
-                required
-                label={'Телефон'}
-                name={'phone'}
-                value={data.phone}
-                onChange={set}
-                onBlur={set}
-              /> :
-              <ValidatePhoneField
-                label={'Телефон на подтверждении'}
-                disabled
-                value={data.phone}
-                helperText={<>Перейди в telegram-бот <a href={TeleBotLink} target={'_blank'} rel={"noreferrer"}>@dayspick_bot</a></>}
-                InputProps={{
-                  endAdornment:
-                    <Tooltip title="@dayspick_bot">
-                      <InputAdornment position="end">
-                        <IconButton onClick={() => window.open(TeleBotLink)}>
-                          <Telegram />
-                        </IconButton>
-                      </InputAdornment>
-                    </Tooltip>
-                }}
-              />}
-            </ListItem>
-            <ListItem>
-              <Button
-                disabled={Object.values(data).includes(null) || Object.values(valid).includes(false) || loading}
-                variant={'outlined'}
-                type={'submit'}
-                className={classNames.button}
-                fullWidth
-                onClick={onSubmit}
-              >
-                Зарегистрироваться
-              </Button>
-            </ListItem>
-            {!!error && <ListSubheader className={classNames.error}>{error}</ListSubheader>}
-            {confirm && <ListSubheader className={classNames.confirm}><>Перейди в telegram-бот <a href={TeleBotLink} target={'_blank'} rel={"noreferrer"}>@dayspick_bot</a></></ListSubheader>}
-          </form>
-        </List>
-      </Container>
-      <Box flexGrow={2}/>
-    </Box>
+    <Container maxWidth={'xs'}>
+      <List>
+        <form noValidate>
+          <Typography variant={"h6"} color={'secondary'} align={'center'}>Регистрация</Typography>
+          <ListItem>
+            <ValidateUsernameField
+              disabled={confirm}
+              autoFocus
+              required
+              label={'Имя пользователя'}
+              name={'username'}
+              value={data.username}
+              onChange={set}
+            />
+          </ListItem>
+          <ListItem>
+            <ValidatePasswordField
+              disabled={confirm}
+              required
+              label={'Пароль'}
+              name={'password'}
+              value={data.password}
+              onChange={passwordChange}
+            />
+          </ListItem>
+          <ListItem>
+            <ValidatePasswordField
+              disabled={confirm}
+              required
+              label={'Повтори пароль'}
+              name={'password2'}
+              value={data.password2}
+              onChange={password2Change}
+              onBlur={() => password2Validation(data.password)}
+              error={password2error}
+            />
+          </ListItem>
+          {/*<ListItem>*/}
+          {/*  <ValidateEmailField*/}
+          {/*    required*/}
+          {/*    label={'E-mail'}*/}
+          {/*    name={'email'}*/}
+          {/*    value={data.email}*/}
+          {/*    onChange={set}*/}
+          {/*    onBlur={set}*/}
+          {/*  />*/}
+          {/*</ListItem>*/}
+          <ListItem>
+            {!confirm?
+            <ValidatePhoneField
+              required
+              label={'Телефон'}
+              name={'phone'}
+              value={data.phone}
+              onChange={set}
+              onBlur={set}
+            /> :
+            <ValidatePhoneField
+              label={'Телефон на подтверждении'}
+              disabled
+              value={data.phone}
+              helperText={<>Перейди в telegram-бот <a href={TeleBotLink} target={'_blank'} rel={"noreferrer"}>@dayspick_bot</a></>}
+              InputProps={{
+                endAdornment:
+                  <Tooltip title="@dayspick_bot">
+                    <InputAdornment position="end">
+                      <IconButton onClick={() => window.open(TeleBotLink)}>
+                        <Telegram />
+                      </IconButton>
+                    </InputAdornment>
+                  </Tooltip>
+              }}
+            />}
+          </ListItem>
+          <ListItem>
+            <Button
+              disabled={Object.values(data).includes(null) || Object.values(valid).includes(false) || loading}
+              variant={'outlined'}
+              type={'submit'}
+              className={classNames.button}
+              fullWidth
+              onClick={onSubmit}
+            >
+              Зарегистрироваться
+            </Button>
+          </ListItem>
+          {!!error && <ListSubheader className={classNames.error}>{error}</ListSubheader>}
+          {confirm && <ListSubheader className={classNames.confirm}><>Перейди в telegram-бот <a href={TeleBotLink} target={'_blank'} rel={"noreferrer"}>@dayspick_bot</a></></ListSubheader>}
+        </form>
+      </List>
+    </Container>
   )
 }

@@ -149,6 +149,7 @@ class FetchClass {
     const toHistory = () => {
       this.history ? this.history.push(pushLink) : window.history.push(pushLink)
       Info.loading(false)
+      window.scrollTo(0, 0)
     }
     if (!set) toHistory()
     else this.get(l).then(set).then(toHistory)

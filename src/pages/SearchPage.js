@@ -14,7 +14,6 @@ function SearchPage(props) {
         set: set,
         placeholder: "Кого искать?",
         autoFocus: true,
-        categoryFilter: true,
         minFilter: 3,
         helperText: 'Введи имя, телефон или специализацию'
       }}

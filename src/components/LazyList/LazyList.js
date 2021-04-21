@@ -98,7 +98,6 @@ LazyList.propTypes = {
     }),
     user: PropTypes.string,
     noFilter: PropTypes.bool,
-    categoryFilter: PropTypes.bool,
     minFilter: PropTypes.number
   }),
   observableRoot: PropTypes.instanceOf(Element),

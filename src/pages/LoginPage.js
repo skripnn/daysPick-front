@@ -1,6 +1,5 @@
 import {CircularProgress, List, ListItem, ListSubheader} from "@material-ui/core";
 import React, {useEffect, useState} from "react";
-import Box from "@material-ui/core/Box";
 import Container from "@material-ui/core/Container";
 import ValidateTextField, {ValidatePasswordField} from "../components/Fields/ValidateTextField/ValidateTextField";
 import Button from "@material-ui/core/Button";
@@ -51,8 +50,6 @@ function LoginPage() {
   }
 
   return (
-    <Box className={classNames.root}>
-      <Box flexGrow={1}/>
       <Container maxWidth={'xs'}>
         <List>
           <form noValidate>
@@ -105,8 +102,6 @@ function LoginPage() {
           </form>
         </List>
       </Container>
-      <Box flexGrow={2}/>
-    </Box>
   )
 }
 

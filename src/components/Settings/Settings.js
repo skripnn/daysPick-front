@@ -7,13 +7,12 @@ import Loader from "../../js/Loader";
 import Fetch from "../../js/Fetch";
 import CheckBoxField from "../Fields/CheckBoxField/CheckBoxField";
 import FacebookField from "../Fields/FacebookField/FacebookField";
-// import VkField from "../Fields/VkField/VkField";
 import {inject, observer} from "mobx-react";
 
 
 function Settings(props) {
   const {changeLocalUsername} = props
-  const {username, setValue, facebook_account, vk_account, is_public, phone_confirm} = props.store
+  const {username, setValue, facebook_account, is_public, phone_confirm} = props.store
 
   const [v, setV] = useState({
     username: null,
@@ -164,9 +163,6 @@ function Settings(props) {
       <ListItem>
         <FacebookField value={facebook_account} set={setValue}/>
       </ListItem>
-      {/*<ListItem>*/}
-      {/*  <VkField value={vk_account} set={setValue}/>*/}
-      {/*</ListItem>*/}
     </List>
   )
 }

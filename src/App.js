@@ -1,8 +1,8 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef} from 'react';
 import Container from "@material-ui/core/Container";
 import ProjectPage from "./pages/ProjectPage";
 import UserPage from "./pages/UserPage";
-import {Route, Switch, useLocation, withRouter} from "react-router-dom";
+import {Route, Switch, withRouter} from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import ConfirmPage from "./pages/confirmPage";
 import './App.css'
@@ -23,29 +23,11 @@ import InfoBar from "./components/InfoBar/InfoBar";
 import Keys from "./js/Keys";
 import TestPage from "./pages/TestPage";
 
-function ScrollToTop(props) {
-  const { pathname } = useLocation();
-
-  useEffect(() => {
-    props.container? props.container.scrollTo(0, 0) : window.scrollTo(0, 0);
-  }, [pathname, props.container]);
-
-  return null;
-}
-
 function App(props) {
   const mobile = useMediaQuery('(max-width:600px)')
 
   const { history } = props
   Fetch.history = history
-  // const [height, setHeight] = useState(window.innerHeight)
-  // useEffect(() => {
-  //   const changeHeight = () => setHeight(window.innerHeight)
-  //   window.addEventListener('resize', changeHeight)
-  //   return (
-  //     window.removeEventListener('resize', changeHeight)
-  //   )
-  // }, [])
   const ref = useRef()
 
   const lightTheme = useMediaQuery('(prefers-color-scheme: light)')
@@ -57,9 +39,7 @@ function App(props) {
 
   return (
     <ThemeProvider theme={theme}>
-      {/*<div className="App" style={{height: `${height}px`}}>*/}
       <div className="App">
-        <ScrollToTop container={ref.current}/>
         <Header history={history}/>
         <Container maxWidth="md" className={"content-block"} ref={ref}>
           <ActionsSwitch hidden={mobile} history={history}/>
@@ -79,7 +59,6 @@ function App(props) {
             <Route history={history} path='/' component={MainPage}/>
           </Switch>
         </Container>
-        {/*{mobile && <ActionsSwitch bottom history={history}/>}*/}
         <InfoBar/>
       </div>
       {mobile && <ActionsSwitch bottom history={history}/>}
