@@ -23,12 +23,12 @@ export const propTypes = {
     onMouseOver: PropTypes.func,
     onContextMenu: PropTypes.func
   }),
-  // отображение по пользователям
-  multiView: PropTypes.bool,
   // триггер хука выполнения запроса
   triggerGet: PropTypes.any,
-  //триггер хука обновления
+  // триггер хука обновления
   triggerNew: PropTypes.any,
+  // триггер хука очистки календаря
+  triggerClear: PropTypes.any,
   // начало календаря (не скроллится раньше этой даты)
   startDate: (props, propName, componentName) => checkDateFormat(props, propName, componentName),
   // конец календаря (не скроллится дальше этой даты)

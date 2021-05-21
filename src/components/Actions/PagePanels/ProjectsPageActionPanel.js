@@ -3,6 +3,8 @@ import ActionsPanel from "../ActionsPanel/ActionsPanel";
 import ActionButton from "../ActionButton/ActionButton";
 import {PostAdd} from "@material-ui/icons";
 import BackOrProfileActionButton from "../BackOrProfileActionButton/BackOrProfileActionButton";
+import Fetch from "../../../js/Fetch";
+import mainStore from "../../../stores/mainStore";
 
 
 function ProjectsPageActionPanel(props) {
@@ -14,7 +16,10 @@ function ProjectsPageActionPanel(props) {
       key={'Добавить'}
       label={'Добавить'}
       icon={<PostAdd/>}
-      link={'project'}
+      onClick={() => {
+        mainStore.ProjectStore.default()
+        Fetch.autoLink('project')
+      }}
     />,
   ]
 

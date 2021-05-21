@@ -1,20 +1,16 @@
 import React, {useState} from "react";
-import Calendar from '../components/Calendar';
+import Calendar from '../components/test/components/Calendar';
 import {inject, observer} from "mobx-react";
-import {IconButton,
-  InputAdornment,
-  List, ListItem,
+import {
+  List,
   ListSubheader
 } from "@material-ui/core";
 import ProjectItem from "../components/ProjectItem/ProjectItem";
 import PopOverDay from "../components/PopOverDay/PopOverDay";
 import Fetch from "../js/Fetch";
-import Box from "@material-ui/core/Box";
-import Tag from "../components/Tag/Tag";
-import {Call, Mail} from "@material-ui/icons";
-import TextField from "../components/Fields/TextField/TextField";
-import Loader from "../js/Loader";
 import Info from "../js/Info";
+import UserProfile from "../components/UserProfile/UserProfile";
+import {useOnFocusHook} from "../components/hooks";
 
 
 function UserPage(props) {
@@ -22,10 +18,9 @@ function UserPage(props) {
   const [triggerGet, setTriggerGet] = useState(new Date().getTime())
   const {userPage, user, projects, calendar, getUser, delProject, getProject} = props.UserStore
   const [DayInfo, setDayInfo] = useState(null);
-  const p = user.phone_confirm
-  const phone = p? `+${p[0]} (${p.slice(1,4)}) ${p.slice(4,7)}-${p.slice(7,9)}-${p.slice(9)}` : p
 
-  const [copied, setCopied] = useState(null)
+
+  useOnFocusHook(() => setTriggerGet(new Date().getTime()))
 
   const content = {
     days: calendar.days,
@@ -50,8 +45,7 @@ function UserPage(props) {
   }
 
   function link(project) {
-    props.setProject(project)
-    props.history.push(`/project/${project.id}/`)
+    Fetch.autoLink(`/project/${project.id}/`)
   }
 
   function popoverLink(project) {
@@ -63,7 +57,8 @@ function UserPage(props) {
   function del(project) {
     delProject(project.id)
     Fetch.delete(['project', project.id]).then(() => {
-      delProject(project.id)
+      getUser()
+      // delProject(project.id)
       setTriggerGet(new Date().getTime())
     })
   }
@@ -80,53 +75,6 @@ function UserPage(props) {
       setTriggerGet(new Date().getTime())
     })
   }
-
-  function copyToClipboard(string, label) {
-    let textarea;
-    let result;
-
-    try {
-      textarea = document.createElement('textarea');
-      textarea.setAttribute('readonly', true);
-      textarea.setAttribute('contenteditable', true);
-      textarea.style.position = 'fixed'; // prevent scroll from jumping to the bottom when focus is set.
-      textarea.value = string;
-
-      document.body.appendChild(textarea);
-
-      textarea.focus();
-      textarea.select();
-
-      const range = document.createRange();
-      range.selectNodeContents(textarea);
-
-      const sel = window.getSelection();
-      sel.removeAllRanges();
-      sel.addRange(range);
-
-      textarea.setSelectionRange(0, textarea.value.length);
-      result = document.execCommand('copy');
-    } catch (err) {
-      console.error(err);
-      result = null;
-    } finally {
-      document.body.removeChild(textarea);
-    }
-
-    // manual copy fallback using prompt
-    if (!result) {
-      const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
-      const copyHotkey = isMac ? '⌘C' : 'CTRL+C';
-      result = prompt(`Press ${copyHotkey}`, string); // eslint-disable-line no-alert
-      if (!result) {
-        return false;
-      }
-    }
-    setCopied(label)
-    Loader.set(() => setCopied(null), 1500)
-    return true;
-  }
-
 
   if (userPage.loading) return <></>
 
@@ -147,62 +95,7 @@ function UserPage(props) {
         }}
         onError={Info.error}
       />
-      {userPage.profile ?
-        <>
-          {!!user.tags.length && <>
-            <ListSubheader>Специализации</ListSubheader>
-            <Box display={"flex"} flexWrap={'wrap'}>
-              <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
-              {user.tags.map(tag => <Tag tag={tag} key={tag.id}/>)}
-            </Box>
-          </>}
-          {(!!user.show_email || !!user.show_phone) &&
-          <List dense>
-            <ListSubheader>Контакты</ListSubheader>
-            {(user.show_phone && phone) && <ListItem>
-              <TextField
-                fullWidth={false}
-                onClick={() => copyToClipboard(phone, 'phone')}
-                value={phone}
-                label={copied === 'phone' ? 'Скопировано' : 'Телефон'}
-                inputProps={{style: {cursor: 'pointer', paddingBottom: 5, paddingTop: 5}}}
-                onFocus={e => e.target.blur()}
-                InputProps={{
-                  disableUnderline: true, startAdornment:
-                    <InputAdornment position={'start'} style={{marginRight: 0}}>
-                      <a href={`tel:+${phone}`}>
-                        <IconButton size={'small'}>
-                          <Call/>
-                        </IconButton>
-                      </a>
-                    </InputAdornment>
-                }}
-              />
-            </ListItem>}
-
-            {(user.show_email && user.email_confirm) && <ListItem>
-              <TextField
-                fullWidth={false}
-                onClick={() => copyToClipboard(user.email_confirm, 'email')}
-                value={user.email_confirm}
-                label={copied === 'email' ? 'Скопировано' : 'E-mail'}
-                inputProps={{style: {cursor: 'pointer', paddingBottom: 5, paddingTop: 5}}}
-                onFocus={e => e.target.blur()}
-                InputProps={{
-                  disableUnderline: true, startAdornment:
-                    <InputAdornment position={'start'} style={{marginRight: 0}}>
-                      <a href={`mailto:${user.email_confirm}`}>
-                        <IconButton size={'small'}>
-                          <Mail/>
-                        </IconButton>
-                      </a>
-                    </InputAdornment>
-                }}
-              />
-            </ListItem>}
-          </List>
-          }
-        </>
+      {userPage.profile ? <UserProfile user={user} />
         :
         <List dense>
           <ListSubheader disableSticky style={{
@@ -217,10 +110,12 @@ function UserPage(props) {
             onDelete={del}
             paidToggle={paidToggle}
             confirmProject={confirmProject}
+            folderOpen
+            childListFunc={l => l.slice(0).reverse()}
 
-            onTouchHold={() => setPick(Object.keys(project.days))}
+            onTouchHold={(p) => setPick(Object.keys(p.days))}
             onTouchEnd={() => setPick([])}
-            onMouseOver={() => setPick(Object.keys(project.days))}
+            onMouseOver={(p) => setPick(Object.keys(p.days))}
             onMouseLeave={() => setPick([])}
           />)}
         </List>

@@ -24,11 +24,10 @@ div.calendar-left {
     flex-direction: column;
 }
 div.calendar-button-scroll {
-    height: 34px;
+    height: 20px;
     display: flex;
-    align-items: flex-end;
-    justify-content: flex-end;
-    padding: 3px;
+    align-items: center;
+    justify-content: center;
 }
 div.calendar-button-scroll > svg{
     fill: rgba(1, 1, 1, 0.65);

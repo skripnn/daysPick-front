@@ -1,3 +1,6 @@
 .icon-button.close {
+    /*min-width: 32px;*/
+}
+.icon-button.close.red {
     color: #ff6c6c;
 }

@@ -6,6 +6,6 @@ import './CloseButton.css'
 
 export default function CloseButton(props) {
   return (
-    <IconButton children={<CloseIcon fontSize={'small'}/>} size={"small"} className={'icon-button close'} onClick={props.onClick}/>
+    <IconButton children={<CloseIcon fontSize={'small'}/>} size={"small"} className={'icon-button close' + (props.red ? ' red' : '')} onClick={props.onClick}/>
   )
 }

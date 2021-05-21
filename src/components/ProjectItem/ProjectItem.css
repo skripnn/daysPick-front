@@ -5,6 +5,9 @@
     opacity: 0;
     transition: all 1s;
 }
+.project-item-child {
+    margin-left: 20px;
+}
 
 /*большая ширина*/
 @media screen and (min-width:600px) {

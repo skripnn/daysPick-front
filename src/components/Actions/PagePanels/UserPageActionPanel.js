@@ -7,6 +7,7 @@ import UserFullName from "../../UserFullName/UserFullName";
 import {parseUser} from "../../../js/functions/functions";
 import {Dialog, DialogContent} from "@material-ui/core";
 import Fetch from "../../../js/Fetch";
+import mainStore from "../../../stores/mainStore";
 
 
 function UserPageActionPanel(props) {
@@ -25,9 +26,12 @@ function UserPageActionPanel(props) {
     />,
     <ActionButton
       key={'Добавить'}
-      label={'Добавить'}
+      label={isSelf ? 'Добавить' : 'Предложить'}
       icon={<PostAdd/>}
-      link={'/project/'}
+      onClick={() => {
+        mainStore.ProjectStore.default({user: parseUser()})
+        Fetch.autoLink('/project/')
+      }}
     />,
     <ActionButton
       key={"Проекты"}
@@ -44,7 +48,7 @@ function UserPageActionPanel(props) {
       onClick={() => setValue({edit: false, profile: true})}
     />
   ]
-  const right = isSelf ? buttonsBlock : []
+  const right = isSelf ? buttonsBlock : props.user.is_public ? buttonsBlock.slice(1) : []
 
   function loadImage() {
     if (props.user.photo) Fetch.getImage(props.user.photo).then(setImage)
@@ -54,7 +58,8 @@ function UserPageActionPanel(props) {
     <ActionsPanel
       {...props}
       hidden={props.bottom ? props.hidden : false}
-      left={props.bottom ? [] : <UserFullName user={props.user} avatar={'left'} edit={isSelf} avatarClick={loadImage}/>}
+      left={props.bottom ? [] :
+        <UserFullName user={props.user} avatar={'left'} edit={isSelf} raise={isSelf} avatarClick={loadImage}/>}
       right={props.hidden ? [] : right}
     />
     {<Dialog open={!!image} onClose={() => setImage(null)} maxWidth={"sm"} scroll={'body'} style={{maxHeight: '95vh'}}>

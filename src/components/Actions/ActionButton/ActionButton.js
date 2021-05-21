@@ -7,7 +7,7 @@ import Fetch from "../../../js/Fetch";
 export default function ActionButton(props) {
   if (props.hidden) return null
 
-  const className = "action-button" + (props.active? " pick" : (props.red? " red" : ""))
+  const className = props.className + " action-button" + (props.active? " pick" : (props.red? " red" : ""))
   const onClick = props.link? () => Fetch.autoLink(props.link) : props.onClick
 
   return (

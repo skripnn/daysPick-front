@@ -9,7 +9,15 @@ function ProjectsPage(props) {
   const {f, p, setProject} = props
 
   function del(project) {
-    Fetch.delete(['project', project.id]).then(() => props.pageStore.delProject(project.id))
+    Fetch.delete(['project', project.id]).then(() => {
+      if (project.parent) {
+        const parent = props.pageStore.getProject(project.parent.id)
+        parent.children = parent.children.filter(p => p.id !== project.id)
+        if (parent.children.length) props.pageStore.setProject(parent)
+        else props.pageStore.delProject(parent.id)
+      }
+      else props.pageStore.delProject(project.id)
+    })
   }
 
   function link(project) {

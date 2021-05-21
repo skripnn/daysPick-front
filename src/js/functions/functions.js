@@ -20,14 +20,14 @@ export function checkUser() {
 }
 
 export function parseUser(username) {
-  const user = window.location.pathname.match(/\/user\/(.*)\/(\/?)/)
+  const user = window.location.pathname.match(/\/user\/([^/]*)(\/?)/)
   if (user) return user[1]
   else if (username) return username
   return null
 }
 
 export function getProjectId() {
-  const id = window.location.pathname.match(/\/project\/(.*)\//)
+  const id = window.location.pathname.match(/\/project\/([0-9]*)\/?/)
   if (id) return Number(id[1])
   return null
 }

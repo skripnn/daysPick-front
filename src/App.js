@@ -22,6 +22,8 @@ import theme from "./js/theme";
 import InfoBar from "./components/InfoBar/InfoBar";
 import Keys from "./js/Keys";
 import TestPage from "./pages/TestPage";
+import mainStore from "./stores/mainStore";
+import {useOnFocusHook} from "./components/hooks";
 
 function App(props) {
   const mobile = useMediaQuery('(max-width:600px)')
@@ -36,6 +38,10 @@ function App(props) {
     if (lightTheme) favicon.href = favicon.href.replace('favicon.ico', 'favicon-black.ico')
     else favicon.href = favicon.href.replace('favicon-black.ico', 'favicon.ico')
   }, [lightTheme])
+
+  useOnFocusHook(() => {
+    if (localStorage.User) mainStore.UsersStore.getUser(localStorage.User).getUser()
+  })
 
   return (
     <ThemeProvider theme={theme}>

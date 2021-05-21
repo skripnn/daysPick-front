@@ -12,13 +12,13 @@ import Info from "../../../js/Info";
 
 
 function SearchField(props) {
-  const {get, set, noFilter, calendar, user, minFilter, ...newProps} = props
+  const {get, set, noFilter, calendar, user, minFilter, initDays, onChangeDays, ...newProps} = props
 
   const [filter, setFilter] = useState(null)
   const [loading, setLoading] = useState(false)
-  const [days, setDays] = useState(null)
+  const [days, setDays] = useState(initDays || null)
   const [range, setRange] = useState(null)
-  const [content, setContent] = useState(calendar ? {...calendar} : {days: {}, daysOff: new Set(), daysPick: new Set()})
+  const [content, setContent] = useState(calendar ? {...calendar} : {days: {}, daysOff: new Set(), daysPick: new Set(initDays)})
 
   const ref = useRef()
 
@@ -33,6 +33,7 @@ function SearchField(props) {
   const changeDays = (v) => {
     setRange(null)
     setDays(v)
+    if (onChangeDays) onChangeDays(v)
   }
 
   const clearDays = () => {

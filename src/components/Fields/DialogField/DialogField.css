@@ -1,0 +1,7 @@
+.dialog-field-item {
+    padding-left: unset !important;
+    padding-right: unset !important;
+}
+.dialog-field-item.delete-button {
+    right: 0
+}

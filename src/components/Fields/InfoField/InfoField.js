@@ -12,7 +12,7 @@ function TabPanel(props) {
   return (
     <TextField onChange={props.onChange}
                multiline
-               rows={props.plusSize ? 11 : 10}
+               rows={props.rows || (props.plusSize ? 15 : 14)}
                name={props.index}
                label={props.label}
                value={props.value || ''}/>
@@ -21,7 +21,7 @@ function TabPanel(props) {
 
 function InfoField(props) {
   const [state, setState] = React.useState('info');
-  const {info, days, dates, setInfo} = props.ProjectStore
+  const {info, days, dates, setInfo, is_folder} = props.ProjectStore
 
 
   if (state !== 'info' && !dates.includes(state)) setState('info')
@@ -48,6 +48,7 @@ function InfoField(props) {
         label={'Информация о проекте'}
         onChange={e => setInfo(e.target.value)}
         plusSize={!dates.length}
+        rows={is_folder? 9 : undefined}
       />
     )
 
@@ -66,7 +67,7 @@ function InfoField(props) {
 
   return (
     <Box display={"flex"} flexDirection={'column'}>
-      <Tabs
+      {!is_folder && <Tabs
         style={{minHeight: 'unset', marginBottom: 5}}
         value={false}
         TabScrollButtonProps={{className: "calendar-day"}}
@@ -74,7 +75,7 @@ function InfoField(props) {
         scrollButtons="auto"
       >
         {dates.map(date => <Tab date={date} key={date}/>)}
-      </Tabs>
+      </Tabs>}
       {tabPanel(state)}
     </Box>
   )

@@ -133,7 +133,8 @@ class FetchClass {
   getCalendar = (dateStart, dateEnd, user, project) => this.get('calendar', {
     start: dateStart.format(),
     end: dateEnd.format(),
-    user: user,
+    user: Array.isArray(user) ? undefined : user,
+    users: Array.isArray(user) ? user : undefined,
     project_id: project
   })
 
@@ -158,8 +159,8 @@ class FetchClass {
   autoLink = (link) => {
     if (link === '/') link = localStorage.User? ['user', localStorage.User] : 'search'
     if (link instanceof Array) link = link.filter(v => !!v).join('/')
-    if (link.search(/projects/) > 0) this.link(link, mainStore.UsersStore.getLocalUser().setProjects)
-    else if (link.search(/user\//) > 0) this.link(link, mainStore.UsersStore.setUser)
+    if (link.search(/projects/) > 0) mainStore.ProjectsPageStore.clear()
+    if (link.search(/user\//) > 0) this.link(link, mainStore.UsersStore.setUser)
     else this.link(link)
   }
 

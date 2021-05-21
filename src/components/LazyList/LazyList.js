@@ -5,9 +5,10 @@ import PropTypes from "prop-types";
 import SearchField from "../Fields/SearchField/SearchField";
 
 function LazyList(props) {
-  const {children, set, add, pages, page, setPage, getLink, getParams, searchFieldParams, noSearchField, observableRoot, ...otherProps} = props
+  const {children, set, add, pages, page, setPage, getLink, getParams, searchFieldParams, noSearchField, observableRoot, preLoader, ...otherProps} = props
   const [filter, setFilter] = useState(null)
 
+  const [loading, setLoading] = useState(!!preLoader)
   const [request, setRequest] = useState(false)
   const [element, setElement] = useState(null)
   const [observer, setObserver] = useState(new IntersectionObserver(changeIntersection, observableRoot? {root: observableRoot} : undefined))
@@ -23,7 +24,10 @@ function LazyList(props) {
 
   useEffect(() => {
     if (pages === null && set) {
-      Fetch.post(getLink, {...params, page: 0}).then((r) => set(r))
+      Fetch.post(getLink, {...params, page: 0}).then(r => {
+        set(r)
+        setLoading(false)
+      })
     }
     return (() => {
       if (searchFieldParams) searchFieldParams.set(null)
@@ -83,7 +87,7 @@ function LazyList(props) {
         <SearchField {...searchFieldParams} get={filterGet} set={filterSet}/>
       </ListSubheader>}
       {children}
-      {page < pages && <div style={{display: "flex", justifyContent: 'center', opacity: 0.5}}><CircularProgress size={24} color={'secondary'} /></div>}
+      {(loading || page < pages) && <div style={{display: "flex", justifyContent: 'center', opacity: 0.5}}><CircularProgress size={24} color={'secondary'} /></div>}
     </List>
   )
 }
@@ -98,7 +102,9 @@ LazyList.propTypes = {
     }),
     user: PropTypes.string,
     noFilter: PropTypes.bool,
-    minFilter: PropTypes.number
+    minFilter: PropTypes.number,
+    initDays: PropTypes.array,
+    onChangeDays: PropTypes.func
   }),
   observableRoot: PropTypes.instanceOf(Element),
   children: PropTypes.node,

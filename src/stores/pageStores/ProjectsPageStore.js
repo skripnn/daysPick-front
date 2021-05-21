@@ -10,6 +10,11 @@ class ProjectsPageStore {
     makeAutoObservable(this)
   }
 
+  clear = () => {
+    this.p.set()
+    this.f.set()
+  }
+
   delProject = (id) => {
     this.p.del(id)
     this.f.del(id)

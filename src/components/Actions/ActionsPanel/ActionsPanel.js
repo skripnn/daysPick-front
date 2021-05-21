@@ -3,27 +3,32 @@ import './ActionsPanel.css'
 
 
 
-function ActionsPanel(props) {
-  if (props.hidden) return <></>
+function ActionsPanel({hidden, left, center, right, bottom, children}) {
+  if (hidden) return <>{children}</>
 
-  if (props.bottom) return (
+  if (bottom) return (<>
+    {children}
     <div className={'actions-panel bottom'}>
-      {props.left}
-      {props.children}
-      {props.right}
+      {left}
+      {center}
+      {right}
     </div>
-  )
+  </>)
 
-  return (
+  return (<>
     <div className={'actions-panel'}>
       <div>
-        {props.left}
+        {left}
       </div>
+      {!!center && <div style={{flexGrow: 1, display: 'flex', justifyContent: 'center', alignSelf: "flex-start"}}>
+        {center}
+      </div>}
       <div>
-        {props.right}
+        {right}
       </div>
     </div>
-  )
+    {children}
+  </>)
 }
 
 ActionsPanel.defaulProps = {
