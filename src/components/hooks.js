@@ -1,4 +1,5 @@
 import {useEffect, useState} from "react";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 export function useOnFocusHook(func) {
   useEffect(() => {
@@ -6,6 +7,7 @@ export function useOnFocusHook(func) {
     return () => {
       window.removeEventListener("focus", func)
     }
+  //eslint-disable-next-line
   }, [])
   return null
 }
@@ -34,4 +36,17 @@ export function useListStore() {
     set: set,
     add: add
   }
+}
+
+export function useMobile() {
+  return useMediaQuery('(max-width:600px)')
+}
+
+
+export function useControlledState(state, setState) {
+  const [store, setStore] = useState(state)
+  useEffect(() => {
+    setStore(state)
+  }, [state])
+  return [store, setState? setState : setStore]
 }

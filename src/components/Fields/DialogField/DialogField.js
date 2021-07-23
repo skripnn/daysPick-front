@@ -7,12 +7,12 @@ import {
   List,
   Typography
 } from "@material-ui/core";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
 import CloseButton from "../../CloseButton/CloseButton";
 import './DialogField.css'
 import ActionsPanel from "../../Actions/ActionsPanel/ActionsPanel";
 import {ArrowBackIos} from "@material-ui/icons";
 import ActionButton from "../../Actions/ActionButton/ActionButton";
+import {useMobile} from "../../hooks";
 
 function DialogField({value, required, disabled, label, ItemContent, ChoiceContent, actionsPanelProps, open, setOpen}) {
   const [dialog, setDialog] = useState(open || false)
@@ -25,6 +25,7 @@ function DialogField({value, required, disabled, label, ItemContent, ChoiceConte
     setOpen ? setOpen(true) : setDialog(true)
   }
 
+  //eslint-disable-next-line
   useEffect(close, [value])
 
   return (<>
@@ -63,7 +64,10 @@ export default DialogField
 
 function ChoiceFieldDialog({open, close, label, actionsPanelProps, children}) {
 
-  const fullScreen = useMediaQuery('(max-width:720px)');
+  const fullScreen = useMobile()
+  const Actions = actionsPanelProps ?
+    <ActionsPanel left={<ActionButton onClick={close} label="Назад" icon={<ArrowBackIos/>}/>} center={label} {...actionsPanelProps} bottom={fullScreen}/>
+    : null
 
   return (
     <Dialog
@@ -79,14 +83,11 @@ function ChoiceFieldDialog({open, close, label, actionsPanelProps, children}) {
           <CloseButton onClick={close}/>
         </div>
       </DialogTitle>}
+      {!fullScreen && Actions}
       <DialogContent>
-        {actionsPanelProps ?
-          <ActionsPanel left={<ActionButton onClick={close} label="Назад" icon={<ArrowBackIos/>}/>} center={label} {...actionsPanelProps}>
-            {children}
-          </ActionsPanel>
-          : children
-        }
+        {children}
       </DialogContent>
+      {fullScreen && Actions}
     </Dialog>
   )
 }

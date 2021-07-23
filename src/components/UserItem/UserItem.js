@@ -3,14 +3,14 @@ import {ListItem, ListItemIcon, ListItemSecondaryAction, ListItemText} from "@ma
 import UserAvatar from "../UserAvatar/UserAvatar";
 import React from "react";
 import TextLoop from "react-text-loop";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
 import './UserItem.css'
 import {inject, observer} from "mobx-react";
 import Fetch from "../../js/Fetch";
+import {useMobile} from "../hooks";
 
 function UserItem(props) {
   const user = props.user
-  const mobile = useMediaQuery('(min-width:600px)')
+  const mobile = useMobile()
   const tags = user.tags.length ? (mobile ?
       <>
         {user.tags[0].title}

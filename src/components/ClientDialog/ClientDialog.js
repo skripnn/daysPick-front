@@ -8,11 +8,11 @@ import TextField from "../Fields/TextField/TextField";
 import {Link} from "react-router-dom";
 import './ClientDialog.css'
 import {inject, observer} from "mobx-react";
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 import ActionButton from "../Actions/ActionButton/ActionButton";
 import ActionsPanel from "../Actions/ActionsPanel/ActionsPanel";
 import {ArrowBackIos, Delete, Save} from "@material-ui/icons";
 import Fetch from "../../js/Fetch";
+import {useMobile} from "../hooks";
 
 
 function ClientDialog(props) {
@@ -24,7 +24,7 @@ function ClientDialog(props) {
     // eslint-disable-next-line
   }, [])
 
-  const fullScreen = useMediaQuery('(max-width:720px)');
+  const fullScreen = useMobile()
 
   function load(command) {
     setLoading(command)

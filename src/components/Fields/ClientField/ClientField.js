@@ -1,13 +1,14 @@
 import ClientItem from "../../ClientItem/ClientItem";
 import TextField from "../TextField/TextField";
 import React, {useState} from "react";
-import {List, useMediaQuery} from "@material-ui/core";
+import {List} from "@material-ui/core";
 import ClearIcon from '@material-ui/icons/Clear';
 import ClientChoiceDialog from "../../ClientChoiceDialog/ClientChoiceDialog";
+import {useMobile} from "../../hooks";
 
 function ClientField(props) {
   const [dialog, setDialog] = useState(null)
-  const mobile = useMediaQuery('(max-width:600px)')
+  const mobile = useMobile()
 
 
   function set(client) {

@@ -8,6 +8,7 @@ import {parseUser} from "../../../js/functions/functions";
 import {Dialog, DialogContent} from "@material-ui/core";
 import Fetch from "../../../js/Fetch";
 import mainStore from "../../../stores/mainStore";
+import Info from "../../../js/Info";
 
 
 function UserPageActionPanel(props) {
@@ -28,10 +29,10 @@ function UserPageActionPanel(props) {
       key={'Добавить'}
       label={isSelf ? 'Добавить' : 'Предложить'}
       icon={<PostAdd/>}
-      onClick={() => {
+      onClick={isSelf? () => {
         mainStore.ProjectStore.default({user: parseUser()})
         Fetch.autoLink('/project/')
-      }}
+      } : () => Info.info('Функция пока недоступна')}
     />,
     <ActionButton
       key={"Проекты"}
@@ -48,7 +49,10 @@ function UserPageActionPanel(props) {
       onClick={() => setValue({edit: false, profile: true})}
     />
   ]
-  const right = isSelf ? buttonsBlock : props.user.is_public ? buttonsBlock.slice(1) : []
+  const right = !localStorage.User? []
+    : isSelf ? buttonsBlock
+      : props.user.is_public ? buttonsBlock.slice(1)
+        : []
 
   function loadImage() {
     if (props.user.photo) Fetch.getImage(props.user.photo).then(setImage)

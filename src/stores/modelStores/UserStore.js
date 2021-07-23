@@ -51,15 +51,28 @@ class UserStore {
   }
 
   setProjects = (projects) => {
-    this.projects = projects.map(project => {
+    const projectsNew = projects.map(project => {
       const isFolder = !!project.children && !!project.children.length
       if (isFolder) {
-        project.children = project.children.filter(p => !(newDate(p.date_end) < newDate() && p.is_paid))
+        project.children = project.children.filter(p => !(p.date_end < newDate().format() && p.is_paid))
         project.days = {}
         project.children.forEach(p => Object.keys(p.days).forEach(d => project.days[d] = null))
+        const dates = Object.keys(project.days)
+        dates.sort()
+        project.date_start = dates[0]
+        project.date_end = dates[dates.length - 1]
       }
       return project
     })
+    const compare = (a, b) => {
+      if (a.date_start < b.date_start) return -1
+      if (a.date_start > b.date_start) return 1
+      if (a.date_end < b.date_end) return -1
+      if (a.date_end > b.date_end) return 1
+      return 0
+    }
+    projectsNew.sort(compare)
+    this.projects = projectsNew
   }
 
   setValue = (obj={}) => {

@@ -22,11 +22,11 @@ import theme from "./js/theme";
 import InfoBar from "./components/InfoBar/InfoBar";
 import Keys from "./js/Keys";
 import TestPage from "./pages/TestPage";
-import mainStore from "./stores/mainStore";
-import {useOnFocusHook} from "./components/hooks";
+import {useMobile} from "./components/hooks";
+import FeedPage from "./pages/FeedPage";
 
 function App(props) {
-  const mobile = useMediaQuery('(max-width:600px)')
+  const mobile = useMobile()
 
   const { history } = props
   Fetch.history = history
@@ -39,10 +39,6 @@ function App(props) {
     else favicon.href = favicon.href.replace('favicon-black.ico', 'favicon.ico')
   }, [lightTheme])
 
-  useOnFocusHook(() => {
-    if (localStorage.User) mainStore.UsersStore.getUser(localStorage.User).getUser()
-  })
-
   return (
     <ThemeProvider theme={theme}>
       <div className="App">
@@ -51,6 +47,7 @@ function App(props) {
           <ActionsSwitch hidden={mobile} history={history}/>
           <Switch>
             {Keys.env === 'dev' && <Route history={history} path='/test/' component={TestPage}/>}
+            {Keys.env === 'dev' && <Route history={history} path='/feed/' component={FeedPage}/>}
             <Route history={history} path='/settings/' component={SettingsPage}/>
             <Route history={history} path='/profile/' component={ProfilePage}/>
             <Route history={history} path='/clients/' component={ClientsPage}/>

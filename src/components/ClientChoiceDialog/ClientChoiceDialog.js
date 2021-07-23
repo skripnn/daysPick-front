@@ -1,5 +1,4 @@
 import React, {useEffect, useRef, useState} from "react";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
 import ActionsPanel from "../Actions/ActionsPanel/ActionsPanel";
 import ActionButton from "../Actions/ActionButton/ActionButton";
 import {ArrowBackIos, PersonAdd} from "@material-ui/icons";
@@ -12,11 +11,12 @@ import Fetch from "../../js/Fetch";
 import LazyList from "../LazyList/LazyList";
 import {inject, observer} from "mobx-react";
 import './ClientChoiceDialog.css'
+import {useMobile} from "../hooks";
 
 function ClientChoiceDialog(props) {
   const [state, setState] = useState(props.client)
 
-  const fullScreen = useMediaQuery('(max-width:720px)');
+  const fullScreen = useMobile()
 
   const ref = useRef()
 

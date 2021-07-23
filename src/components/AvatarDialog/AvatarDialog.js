@@ -1,5 +1,4 @@
 import React, {useState} from "react";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
 import ActionsPanel from "../Actions/ActionsPanel/ActionsPanel";
 import ActionButton from "../Actions/ActionButton/ActionButton";
 import {ArrowBackIos, Delete, Save} from "@material-ui/icons";
@@ -7,12 +6,13 @@ import UserAvatar from "../UserAvatar/UserAvatar";
 import Fetch from "../../js/Fetch";
 import {Dialog, DialogContent, DialogTitle} from "@material-ui/core";
 import Avatar from "react-avatar-edit";
+import {useMobile} from "../hooks";
 
 export default function AvatarDialog(props) {
   const [preview, setPreview] = useState(null)
   const [image, setImage] = useState(props.image)
   const [loading, setLoading] = useState(null)
-  const fullScreen = useMediaQuery('(max-width:720px)');
+  const fullScreen = useMobile()
 
   const Actions = (
     <ActionsPanel

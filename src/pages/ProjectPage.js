@@ -7,7 +7,7 @@ import PopOverDay from "../components/PopOverDay/PopOverDay";
 import Fetch from "../js/Fetch";
 import Info from "../js/Info"
 import {List} from "@material-ui/core";
-import ProjectItem from "../components/ProjectItem/ProjectItem";
+import {ProjectItem} from "../components/ProjectItem/ProjectItem";
 
 function ProjectPage(props) {
   const {id, user, setDays, dates, setProject, hidden, creator, children, is_folder} = props.project
@@ -42,10 +42,6 @@ function ProjectPage(props) {
     />)
   }
 
-  function del(project) {
-    Fetch.delete(['project', project.id]).then(() => getProject(id))
-  }
-
   if (!localStorage.User) Fetch.autoLink('/')
   if (hidden) return null
   return (
@@ -70,18 +66,22 @@ function ProjectPage(props) {
         onError={Info.error}
       />
       {is_folder && <List dense>
-        {children.map(project => <ProjectItem
-          project={project}
-          key={project.id}
+        {children.map(project =>
+          <ProjectItem
+            project={project}
+            key={project.id}
 
-          onClick={p => Fetch.autoLink(`/project/${p.id}/`)}
-          onDelete={p => Fetch.delete(['project', p.id]).then(() => getProject(id))}
+            onClick={p => Fetch.autoLink(`/project/${p.id}/`)}
+            onDelete={() => getProject(id)}
+            paidButton={false}
+            confirmButton={false}
 
-          onTouchHold={p => setPick(Object.keys(p.days))}
-          onTouchEnd={() => setPick(null)}
-          onMouseOver={p => setPick(Object.keys(p.days))}
-          onMouseLeave={() => setPick(null)}
-        />)}
+            onTouchHold={p => setPick(Object.keys(p.days))}
+            onTouchEnd={() => setPick(null)}
+            onMouseOver={p => setPick(Object.keys(p.days))}
+            onMouseLeave={() => setPick(null)}
+          />
+        )}
       </List>}
       <ProjectForm />
       {DayInfo}

@@ -2,13 +2,10 @@ import './UserFullName.css'
 import React from "react";
 import Box from "@material-ui/core/Box";
 import UserAvatar from "../UserAvatar/UserAvatar";
-import {Link} from "react-router-dom";
-import {Edit, Publish} from "@material-ui/icons";
+import {Publish} from "@material-ui/icons";
 import {IconButton, Tooltip} from "@material-ui/core";
 import Fetch from "../../js/Fetch";
 import {inject, observer} from "mobx-react";
-import mainStore from "../../stores/mainStore";
-import Info from "../../js/Info";
 
 function UserFullName(props) {
   if (!props.user.full_name) return null

@@ -1,6 +1,5 @@
 import DialogField from "../DialogField/DialogField";
 import {
-  CircularProgress,
   IconButton,
   ListItem,
   ListItemIcon,
@@ -13,7 +12,7 @@ import ClearIcon from "@material-ui/icons/Clear";
 import ActionButton from "../../Actions/ActionButton/ActionButton";
 import TextField from "../TextField/TextField";
 import LazyList from "../../LazyList/LazyList";
-import ProjectItem from "../../ProjectItem/ProjectItem";
+import {ProjectFolderItem} from "../../ProjectItem/ProjectItem";
 import Loader from "../../../js/Loader";
 import Fetch from "../../../js/Fetch";
 import {useListStore} from "../../hooks";
@@ -35,7 +34,10 @@ export default function FolderField({value, set}) {
   useEffect(() => {if (!open) {
     setFolderTitle(null)
     f.set()
+  //eslint-disable-next-line
   }}, [open])
+
+  const [openFolder, setOpenFolder] = useState(null)
 
   const folderItem = value ?
     <ListItem button className={'dialog-field-item'}>
@@ -57,7 +59,7 @@ export default function FolderField({value, set}) {
     center: null
   }
 
-  const getParams = {filter: folderTitle, folders: true}
+  const getParams = {filter: folderTitle, folders: true, user: localStorage.User}
 
   const folderList = (<div ref={ref}>
     <TextField
@@ -67,7 +69,6 @@ export default function FolderField({value, set}) {
     />
     <LazyList
       preLoader
-      ref={ref}
       getLink={'projects'}
       getParams={getParams}
       set={f.set}
@@ -76,13 +77,20 @@ export default function FolderField({value, set}) {
       pages={f.pages}
       observableRoot={ref.current? ref.current.parentElement : undefined}
     >
-      {f.list.map(project => <ProjectItem
-              project={project}
-              key={project.id}
-              onClick={(p) => set(p)}
-              childProps={{onClick: () => {}}}
-            />
-          )}
+      {f.list && f.list.map(project =>
+        <ProjectFolderItem
+          project={project}
+          key={project.id}
+          onClick={(p) => set(p)}
+          childProps={{
+            confirmButton: false,
+            paidButton: false,
+            deleteButton: false
+          }}
+          open={openFolder === project.id}
+          setOpen={() => setOpenFolder(openFolder === project.id ? null : project.id)}
+        />
+      )}
     </LazyList>
   </div>)
 

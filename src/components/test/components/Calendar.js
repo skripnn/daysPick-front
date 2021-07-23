@@ -40,7 +40,6 @@ import UserAvatar from "../../UserAvatar/UserAvatar";
 import DeleteIcon from "@material-ui/icons/Delete";
 import ActionsPanel from "../../Actions/ActionsPanel/ActionsPanel";
 import ActionButton from "../../Actions/ActionButton/ActionButton";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
 import {toJS} from "mobx";
 import TextField from "../../Fields/TextField/TextField";
 import TextLoop from "react-text-loop";
@@ -50,6 +49,7 @@ import UserProfile from "../../UserProfile/UserProfile";
 import DaysNames from "../../Calendar/components/DaysNames";
 import MoneyField from "../../Fields/MoneyField/MoneyField";
 import mainStore from "../../../stores/mainStore";
+import {useMobile} from "../../hooks";
 
 let getTimeOut
 
@@ -221,15 +221,15 @@ function Calendar (props) {
     // обновление при смене props.noOffset
     updateState({offset: !props.noOffset})
   }
-  
+
   function mMonday(date) {
     return state.multiView ? date : date.monday()
   }
-  
+
   function mOffset(date, x) {
     return state.multiView ? date.offsetDays(x) : date.offsetWeeks(x)
   }
-  
+
   function mDiff(date, x) {
     return state.multiView ? date.getDiffDays(x) : date.getDiffWeeks(x)
   }
@@ -674,7 +674,7 @@ export default Calendar
 function UsersDialog({open, users=[], close, del, add, days, replace, usersContent}) {
   const [addUser, setAddUser] = useState(false)
 
-  const fullScreen = useMediaQuery('(max-width:720px)');
+  const fullScreen = useMobile()
 
   const onClose = () => {
     setAddUser(false)
@@ -925,7 +925,7 @@ export function UsersList({projects, project, onChange, setProject}) {
   const [dialog, setDialog] = useState(null)
   const [addUser, setAddUser] = useState(false)
   const sortFn = (a, b) => (a.user.full_name > b.user.full_name) ? 1 : ((b.user.full_name > a.user.full_name) ? -1 : 0)
-  const fullScreen = useMediaQuery('(max-width:720px)');
+  const fullScreen = useMobile()
   const onClose = () => {
     setAddUser(false)
     setDialog(null)

@@ -4,13 +4,13 @@ import LazyList from "../LazyList/LazyList";
 import UserAvatar from "../UserAvatar/UserAvatar";
 import TextLoop from "react-text-loop";
 import {inject, observer} from "mobx-react";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
 import CloseButton from "../CloseButton/CloseButton";
+import {useMobile} from "../hooks";
 
 function UserChoiceDialog({open, close, f, onClick}) {
   const {list, set, add} = f
 
-  const fullScreen = useMediaQuery('(max-width:720px)');
+  const fullScreen = useMobile()
 
   return (
     <Dialog
