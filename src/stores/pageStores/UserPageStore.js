@@ -9,6 +9,7 @@ class UserPageStore {
   dayOffOver = false
   daysPick = new Set()
   isSelf = false
+  error = false
 
   constructor() {
     makeAutoObservable(this)

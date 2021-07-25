@@ -50,6 +50,13 @@ import DaysNames from "../../Calendar/components/DaysNames";
 import MoneyField from "../../Fields/MoneyField/MoneyField";
 import mainStore from "../../../stores/mainStore";
 import {useMobile} from "../../hooks";
+import {
+  has,
+  useDeltaTouch,
+  useInteraction,
+  useShiftPressCallback,
+  useWindowResizeCallback
+} from "../Calendar";
 
 let getTimeOut
 
@@ -65,7 +72,8 @@ function Calendar (props) {
     check: 0,
     lastDay: null,
     shift: false,
-    multiView: props.multiView
+    multiView: props.multiView,
+    loader: false
   })
   const [weeks, setWeeks] = useState(<span style={{width: window.innerWidth + scrollOffset}} key={'temp'}/>)
   const [texts, setTexts] = useState({})
@@ -74,7 +82,6 @@ function Calendar (props) {
     daysOff: sortSet(props.content ? props.content.daysOff : []),
     daysPick: sortSet(props.content ? props.content.daysPick : []),
   })
-  // const fullScreen = useMediaQuery('(max-width:720px)');
   const [usersContent, setUsersContent] = useState({})
   const [users, setUsers] = useState([])
   const [usernames, setUsernames] = useState([])
@@ -120,83 +127,93 @@ function Calendar (props) {
   // eslint-disable-next-line
   useEffect(getTexts, [weeks])
 
-  const [intersection, setIntersection] = useState(false)
-  const [el, setEl] = useState(null)
-  const [observer, setObserver] = useState(null)
+  useInteraction(weeks, newWeeks, ref)
+  useDeltaTouch(ref)
+  useWindowResizeCallback(refreshWeeks)
+  useShiftPressCallback((v) => updateState({shift: v}))
 
-  function changeIntersection(a) {
-    if (a[0].isIntersecting) setIntersection(true)
-  }
-
-  useEffect(() => {
-    if (intersection) newWeeks(weeks, true)
-    // eslint-disable-next-line
-  }, [intersection])
-
-  // eslint-disable-next-line
-  useEffect(newElement, [weeks])
-
-  function newElement() {
-    if (observer && el) {
-      observer.unobserve(el[0])
-      observer.unobserve(el[1])
-    }
-    setEl([
-      ref.current.firstElementChild.firstElementChild,
-      ref.current.firstElementChild.lastElementChild,
-    ])
-  }
-
-  // eslint-disable-next-line
-  useEffect(setObservableTarget, [el, observer])
-
-  function setObservableTarget() {
-    if (observer && el) {
-      observer.observe(el[0])
-      observer.observe(el[1])
-    }
-    setIntersection(false)
-  }
-
-  // eslint-disable-next-line
-  useEffect(setObservableRoot, [ref.current])
-
-  function setObservableRoot() {
-    if (observer) observer.disconnect()
-    if (ref.current) setObserver(new IntersectionObserver(changeIntersection, {root: ref.current, threshold: 1.0}))
-  }
+  // const [intersection, setIntersection] = useState(false)
+  // const [el, setEl] = useState(null)
+  // const [observer, setObserver] = useState(null)
+  //
+  // function changeIntersection(a) {
+  //   if (a[0].isIntersecting) setIntersection(true)
+  // }
+  //
+  // useEffect(() => {
+  //   if (intersection) newWeeks(weeks, true)
+  //   // eslint-disable-next-line
+  // }, [intersection])
+  //
+  // // eslint-disable-next-line
+  // useEffect(newElement, [weeks])
+  //
+  // function newElement() {
+  //   if (observer && el) {
+  //     observer.unobserve(el[0])
+  //     observer.unobserve(el[1])
+  //   }
+  //   setEl([
+  //     ref.current.firstElementChild.firstElementChild,
+  //     ref.current.firstElementChild.lastElementChild,
+  //   ])
+  // }
+  //
+  // // eslint-disable-next-line
+  // useEffect(setObservableTarget, [el, observer])
+  //
+  // function setObservableTarget() {
+  //   if (observer && el) {
+  //     observer.observe(el[0])
+  //     observer.observe(el[1])
+  //   }
+  //   setIntersection(false)
+  // }
+  //
+  // // eslint-disable-next-line
+  // useEffect(setObservableRoot, [ref.current])
+  //
+  // function setObservableRoot() {
+  //   if (observer) observer.disconnect()
+  //   if (ref.current) setObserver(new IntersectionObserver(changeIntersection, {root: ref.current, threshold: 1.0}))
+  // }
 
   function firstRender() {
-    const DeltaTouchX = new DeltaTouchClass('x')
-    ref.current.addEventListener('wheel', e => wheelScroll(e), {passive: false})
-    ref.current.addEventListener('touchstart', e => DeltaTouchX.start(e))
-    ref.current.addEventListener('touchmove', e => DeltaTouchX.move(e, touchScroll))
-    ref.current.addEventListener('touchend', e => DeltaTouchX.end(e, touchScroll))
-    window.addEventListener('resize', () => updateState({check: new Date().getTime()}))
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Shift') updateState({shift: true})
-    })
-    window.addEventListener('keyup', (e) => {
-      if (e.key === 'Shift') updateState({shift: false})
-    })
-
     newWeeks(undefined, true, 0)
     updateState({loading: false})
-
-    return (() => {
-      window.removeEventListener('resize', () => updateState({check: new Date().getTime()}))
-      window.removeEventListener('keydown', (e) => {
-        if (e.key === 'Shift') updateState({shift: true})
-      })
-      window.removeEventListener('keyup', (e) => {
-        if (e.key === 'Shift') updateState({shift: false})
-      })
-      if (observer) {
-        if (observer[0]) observer[0].disconnect()
-        if (observer[1]) observer[1].disconnect()
-      }
-    })
   }
+
+  // function firstRender() {
+  //   const DeltaTouchX = new DeltaTouchClass('x')
+  //   ref.current.addEventListener('wheel', e => wheelScroll(e), {passive: false})
+  //   ref.current.addEventListener('touchstart', e => DeltaTouchX.start(e))
+  //   ref.current.addEventListener('touchmove', e => DeltaTouchX.move(e, touchScroll))
+  //   ref.current.addEventListener('touchend', e => DeltaTouchX.end(e, touchScroll))
+  //   window.addEventListener('resize', () => updateState({check: new Date().getTime()}))
+  //   window.addEventListener('keydown', (e) => {
+  //     if (e.key === 'Shift') updateState({shift: true})
+  //   })
+  //   window.addEventListener('keyup', (e) => {
+  //     if (e.key === 'Shift') updateState({shift: false})
+  //   })
+  //
+  //   newWeeks(undefined, true, 0)
+  //   updateState({loading: false})
+  //
+  //   return (() => {
+  //     window.removeEventListener('resize', () => updateState({check: new Date().getTime()}))
+  //     window.removeEventListener('keydown', (e) => {
+  //       if (e.key === 'Shift') updateState({shift: true})
+  //     })
+  //     window.removeEventListener('keyup', (e) => {
+  //       if (e.key === 'Shift') updateState({shift: false})
+  //     })
+  //     if (observer) {
+  //       if (observer[0]) observer[0].disconnect()
+  //       if (observer[1]) observer[1].disconnect()
+  //     }
+  //   })
+  // }
 
   function updateState(obj) {
     // обновление state
@@ -372,7 +389,7 @@ function Calendar (props) {
       const username = i.user.username
       const day = {
         info: usersContent[username] ? usersContent[username].days[fDate] || null : null,
-        off: usersContent[username] ? usersContent[username].daysOff.has(fDate) : false,
+        off: usersContent[username] ? has(usersContent[username].daysOff, fDate) : false,
         pick: i.dates.includes(fDate)
       }
       daysList.push(<Day date={date} key={username} {...day}
@@ -382,7 +399,7 @@ function Calendar (props) {
     return (
       <div className="calendar-week"
            key={date.format()}>
-        <Day date={date} key={fDate} pick={content.daysPick.has(fDate)} onClick={onDayClick}/>
+        <Day date={date} key={fDate} pick={has(content.daysPick, fDate)} onClick={onDayClick}/>
         {daysList}
       </div>
     )
@@ -396,8 +413,8 @@ function Calendar (props) {
       const fDate = date.format()
       const day = {
         info: (props.multiView ? usersContent[props.username].days[fDate] : content.days[fDate]) || null,
-        off: props.multiView ? usersContent[props.username].daysOff.has(fDate) : content.daysOff.has(fDate),
-        pick: props.multiView ? usersContent[props.username].daysPick.has(fDate) : content.daysPick.has(fDate)
+        off: props.multiView ? has(usersContent[props.username].daysOff, fDate) : has(content.daysOff, fDate),
+        pick: props.multiView ? has(usersContent[props.username].daysPick, fDate) : has(content.daysPick, fDate)
       }
       if ((props.startDate && fDate < props.startDate) || (props.endDate && fDate > props.endDate)) daysList.push(<div
         className={'calendar-day hidden'} key={fDate}/>)
@@ -551,13 +568,14 @@ function Calendar (props) {
   function get(weeks, timeout = 500, usersList = usernames) {
     // GET
     if (!weeks || !weeks[0] || !weeks[0].key) return
+    if (props.get) updateState({loader: true})
     clearTimeout(getTimeOut)
     const start = newDate(weeks[0].key)
     const end = newDate(weeks[weeks.length - 1].key)
     getTimeOut = setTimeout(() => {
       if (props.get) {
-        if (props.multiView && usersList.length) props.get(start, end, usersList).then((result) => updateContent(result, start, end))
-        else if (!props.multiView) props.get(start, end).then((result) => updateContent(result, start, end))
+        if (props.multiView && usersList.length) props.get(start, end, usersList).then((result) => updateContent(result, start, end)).then(() => updateState({loader: false}))
+        else if (!props.multiView) props.get(start, end).then((result) => updateContent(result, start, end)).then(() => updateState({loader: false}))
       }
     }, timeout)
   }
@@ -573,19 +591,19 @@ function Calendar (props) {
     setWeeks(prevState => getWeeks(prevState))
   }
 
-
-  function wheelScroll(e) {
-    // обработчик прокрутки колёсиком мыши
-    e.preventDefault()
-    let delta = e.deltaX + e.deltaY
-    ref.current.scrollLeft += delta
-  }
-
-  function touchScroll(delta) {
-    // обработчик прокрутки пррикосновением
-    if (!ref.current) return
-    ref.current.scrollLeft += delta
-  }
+  //
+  // function wheelScroll(e) {
+  //   // обработчик прокрутки колёсиком мыши
+  //   e.preventDefault()
+  //   let delta = e.deltaX + e.deltaY
+  //   ref.current.scrollLeft += delta
+  // }
+  //
+  // function touchScroll(delta) {
+  //   // обработчик прокрутки пррикосновением
+  //   if (!ref.current) return
+  //   ref.current.scrollLeft += delta
+  // }
 
   function newWeeks(weeks, download = false, timeout) {
     const newWeeks = getWeeks(weeks)
@@ -627,7 +645,7 @@ function Calendar (props) {
     <div className={"calendar-block" + (state.loading ? " hidden" : "")}>
       <div className="calendar-left">
         <div style={{height: 40, display: "flex", flexDirection: 'column-reverse', alignItems: 'center', alignSelf: "flex-end", paddingRight: 2}}>
-          <ButtonScroll onClick={reset}/>
+          <ButtonScroll onClick={reset} loader={state.loader}/>
           {!!props.username && !!users.find(user => user.username === props.username) && <div className="calendar-button-scroll" style={{padding: 0}}>
             <ViewModule style={{height: 20, width: 20}} onClick={onMultiViewClick}/>
           </div>}

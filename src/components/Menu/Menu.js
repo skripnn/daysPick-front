@@ -57,7 +57,7 @@ function Menu(props) {
         className={'menu'}
         {...handlers}
       >
-        <MenuItem text={<UserFullName user={props.user} avatar={'right'}/>} link={`user/${props.user.username}`} set={props.setUser} noSelect className={'menu-item-top'}/>
+        <MenuItem text={<UserFullName user={props.user} avatar={'right'}/>} link={`@${props.user.username}`} set={props.setUser} noSelect className={'menu-item-top'}/>
         <Divider />
         <List>
           <MenuItem text={'Мои проекты'} icon={<ListIcon/>} link={`projects`} set={props.setProjects} />

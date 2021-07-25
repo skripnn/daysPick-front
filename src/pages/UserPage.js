@@ -10,6 +10,7 @@ import PopOverDay from "../components/PopOverDay/PopOverDay";
 import Fetch from "../js/Fetch";
 import Info from "../js/Info";
 import UserProfile from "../components/UserProfile/UserProfile";
+import SearchPage from "./SearchPage";
 
 function UserPage(props) {
   const [pick, setPick] = useState([])
@@ -54,6 +55,7 @@ function UserPage(props) {
     setTriggerGet(new Date().getTime())
   }
 
+  if (userPage.error) return <SearchPage/>
   if (userPage.loading) return <></>
 
   return (
@@ -64,7 +66,7 @@ function UserPage(props) {
         content={content}
         setContent={calendar.setContent}
         get={(start, end) => Fetch.getCalendar(start, end, user.username)}
-        offset={false}
+        noOffset={false}
         edit={userPage.edit}
         onChange={onChange}
         onDay={{

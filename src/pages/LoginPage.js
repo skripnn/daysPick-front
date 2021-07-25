@@ -20,7 +20,7 @@ function LoginPage() {
   })
   useEffect(() => setError(null), [data])
   useEffect(() => {
-    if (localStorage.Authorization && localStorage.User) Fetch.autoLink(`user/${localStorage.User}`)
+    if (localStorage.Authorization && localStorage.User) Fetch.autoLink(`@${localStorage.User}`)
   }, [])
 
   function set(value, key) {

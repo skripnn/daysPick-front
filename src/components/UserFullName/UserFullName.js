@@ -11,7 +11,7 @@ function UserFullName(props) {
   if (!props.user.full_name) return null
 
   function click() {
-    if (props.link) Fetch.link(`/user/${props.user.username}/`, props.setUser)
+    if (props.link) Fetch.link(`@${props.user.username}/`, props.setUser)
   }
 
   return (

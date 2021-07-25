@@ -40,7 +40,7 @@ export const defaultProps = {
   onDay: {},
   edit: false,
   noOffset: false,
-  content: {},
+  // content: {},
   maxPick: 366
 }
 

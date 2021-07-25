@@ -20,9 +20,10 @@ export function checkUser() {
 }
 
 export function parseUser(username) {
-  const user = window.location.pathname.match(/\/user\/([^/]*)(\/?)/)
-  if (user) return user[1]
-  else if (username) return username
+  const match = window.location.pathname.match(/\/(user\/(?<username>[0-9a-z]*))|(@(?<usernamePrefix>[0-9a-z]*))\/?/)
+  if (!!match.groups.username) return match.groups.username
+  if (!!match.groups.usernamePrefix) return match.groups.usernamePrefix
+  if (username) return username
   return null
 }
 

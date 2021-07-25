@@ -2,6 +2,7 @@ import Calendar, {UsersList} from "../components/test/components/Calendar";
 import Fetch from "../js/Fetch";
 import {useState} from "react";
 import UserField from "../components/Fields/UserField/UserField";
+import {CalendarBase} from "../components/test/Calendar";
 
 function TestPageCalendar() {
   // const [state, setState] = useState(null)
@@ -23,16 +24,17 @@ function TestPageCalendar() {
       usersContent={projects}
       onChange={onChange}
       username={localStorage.User}
-      multiView
-      multi={<UsersList project={project} projects={projects} setProject={setProject} onChange={setProjects}/>}
+      noOffset={true}
+      // multiView
+      // multi={<UsersList project={project} projects={projects} setProject={setProject} onChange={setProjects}/>}
     />
   </>)
 }
 
-export default function TestPage() {
+function TestPage() {
   const [user, setUser] = useState(null)
 
-  return (<>
-    <UserField value={user} set={setUser}/>
-  </>)
-}
+  return <Calendar/>
+    }
+
+export default TestPageCalendar

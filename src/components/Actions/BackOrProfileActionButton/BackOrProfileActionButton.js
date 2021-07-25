@@ -1,5 +1,5 @@
 import ActionButton from "../ActionButton/ActionButton";
-import {AccountCircle, ArrowBackIos} from "@material-ui/icons";
+import {ArrowBackIos, Home} from "@material-ui/icons";
 import React from "react";
 import {useLastLocation} from "react-router-last-location";
 import Fetch from "../../../js/Fetch";
@@ -18,10 +18,10 @@ export default function BackOrProfileActionButton(props) {
 
   const profile = localStorage.User ? (
     <ActionButton
-      key={"Профиль"}
-      label={"Профиль"}
-      icon={<AccountCircle />}
-      onClick={props.onClick || (() => Fetch.link(`/user/${localStorage.User}/`))}
+      key={"Домой"}
+      label={"Домой"}
+      icon={<Home />}
+      onClick={props.onClick || (() => Fetch.link(`/@${localStorage.User}/`))}
     />
   ) : null
 

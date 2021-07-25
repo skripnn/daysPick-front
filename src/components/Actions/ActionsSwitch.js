@@ -17,6 +17,7 @@ export default function ActionsSwitch(props) {
       <Route path='/projects/' render={() => <ProjectsPageActionPanel {...props}/>}/>
       <Route path='/user/:username' render={() => <UserPageActionPanel {...props}/>}/>
       <Route path='/project/' render={() => <ProjectPageActionPanel {...props}/>}/>
+      <Route path={'/:prefix([@]):username([0-9a-z]*)/'} render={() => <UserPageActionPanel {...props}/>}/>
     </Switch>
   )
 }

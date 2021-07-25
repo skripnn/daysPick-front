@@ -13,19 +13,16 @@ class UserStore {
   error
 
   constructor(username) {
-    if (username.match(/[0-9]{11}/)) {
-      this.user.setValue({phone_confirm: username})
-    }
-    else this.user.setValue({username: username})
-
+    this.user.setValue({username: username})
     if (username === localStorage.User) this.userPage.setValue({isSelf: true})
     else this.userPage.setValue({profile:  true})
     makeAutoObservable(this)
   }
 
   getUser = () => {
-    Fetch.get(['user', (this.user.username || this.user.phone_confirm)]).then(r => {
-      if (r.error && this.user.username === localStorage.User) {
+    Fetch.get(`@${this.user.username}`).then(r => {
+      if (r.error) {
+        this.userPage.setValue({error: r.error})
         // localStorage.clear()
         // mainStore.reset()
         // Fetch.link('login')

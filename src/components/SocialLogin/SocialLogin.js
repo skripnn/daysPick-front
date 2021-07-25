@@ -7,7 +7,7 @@ export default function SocialLogin() {
   function onComplete(r) {
     if (!r.token) return
     mainStore.UsersStore.setLocalUser(r)
-    Fetch.link(['user', localStorage.User])
+    Fetch.link(`@${localStorage.User}`)
   }
 
   function post(name, value) {

@@ -59,6 +59,7 @@ function App(props) {
             <Route history={history} path='/confirm/' component={ConfirmPage}/>
             <Route history={history} path='/user/:username/' component={UserPage}/>
             <Route history={history} path='/search/' component={SearchPage}/>
+            <Route history={history} path={'/:prefix([@]):username([0-9a-z]*)/'} component={UserPage}/>
             <Route history={history} path='/' component={MainPage}/>
           </Switch>
         </Container>
