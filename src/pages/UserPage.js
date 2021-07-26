@@ -10,7 +10,6 @@ import PopOverDay from "../components/PopOverDay/PopOverDay";
 import Fetch from "../js/Fetch";
 import Info from "../js/Info";
 import UserProfile from "../components/UserProfile/UserProfile";
-import SearchPage from "./SearchPage";
 
 function UserPage(props) {
   const [pick, setPick] = useState([])
@@ -53,9 +52,9 @@ function UserPage(props) {
   function onAction() {
     getUser()
     setTriggerGet(new Date().getTime())
+    calendar.setValue({daysPick: new Set([])})
   }
 
-  if (userPage.error) return <SearchPage/>
   if (userPage.loading) return <></>
 
   return (
@@ -66,7 +65,7 @@ function UserPage(props) {
         content={content}
         setContent={calendar.setContent}
         get={(start, end) => Fetch.getCalendar(start, end, user.username)}
-        noOffset={false}
+        noOffset={true}
         edit={userPage.edit}
         onChange={onChange}
         onDay={{
@@ -78,7 +77,7 @@ function UserPage(props) {
       {userPage.profile ? <UserProfile user={user} />
         :
         <List dense>
-          <ListSubheader disableSticky style={{
+          <ListSubheader disableSticky className={'no-select'} style={{
             textAlign: "center",
             color: "rgba(0, 0, 0, 0.7)"
           }}>{`Акутальные проекты${!projects.length ? ' отсутствуют' : ''}`}</ListSubheader>
@@ -91,6 +90,8 @@ function UserPage(props) {
               onDelete={onAction}
               onPaid={onAction}
               onConfirm={onAction}
+              paidButton={project.user === localStorage.User}
+              confirmButton={project.user === localStorage.User}
               childListFilter={l => l.slice(0).reverse()}
 
               onTouchHold={(p) => setPick(Object.keys(p.days))}

@@ -35,7 +35,7 @@ class TouchHold {
   }
 
   onTouchHold = (e) => {
-    this.touchFalse()
+    this.touchFalse(e)
     if (this.touchHold) this.touchHold(e)
   }
 }

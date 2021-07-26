@@ -160,7 +160,7 @@ class FetchClass {
     if (link === '/') link = localStorage.User? `@${localStorage.User}` : 'search'
     if (link instanceof Array) link = link.filter(v => !!v).join('/')
     if (link.search(/projects/) > -1) mainStore.ProjectsPageStore.clear()
-    else if (link.startsWith('@')) this.link(link, mainStore.UsersStore.setUser)
+    else if (link.match(/^\/?@/)) this.link(link, mainStore.UsersStore.setUser)
     else if (link.search(/user\//) > -1) this.link(link, mainStore.UsersStore.setUser)
     else this.link(link)
   }

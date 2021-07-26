@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useLayoutEffect, useRef, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {useWindowWidth} from "@react-hook/window-size";
 import DeltaTouchClass from "./extention/deltaTouch";
 
@@ -110,6 +110,7 @@ export function useShiftPressCallback(func) {
       window.removeEventListener('keydown', pressed)
       window.removeEventListener('keyup', unpressed)
     })
+  //eslint-disable-next-line
   }, [])
 }
 

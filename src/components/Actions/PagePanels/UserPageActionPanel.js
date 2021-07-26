@@ -8,11 +8,11 @@ import {parseUser} from "../../../js/functions/functions";
 import {Dialog, DialogContent} from "@material-ui/core";
 import Fetch from "../../../js/Fetch";
 import mainStore from "../../../stores/mainStore";
-import Info from "../../../js/Info";
 
 
 function UserPageActionPanel(props) {
   const {isSelf, edit, dayOffOver, profile, setValue} = props.userPage
+  const username = props.user.username
   const [image, setImage] = useState(null)
 
   const buttonsBlock = [
@@ -29,10 +29,14 @@ function UserPageActionPanel(props) {
       key={'Добавить'}
       label={isSelf ? 'Добавить' : 'Предложить'}
       icon={<PostAdd/>}
-      onClick={isSelf? () => {
-        mainStore.ProjectStore.default({user: parseUser()})
+      // onClick={isSelf? () => {
+      //   mainStore.ProjectStore.default({user: username})
+      //   Fetch.autoLink('/project/')
+      // } : () => Info.info('Функция пока недоступна')}
+      onClick={() => {
+        mainStore.ProjectStore.default({user: username})
         Fetch.autoLink('/project/')
-      } : () => Info.info('Функция пока недоступна')}
+      }}
     />,
     <ActionButton
       key={"Проекты"}

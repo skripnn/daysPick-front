@@ -4,6 +4,7 @@ import React from "react";
 export default function TextField(props) {
   return (
     <MuiTextField
+      InputLabelProps={{style: {whiteSpace: 'nowrap'}}}
       color={'secondary'}
       size="small"
       fullWidth

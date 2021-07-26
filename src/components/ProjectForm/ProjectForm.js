@@ -12,57 +12,68 @@ import FolderField from "../Fields/FolderField/FolderField";
 
 function ProjectForm(props) {
   const {title, is_paid, is_wait, client, setValue, user, creator, canceled, is_folder, parent, clientListStore} = props.ProjectStore
-  const selfProject = user === creator
 
-  const checkBoxes = (
+  const checkBoxes = (isPaid, isWait) => (
     <Grid container wrap={'nowrap'}>
-      <Grid item xs>
+      {isPaid && <Grid item xs>
         <CheckBoxField name={'is_paid'} label={'Оплачено'} checked={is_paid}
                        onChange={v => setValue({is_paid: v})}/>
-      </Grid>
-      {!is_paid && <Grid item xs style={{whiteSpace: 'nowrap'}}>
+      </Grid>}
+      {!is_paid && isWait && <Grid item xs style={{whiteSpace: 'nowrap'}}>
         <CheckBoxField name={'is_wait'} label={canceled ? 'Отменён' : 'Не подтверждён'} checked={is_wait}
                        onChange={v => setValue({is_wait: v})}/>
       </Grid>}
     </Grid>
   )
 
-  const left = is_folder ? [
-    <TextField label="Название" value={title} onChange={e => setValue({title: e.target.value})} required/>,
-    <InfoField/>
-  ] :
-  [
-    // <UserField value={user} set={v => setValue({user: v ? v.username : localStorage.User})} required
-    //            disabled={creator !== localStorage.User}/>,
-    <TextField label="Название" value={title} onChange={e => setValue({title: e.target.value})}/>,
-    <MoneyField />,
-    selfProject ?
-        <ClientField client={client} set={(client) => setValue({client: client})}/> :
-        <UserField value={creator} label={'Клиент'} disabled/>,
-    <FolderField value={parent} set={(parent) => setValue({parent: parent})} f={clientListStore}/>,
-    checkBoxes
-  ]
-  const right = is_folder ? [
-    <div style={{textAlign: 'center', width: '100%'}}>
-      <Typography color={'secondary'} variant={'overline'}>Значения по умолчанию</Typography>
-    </div>,
-    <MoneyField />,
-    <ClientField client={client} set={(client) => setValue({client: client})}/>
-  ] : [
-    <InfoField/>
-  ]
+  const fields = {
+    'title': <TextField label="Название" value={title} onChange={e => setValue({title: e.target.value})} required/>,
+    'money': <MoneyField />,
+    'client': <ClientField client={client} set={(client) => setValue({client: client})}/>,
+    'creator': <UserField value={creator} label={'Заказчик'} disabled required/>,
+    'folder': <FolderField value={parent} set={(parent) => setValue({parent: parent})} f={clientListStore}/>,
+    // 'user': <UserField value={user} set={v => setValue({user: v ? v.username : localStorage.User})} required disabled={creator !== localStorage.User} label={'Подрядчик'}/>,
+    'user': <UserField value={user} disabled label={'Подрядчик'} required/>,
+  }
 
+  const getField = (fieldName) => fields[fieldName] || fieldName
+
+  let left = []
+  let right = []
+
+  if (is_folder) {
+    left = ['title', (<InfoField height={158}/>)]
+    right = [
+      <div style={{textAlign: 'center', width: '100%'}}>
+        <Typography color={'secondary'} variant={'overline'}>Значения по умолчанию</Typography>
+      </div>, 'money', 'client'
+    ]
+  }
+  else if (user === creator) {
+    left = ['title', 'money', 'client', 'folder', checkBoxes(true, true)]
+    right = [<InfoField height={286}/>]
+  }
+  else if (user !== creator) {
+    if (user === localStorage.User) {
+      left = ['title', 'money', 'creator', checkBoxes(true, false)]
+      right = [<InfoField height={278}/>]
+    }
+    else if (creator === localStorage.User) {
+      left = ['title', 'money', 'user', 'creator']
+      right = [<InfoField height={286}/>]
+    }
+  }
 
   return (
     <Grid container justify="space-between" alignItems="flex-start" spacing={3} style={{marginTop: 12}}>
       <Grid item xs={12} sm md={6}>
         <Grid container direction="row" spacing={3}>
-          {left.map((item, id) => <Grid item xs={12} key={id}>{item}</Grid>)}
+          {left.map((item, id) => <Grid item xs={12} key={id}>{getField(item)}</Grid>)}
         </Grid>
       </Grid>
       <Grid item xs={12} sm md={6}>
         <Grid container direction="row" spacing={3}>
-          {right.map((item, id) => <Grid item xs={12} key={id}>{item}</Grid>)}
+          {right.map((item, id) => <Grid item xs={12} key={id}>{getField(item)}</Grid>)}
         </Grid>
       </Grid>
     </Grid>

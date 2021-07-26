@@ -1,4 +1,4 @@
-import {Cancel, Delete, PostAdd, Save, Send} from "@material-ui/icons";
+import {AssignmentTurnedIn, Cancel, Delete, PostAdd, Save, Send} from "@material-ui/icons";
 import React, {useState} from "react";
 import ActionButton from "../ActionButton/ActionButton";
 import ActionsPanel from "../ActionsPanel/ActionsPanel";
@@ -23,10 +23,10 @@ function ProjectPageActionPanel(props) {
     client,
     money,
     money_calculating,
-    money_per_day
+    money_per_day,
+    confirmed
   } = props.ProjectStore
   const [loading, setLoading] = useState(null)
-
 
   function back() {
     setLoading(null)
@@ -35,8 +35,9 @@ function ProjectPageActionPanel(props) {
   }
 
   function del() {
+    const text = user === creator ? "Удалить проект?" : (user === localStorage.User ? "Отказаться от проекта?" : "Отменить проект?")
     // eslint-disable-next-line no-restricted-globals
-    if (!confirm('Удалить проект?')) return
+    if (!confirm(text)) return
     setLoading('del')
     Fetch.delete(['project', id]).then(back)
   }
@@ -63,6 +64,48 @@ function ProjectPageActionPanel(props) {
     }
   }
 
+  const confirmButton = (
+    <ActionButton
+      key={"Принять"}
+      label={'Принять'}
+      icon={<AssignmentTurnedIn/>}
+      onClick={save}
+      disabled={!!loading || confirmed}
+      loading={loading === 'save'}
+    />
+  )
+
+  const suggestButton = (
+    <ActionButton
+      key={"Сохранить"}
+      label={id ? "Изменить" : "Предложить"}
+      icon={!!id ? <Save/> : <Send/>}
+      onClick={save}
+      disabled={!!loading}
+      loading={loading === 'save'}
+    />
+  )
+
+  const saveButton = (
+    <ActionButton
+      key={"Сохранить"}
+      label={"Сохранить"}
+      icon={<Save/>}
+      onClick={save}
+      disabled={!!loading}
+      loading={loading === 'save'}
+    />
+  )
+
+  const saveButtonChoice = () => {
+    if (user === creator) return saveButton
+    if (user === localStorage.User) {
+      if (!confirmed) return confirmButton
+      return saveButton
+    }
+    return suggestButton
+  }
+
   const left = <BackOrProfileActionButton {...props}/>
   const right = canceled ? [
     <ActionButton
@@ -82,14 +125,7 @@ function ProjectPageActionPanel(props) {
       disabled={!id || !!loading}
       loading={loading === 'del'}
     />,
-    <ActionButton
-      key={"Сохранить"}
-      label={user === creator ? "Сохранить" : (id ? "Изменить" : "Предложить")}
-      icon={(user === creator || !!id) ? <Save/> : <Send/>}
-      onClick={save}
-      disabled={!!loading}
-      loading={loading === 'save'}
-    />
+    saveButtonChoice()
   ]
   if (is_folder) right.unshift(<ActionButton
     key={'Добавить'}

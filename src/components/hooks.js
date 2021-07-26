@@ -1,5 +1,6 @@
 import {useEffect, useState} from "react";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import TouchHold from "../js/TouchHold";
 
 export function useOnFocusHook(func) {
   useEffect(() => {
@@ -49,4 +50,10 @@ export function useControlledState(state, setState) {
     setStore(state)
   }, [state])
   return [store, setState? setState : setStore]
+}
+
+
+export function useTouchHold(onTouchHold, onTouchEnd) {
+  const [touchHold] = useState(new TouchHold(onTouchHold, onTouchEnd))
+  return touchHold.actions
 }

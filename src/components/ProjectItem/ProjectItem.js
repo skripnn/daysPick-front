@@ -1,4 +1,3 @@
-import TouchHold from "../../js/TouchHold";
 import {newDate} from "../../js/functions/date";
 import {
   ListItem,
@@ -11,16 +10,16 @@ import React, {useState} from "react";
 import {
   ArrowDropDown,
   ArrowDropUp,
-  AssignmentTurnedIn,
+  AssignmentTurnedIn, Cancel,
   CheckBox,
   CheckBoxOutlineBlank,
-  FolderOpen,
+  FolderOpen, Help, MoreHoriz,
 } from "@material-ui/icons";
 import "./ProjectItem.css"
 import Fetch from "../../js/Fetch";
 import {formatDate} from "../../js/functions/functions";
 import PopoverButtonsBlock from "../PopoverButtonsBlock/PopoverButtonsBlock";
-import {useControlledState, useMobile} from "../hooks";
+import {useControlledState, useMobile, useTouchHold} from "../hooks";
 
 export function ProjectItemAutoFolder({project, onTouchHold, onTouchEnd, onMouseOver, onMouseLeave, onClick, showOneChildFolder,
                                  open, childListFilter, childProps,
@@ -143,8 +142,11 @@ export function ProjectItem({project, child, onTouchHold, onTouchEnd, onMouseOve
 
   const PaidButton = (
     <IconButton edge="end" disabled={transparent} onClick={() => {
-      setTransparent(true)
-      setTimeout(onHandlePaid, 1000)
+      if (project.date_end < newDate().format()) {
+        setTransparent(true)
+        setTimeout(onHandlePaid, 1000)
+      }
+      else onHandlePaid()
     }}>
       {transparent ? <CheckBox/> : <CheckBoxOutlineBlank/>}
     </IconButton>
@@ -152,17 +154,18 @@ export function ProjectItem({project, child, onTouchHold, onTouchEnd, onMouseOve
 
   const DeleteButton = (
     <IconButton edge="end" disabled={transparent} onClick={() => {
+      const text = project.user === project.creator || project.canceled? "Удалить проект?" : (project.user === localStorage.User ? "Отказаться от проекта?" : "Отменить проект?")
       // eslint-disable-next-line no-restricted-globals
-      if (!confirm('Удалить проект?')) return
+      if (!confirm(text)) return
       setTransparent(true)
       setTimeout(onHandleDelete, 1000)
     }}>
-      <DeleteIcon/>
+      {project.user === project.creator || project.canceled ? <DeleteIcon/> : <Cancel/>}
     </IconButton>
   )
 
   const ConfirmMenu = (
-    <PopoverButtonsBlock>
+    <PopoverButtonsBlock icon={project.user === project.creator ? <MoreHoriz/> : <Help color={'secondary'}/>}>
       {DeleteButton}
       <IconButton onClick={onHandleConfirm} disabled={transparent}>
         <AssignmentTurnedIn/>
@@ -171,8 +174,8 @@ export function ProjectItem({project, child, onTouchHold, onTouchEnd, onMouseOve
   )
 
   let action = null
-  if (confirmButton && project.is_wait) action = ConfirmMenu
-  else if (paidButton && !project.is_paid) action = PaidButton
+  if (confirmButton && project.is_wait && !project.canceled) action = ConfirmMenu
+  else if (paidButton && !project.is_paid && !project.canceled) action = PaidButton
   else if (deleteButton) action = DeleteButton
 
   const projectTitle = project.title || (formatDate(project.date_start) + (project.date_end === project.date_start ? '' : ` - ${formatDate(project.date_end)}`))
@@ -200,19 +203,24 @@ ProjectItem.defaultProps = {
   onConfirm: () => {},
   confirmButton: true,
   paidButton: true,
-  deleteButton: true
+  deleteButton: true,
 }
 
 export function ProjectItemBase({project, deleting, child, onTouchHold, onTouchEnd, onMouseOver, onMouseLeave, onClick, primary, secondary, action}) {
   const mobile = useMobile()
 
-  const past = project.date_end < newDate().format()
+  const past = project.date_end < newDate().format() || project.canceled
   const className = 'project-item' + (past ? ' past' : '') + (child ? ' child' : '') + (deleting ? ' deleting' : '')
-  const TouchHoldActions = new TouchHold(() => onTouchHold(project), () => onTouchEnd(project))
+  const touchActions = useTouchHold(() => onTouchHold(project), () => onTouchEnd(project))
 
   let clientName = null
   if (project.user !== project.creator) clientName = project.creator_info.full_name
   else if (project.client) clientName = mobile ? project.client.name : project.client.fullname
+
+  let primaryText = primary || project.title
+  if (!project.confirmed && project.creator === localStorage.User) primaryText += ' (Ожидание ответа)'
+  else if (project.canceled === project.creator) primaryText += ' (Отменен)'
+  else if (project.canceled === project.user) primaryText += ' (Отказ)'
 
   return (
     <ListItem
@@ -221,9 +229,9 @@ export function ProjectItemBase({project, deleting, child, onTouchHold, onTouchE
       onMouseLeave={() => onMouseLeave(project)}
       button
       onClick={deleting ? undefined : () => onClick(project)}
-      {...TouchHoldActions.actions}
+      {...touchActions}
     >
-      <ListItemText primary={primary || project.title}
+      <ListItemText primary={primaryText}
                     secondary={secondary || clientName}/>
       {(project.money === 0 || !!project.money) &&
       <ListItemText

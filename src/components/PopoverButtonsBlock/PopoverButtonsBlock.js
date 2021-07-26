@@ -3,13 +3,13 @@ import IconButton from "@material-ui/core/IconButton";
 import {MoreHoriz} from "@material-ui/icons";
 import {Popover} from "@material-ui/core";
 
-function PopoverButtonsBlock(props) {
+function PopoverButtonsBlock({children, icon}) {
   const [anchorEl, setAnchorEl] = useState(null)
   const ref = useRef()
   return (
     <>
       <IconButton ref={ref} edge="end" onClick={() => setAnchorEl(ref.current)}>
-        <MoreHoriz/>
+        {icon}
       </IconButton>
       <Popover
         anchorEl={anchorEl}
@@ -24,10 +24,14 @@ function PopoverButtonsBlock(props) {
           horizontal: 'right',
         }}
       >
-        {props.children}
+        {children}
       </Popover>
     </>
   )
+}
+
+PopoverButtonsBlock.defaulProps = {
+  icon: <MoreHoriz/>
 }
 
 export default PopoverButtonsBlock

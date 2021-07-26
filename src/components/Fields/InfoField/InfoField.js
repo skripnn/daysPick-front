@@ -9,20 +9,25 @@ import {inject, observer} from "mobx-react";
 
 
 function TabPanel(props) {
+  const style = props.height ? {
+    height: props.plusSize ? props.height - 55 : props.height - 24 - 55
+  } : undefined
+
   return (
     <TextField onChange={props.onChange}
                multiline
-               rows={props.rows || (props.plusSize ? 15 : 14)}
                name={props.index}
                label={props.label}
-               value={props.value || ''}/>
+               value={props.value || ''}
+               inputProps={{style: style}}
+    />
   )
 }
 
 function InfoField(props) {
   const [state, setState] = React.useState('info');
   const {info, days, dates, setInfo, is_folder} = props.ProjectStore
-
+  const {height} = props
 
   if (state !== 'info' && !dates.includes(state)) setState('info')
 
@@ -48,7 +53,7 @@ function InfoField(props) {
         label={'Информация о проекте'}
         onChange={e => setInfo(e.target.value)}
         plusSize={!dates.length}
-        rows={is_folder? 9 : undefined}
+        height={height}
       />
     )
 
@@ -61,6 +66,7 @@ function InfoField(props) {
         key={date}
         label={fdate}
         onChange={(e) => setInfo(e.target.value, date)}
+        height={height}
       />
     )
   }

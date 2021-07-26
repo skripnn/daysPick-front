@@ -20,6 +20,8 @@ class ProjectStore {
   info = ''
   is_folder = false
   parent = null
+  confirmed
+  canceled
 
   constructor() {
     makeAutoObservable(this)
@@ -44,6 +46,8 @@ class ProjectStore {
     this.info = ''
     this.is_folder = false
     this.parent = null
+    this.confirmed = undefined
+    this.canceled = undefined
     this.setValue(obj, false)
   })
 
@@ -84,7 +88,7 @@ class ProjectStore {
         return
       }
       if (errors && this.creator !== this.user) {
-        if (['is_paid'].includes(key)) localStorage.User === this.user ? this[key] = value : Info.info('Изменение недоступно')
+        if (['is_paid', 'confirmed'].includes(key)) localStorage.User === this.user ? this[key] = value : Info.info('Изменение недоступно')
         else localStorage.User === this.user ? Info.info('Изменение недоступно') : this[key] = value
       }
       else this[key] = value
