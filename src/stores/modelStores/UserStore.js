@@ -19,9 +19,8 @@ class UserStore {
     makeAutoObservable(this)
   }
 
-  getUser = (calendar=false) => {
-    const params = calendar ? {calendar: 1} : {}
-    Fetch.get(`@${this.user.username}`, params).then(r => {
+  getUser = () => {
+    Fetch.get(`@${this.user.username}`).then(r => {
       if (r.error) {
         this.userPage.setValue({error: r.error})
         // localStorage.clear()
@@ -33,6 +32,12 @@ class UserStore {
     return this
   }
 
+  getActualProjects = () => {
+    Fetch.get(`@${this.user.username}`, {projects: 1}).then(r => {
+      if (!r.error) this.setProjects(r)
+    })
+  }
+
   getProject = (id) => {
     return this.projects.find(project => project.id === id)
   }
@@ -40,7 +45,8 @@ class UserStore {
   load = (obj) => {
     if (obj.user.username === localStorage.User) this.userPage.setValue({isSelf: true})
     else this.userPage.setValue({isSelf: false, profile: (!obj.projects || !obj.projects.length)})
-    this.setValue(obj)
+    if (this.userPage.loading) this.setValue(obj)
+    else this.setValue({...obj, calendar: undefined})
     this.userPage.setValue({loading: false})
   }
 

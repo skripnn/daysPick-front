@@ -156,11 +156,11 @@ class FetchClass {
     else this.get(l).then(set).then(toHistory)
   }
 
-  autoLink = (link, params={}) => {
+  autoLink = (link) => {
     if (link === '/') link = localStorage.User? `@${localStorage.User}` : 'search'
     if (link instanceof Array) link = link.filter(v => !!v).join('/')
     if (link.search(/projects/) > -1) mainStore.ProjectsPageStore.clear()
-    else if (link.match(/^\/?@/)) this.link(link + '?calendar=1', mainStore.UsersStore.setUser)
+    else if (link.match(/^\/?@/)) this.link(link, mainStore.UsersStore.setUser)
     else this.link(link)
   }
 

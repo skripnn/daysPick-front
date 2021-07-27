@@ -14,7 +14,7 @@ import UserProfile from "../components/UserProfile/UserProfile";
 function UserPage(props) {
   const [pick, setPick] = useState([])
   const [triggerGet, setTriggerGet] = useState(new Date().getTime())
-  const {userPage, user, projects, calendar, getUser, getProject} = props.UserStore
+  const {userPage, user, projects, calendar, getProject, getActualProjects} = props.UserStore
   const [DayInfo, setDayInfo] = useState(null);
 
   const content = {
@@ -50,7 +50,7 @@ function UserPage(props) {
   }
 
   function onAction() {
-    getUser()
+    getActualProjects()
     setTriggerGet(new Date().getTime())
     calendar.setValue({daysPick: new Set([])})
   }
