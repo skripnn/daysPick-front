@@ -18,6 +18,7 @@ class ProfileStore {
   photo = null
   facebook_account = null
   vk_account = null
+  badge = false
 
   constructor(username) {
     this.username = username

@@ -6,6 +6,7 @@ import {Publish} from "@material-ui/icons";
 import {IconButton, Tooltip} from "@material-ui/core";
 import Fetch from "../../js/Fetch";
 import {inject, observer} from "mobx-react";
+import IconBadge from "../IconBadge/IconBadge";
 
 function UserFullName(props) {
   if (!props.user.full_name) return null
@@ -14,11 +15,19 @@ function UserFullName(props) {
     if (props.link) Fetch.link(`@${props.user.username}/`, props.setUser)
   }
 
+  const avatar = (
+    <Box>
+      <IconBadge dot content={props.badge}>
+        <UserAvatar {...props.user} onClick={props.avatarClick}/>
+      </IconBadge>
+    </Box>
+  )
+
   return (
     <div className={'user-full-name'} onClick={click}>
-      {props.avatar === 'left' && <Box><UserAvatar {...props.user} onClick={props.avatarClick}/></Box>}
+      {props.avatar === 'left' && avatar}
       <Box>{props.user.full_name}</Box>
-      {props.avatar === 'right' && <Box><UserAvatar {...props.user} onClick={props.avatarClick}/></Box>}
+      {props.avatar === 'right' && avatar}
       {props.raise && props.user.can_be_raised &&
       <Tooltip title={'Поднять в поиске'}>
         <IconButton size={"small"}
@@ -29,6 +38,10 @@ function UserFullName(props) {
       }
     </div>
   )
+}
+
+UserFullName.defaultProps = {
+  badge: false
 }
 
 export default inject(stores => ({

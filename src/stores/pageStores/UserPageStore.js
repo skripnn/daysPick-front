@@ -10,6 +10,7 @@ class UserPageStore {
   daysPick = new Set()
   isSelf = false
   error = false
+  unconfirmedProjects = 0
 
   constructor() {
     makeAutoObservable(this)

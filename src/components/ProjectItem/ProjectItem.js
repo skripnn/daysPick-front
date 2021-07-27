@@ -20,6 +20,7 @@ import Fetch from "../../js/Fetch";
 import {formatDate} from "../../js/functions/functions";
 import PopoverButtonsBlock from "../PopoverButtonsBlock/PopoverButtonsBlock";
 import {useControlledState, useMobile, useTouchHold} from "../hooks";
+import IconBadge from "../IconBadge/IconBadge";
 
 export function ProjectItemAutoFolder({project, onTouchHold, onTouchEnd, onMouseOver, onMouseLeave, onClick, showOneChildFolder,
                                  open, childListFilter, childProps,
@@ -154,7 +155,7 @@ export function ProjectItem({project, child, onTouchHold, onTouchEnd, onMouseOve
 
   const DeleteButton = (
     <IconButton edge="end" disabled={transparent} onClick={() => {
-      const text = project.user === project.creator || project.canceled? "Удалить проект?" : (project.user === localStorage.User ? "Отказаться от проекта?" : "Отменить проект?")
+      const text = project.user === project.creator || project.canceled ? "Удалить проект?" : (project.user === localStorage.User ? "Отказаться от проекта?" : "Отменить проект?")
       // eslint-disable-next-line no-restricted-globals
       if (!confirm(text)) return
       setTransparent(true)
@@ -165,7 +166,12 @@ export function ProjectItem({project, child, onTouchHold, onTouchEnd, onMouseOve
   )
 
   const ConfirmMenu = (
-    <PopoverButtonsBlock icon={project.user === project.creator ? <MoreHoriz/> : <Help color={'secondary'}/>}>
+    <PopoverButtonsBlock
+      icon={project.user === project.creator
+        ? <MoreHoriz/>
+        : <IconBadge dot content><Help color={'secondary'}/></IconBadge>
+      }
+    >
       {DeleteButton}
       <IconButton onClick={onHandleConfirm} disabled={transparent}>
         <AssignmentTurnedIn/>

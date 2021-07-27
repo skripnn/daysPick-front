@@ -146,7 +146,7 @@ class FetchClass {
       if (l.startsWith('/')) l = l.slice(1)
       if (l.endsWith('/')) l = l.slice(0, l.length - 1)
     }
-    const pushLink = l === '/'? l : `/${l}/`
+    const pushLink = l === '/'? l : `/${l}`
     const toHistory = () => {
       this.history ? this.history.push(pushLink) : window.history.push(pushLink)
       Info.loading(false)
@@ -156,12 +156,11 @@ class FetchClass {
     else this.get(l).then(set).then(toHistory)
   }
 
-  autoLink = (link) => {
+  autoLink = (link, params={}) => {
     if (link === '/') link = localStorage.User? `@${localStorage.User}` : 'search'
     if (link instanceof Array) link = link.filter(v => !!v).join('/')
     if (link.search(/projects/) > -1) mainStore.ProjectsPageStore.clear()
-    else if (link.match(/^\/?@/)) this.link(link, mainStore.UsersStore.setUser)
-    else if (link.search(/user\//) > -1) this.link(link, mainStore.UsersStore.setUser)
+    else if (link.match(/^\/?@/)) this.link(link + '?calendar=1', mainStore.UsersStore.setUser)
     else this.link(link)
   }
 

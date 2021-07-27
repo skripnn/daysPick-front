@@ -11,7 +11,7 @@ import mainStore from "../../../stores/mainStore";
 
 
 function UserPageActionPanel(props) {
-  const {isSelf, edit, dayOffOver, profile, setValue} = props.userPage
+  const {isSelf, edit, dayOffOver, profile, unconfirmedProjects, setValue} = props.userPage
   const username = props.user.username
   const [image, setImage] = useState(null)
 
@@ -39,6 +39,7 @@ function UserPageActionPanel(props) {
       }}
     />,
     <ActionButton
+      badge={unconfirmedProjects}
       key={"Проекты"}
       label={"Проекты"}
       icon={<List/>}

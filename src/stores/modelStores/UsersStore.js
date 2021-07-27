@@ -14,7 +14,7 @@ class UsersStore {
     if (!user) user = parseUser()
     if (!user) document.location.href = '/'
     if (!this.users[user]) {
-      this.users[user] = new UserStore(user).getUser()
+      this.users[user] = new UserStore(user).getUser(true)
     }
     if (!!this.users[user].error) {
       delete this.users[user]

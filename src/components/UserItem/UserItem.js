@@ -4,7 +4,6 @@ import UserAvatar from "../UserAvatar/UserAvatar";
 import React from "react";
 import TextLoop from "react-text-loop";
 import './UserItem.css'
-import {inject, observer} from "mobx-react";
 import Fetch from "../../js/Fetch";
 import {useMobile} from "../hooks";
 
@@ -26,7 +25,7 @@ function UserItem(props) {
   return (
     // <Link to={`/user/${user.username}/`}>
     <ListItem button className={className}
-              onClick={props.onClick ? props.onClick : () => Fetch.link(`@${user.username}`, props.setUser)}>
+              onClick={props.onClick ? props.onClick : () => Fetch.autoLink(`@${user.username}`)}>
       <ListItemIcon style={{minWidth: "unset", paddingRight: 8}}>
         <UserAvatar {...user}/>
       </ListItemIcon>
@@ -38,6 +37,4 @@ function UserItem(props) {
   )
 }
 
-export default inject(stores => ({
-  setUser: stores.UsersStore.setUser
-}))(observer(UserItem))
+export default UserItem

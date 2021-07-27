@@ -19,8 +19,9 @@ class UserStore {
     makeAutoObservable(this)
   }
 
-  getUser = () => {
-    Fetch.get(`@${this.user.username}`).then(r => {
+  getUser = (calendar=false) => {
+    const params = calendar ? {calendar: 1} : {}
+    Fetch.get(`@${this.user.username}`, params).then(r => {
       if (r.error) {
         this.userPage.setValue({error: r.error})
         // localStorage.clear()
@@ -37,9 +38,9 @@ class UserStore {
   }
 
   load = (obj) => {
-    this.setValue(obj)
-    if (this.user.username === localStorage.User) this.userPage.setValue({isSelf: true})
+    if (obj.user.username === localStorage.User) this.userPage.setValue({isSelf: true})
     else this.userPage.setValue({isSelf: false, profile: (!obj.projects || !obj.projects.length)})
+    this.setValue(obj)
     this.userPage.setValue({loading: false})
   }
 
@@ -61,15 +62,19 @@ class UserStore {
       }
       return project
     })
-    const compare = (a, b) => {
+    const compareDates = (a, b) => {
       if (a.date_start < b.date_start) return -1
       if (a.date_start > b.date_start) return 1
       if (a.date_end < b.date_end) return -1
       if (a.date_end > b.date_end) return 1
       return 0
     }
-    projectsNew.sort(compare)
-    this.projects = projectsNew
+    projectsNew.sort(compareDates)
+    if (this.userPage.isSelf) {
+      this.projects = [...projectsNew.filter(p => !p.confirmed), ...projectsNew.filter(p => p.confirmed)]
+      this.userPage.setValue({unconfirmedProjects: this.projects.filter(i => !i.confirmed).length})
+    }
+    else this.projects = projectsNew
   }
 
   setValue = (obj={}) => {

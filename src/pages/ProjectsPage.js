@@ -43,7 +43,7 @@ function ProjectsPage(props) {
             key={project.id}
             onClick={link}
             onDelete={onAction}
-            confirmButton={false}
+            // confirmButton={false}
             paidButton={false}
           />
         )}

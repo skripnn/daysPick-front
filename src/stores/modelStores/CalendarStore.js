@@ -10,7 +10,8 @@ class CalendarStore {
   }
 
   setValue = (obj={}) => {
-    for (const [key, value] of Object.entries(obj)) {
+    for (let [key, value] of Object.entries(obj)) {
+      if (Array.isArray(value)) value = new Set(value)
       this[key] = value
     }
   }

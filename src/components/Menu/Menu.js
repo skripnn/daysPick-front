@@ -16,6 +16,7 @@ import {Group, List as ListIcon, PermIdentity, Search, SettingsOutlined} from "@
 import LogoutIcon from "../Icons/LogoutIcon";
 import Fetch from "../../js/Fetch";
 import {useSwipeable} from "react-swipeable";
+import IconBadge from "../IconBadge/IconBadge";
 
 
 function Menu(props) {
@@ -47,9 +48,11 @@ function Menu(props) {
 
   return (
     <div>
-      <IconButton onClick={() => setOpen(prevState => !prevState)} style={{marginRight: -12}}>
-        <UserAvatar {...props.user} />
-      </IconButton>
+        <IconButton onClick={() => setOpen(prevState => !prevState)} style={{marginRight: -12}}>
+          <IconBadge dot content={props.unconfirmedProjects}>
+            <UserAvatar {...props.user} />
+          </IconBadge>
+        </IconButton>
       <Drawer
         open={open}
         onClose={() => close()}
@@ -57,10 +60,10 @@ function Menu(props) {
         className={'menu'}
         {...handlers}
       >
-        <MenuItem text={<UserFullName user={props.user} avatar={'right'}/>} link={`@${props.user.username}`} set={props.setUser} noSelect className={'menu-item-top'}/>
+        <MenuItem text={<UserFullName user={props.user} avatar={'right'} badge={props.unconfirmedProjects}/>} link={`@${props.user.username}`} set={props.setUser} noSelect className={'menu-item-top'}/>
         <Divider />
         <List>
-          <MenuItem text={'Мои проекты'} icon={<ListIcon/>} link={`projects`} set={props.setProjects} />
+          <MenuItem text={'Мои проекты'} icon={<IconBadge content={props.unconfirmedProjects} circle><ListIcon/></IconBadge>} link={`projects`} set={props.setProjects} />
           <MenuItem text={'Мои клиенты'} icon={<Group />} link={`clients`} set={props.setClients} />
         </List>
         <Divider />
@@ -81,6 +84,7 @@ function Menu(props) {
 export default inject(stores => {
   return {
     user: stores.UsersStore.getLocalUser().user,
+    unconfirmedProjects: stores.UsersStore.getLocalUser().userPage.unconfirmedProjects,
     getUser: stores.UsersStore.getLocalUser().getUser,
     setUser: stores.UsersStore.setUser,
     setClients: stores.ClientsPageStore.c.set,
