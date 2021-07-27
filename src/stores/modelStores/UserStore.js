@@ -46,7 +46,10 @@ class UserStore {
     if (obj.user.username === localStorage.User) this.userPage.setValue({isSelf: true})
     else this.userPage.setValue({isSelf: false, profile: (!obj.projects || !obj.projects.length)})
     if (this.userPage.loading) this.setValue(obj)
-    else this.setValue({...obj, calendar: undefined})
+    else {
+      this.setValue({...obj, calendar: undefined})
+      this.userPage.updateCalendar()
+    }
     this.userPage.setValue({loading: false})
   }
 

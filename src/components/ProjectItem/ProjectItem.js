@@ -145,7 +145,7 @@ export function ProjectItem({project, child, onTouchHold, onTouchEnd, onMouseOve
     <IconButton edge="end" disabled={transparent} onClick={() => {
       if (project.date_end < newDate().format()) {
         setTransparent(true)
-        setTimeout(onHandlePaid, 1000)
+        onHandlePaid()
       }
       else onHandlePaid()
     }}>
@@ -159,7 +159,7 @@ export function ProjectItem({project, child, onTouchHold, onTouchEnd, onMouseOve
       // eslint-disable-next-line no-restricted-globals
       if (!confirm(text)) return
       setTransparent(true)
-      setTimeout(onHandleDelete, 1000)
+      onHandleDelete()
     }}>
       {project.user === project.creator || project.canceled ? <DeleteIcon/> : <Cancel/>}
     </IconButton>

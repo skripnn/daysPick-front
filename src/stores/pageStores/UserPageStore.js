@@ -11,6 +11,7 @@ class UserPageStore {
   isSelf = false
   error = false
   unconfirmedProjects = 0
+  lastCalendarUpdate = new Date().getTime()
 
   constructor() {
     makeAutoObservable(this)
@@ -21,6 +22,8 @@ class UserPageStore {
       this[key] = value
     }
   }
+
+  updateCalendar = () => this.lastCalendarUpdate = new Date().getTime()
 
 }
 
