@@ -12,9 +12,9 @@ export default function TgAuthPage() {
             const to = r.to
             delete r.to
             mainStore.UsersStore.setLocalUser(r)
-            Fetch.link(to)
+            Fetch.autoLink(to, true)
           }
-          else Fetch.autoLink(r.to || `/`)
+          else Fetch.autoLink(r.to || `/`, true)
         }
       )
   }, [])

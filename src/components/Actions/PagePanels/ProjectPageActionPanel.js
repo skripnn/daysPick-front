@@ -35,7 +35,7 @@ function ProjectPageActionPanel(props) {
   }
 
   function del() {
-    const text = user === creator ? "Удалить проект?" : (user === localStorage.User ? "Отказаться от проекта?" : "Отменить проект?")
+    const text = user === creator || canceled ? "Удалить проект?" : (user === localStorage.User ? "Отказаться от проекта?" : "Отменить проект?")
     // eslint-disable-next-line no-restricted-globals
     if (!confirm(text)) return
     setLoading('del')

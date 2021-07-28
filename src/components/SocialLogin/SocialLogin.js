@@ -1,6 +1,7 @@
 import mainStore from "../../stores/mainStore";
 import Fetch from "../../js/Fetch";
 import FacebookLogin from "./FacebookLogin/FacebookLogin";
+import TelegramLogin from "./TelegramLogin/TelegramLogin";
 import React from "react";
 
 export default function SocialLogin() {
@@ -14,7 +15,8 @@ export default function SocialLogin() {
     Fetch.post(['login', name], value).then(onComplete)
   }
 
-  return (
-    <FacebookLogin onClick={(v) => post('facebook', v)}/>
-  )
+  return (<div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', width: '100%'}}>
+    <FacebookLogin onClick={v => post('facebook', v)}/>
+    <TelegramLogin onClick={v => post('telegram', v)}/>
+  </div>)
 }

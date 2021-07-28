@@ -5,7 +5,8 @@ import {useLastLocation} from "react-router-last-location";
 import Fetch from "../../../js/Fetch";
 
 export default function BackOrProfileActionButton(props) {
-  const lastLocation = useLastLocation()
+  let lastLocation = useLastLocation()
+  if (lastLocation && lastLocation.pathname === "/tgauth") lastLocation = null
 
   const back = (
     <ActionButton

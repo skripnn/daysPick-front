@@ -12,8 +12,8 @@ import {
   ArrowDropUp,
   AssignmentTurnedIn, Cancel,
   CheckBox,
-  CheckBoxOutlineBlank,
-  FolderOpen, Help, MoreHoriz,
+  CheckBoxOutlineBlank, DoubleArrow,
+  FolderOpen, Help, MoreHoriz, Person,
 } from "@material-ui/icons";
 import "./ProjectItem.css"
 import Fetch from "../../js/Fetch";
@@ -220,7 +220,16 @@ export function ProjectItemBase({project, deleting, child, onTouchHold, onTouchE
   const touchActions = useTouchHold(() => onTouchHold(project), () => onTouchEnd(project))
 
   let clientName = null
-  if (project.user !== project.creator) clientName = project.creator_info.full_name
+  if (project.user !== project.creator) {
+    clientName = (
+      <div style={{display: 'flex', alignItems: 'center'}}>
+        {localStorage.User === project.creator
+          ? <><DoubleArrow fontSize={"inherit"} style={{paddingRight: 4}}/>{project.user_info.full_name}</>
+          : <><Person fontSize={"inherit"} style={{paddingRight: 4}}/>{project.creator_info.full_name}</>
+        }
+      </div>
+    )
+  }
   else if (project.client) clientName = mobile ? project.client.name : project.client.fullname
 
   let primaryText = primary || project.title

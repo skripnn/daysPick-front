@@ -142,7 +142,7 @@ class FetchClass {
     project_id: project
   })
 
-  link = (link, set) => {
+  link = (link, set, replace=false) => {
     Info.loading(true)
     if (link instanceof Array) link = link.filter(v => !!v).join('/')
     let l = link
@@ -152,7 +152,8 @@ class FetchClass {
     }
     const pushLink = l === '/'? l : `/${l}`
     const toHistory = () => {
-      this.history ? this.history.push(pushLink) : window.history.push(pushLink)
+      if (replace) this.history ? this.history.replace(pushLink) : window.history.replace(pushLink)
+      else this.history ? this.history.push(pushLink) : window.history.push(pushLink)
       Info.loading(false)
       window.scrollTo(0, 0)
     }
@@ -160,17 +161,18 @@ class FetchClass {
     else this.get(l).then(set).then(toHistory)
   }
 
-  autoLink = (link) => {
+  autoLink = (link, replace) => {
     if (link === '/') link = localStorage.User? `@${localStorage.User}` : 'search'
     if (link instanceof Array) link = link.filter(v => !!v).join('/')
     if (link.search(/projects/) > -1) mainStore.ProjectsPageStore.clear()
     else if (link.match(/^\/?@/)) this.link(link, mainStore.UsersStore.setUser)
-    else this.link(link)
+    else this.link(link, null, replace)
   }
 
   back = () => {
     this.history? this.history.goBack() : window.history.goBack()
   }
+
 }
 
 const Fetch = new FetchClass()
