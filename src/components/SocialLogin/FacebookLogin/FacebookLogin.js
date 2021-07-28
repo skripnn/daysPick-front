@@ -74,7 +74,7 @@ function FbButton(props) {
       fullWidth
       onClick={props.onClick}
       disabled={props.disabled || loading}
-      startIcon={loading ? <CircularProgress size={24} color={'inherit'}/> : <FacebookIcon type={hover? 'solid' : undefined}/>}
+      startIcon={loading ? <CircularProgress size={14} color={'inherit'}/> : <FacebookIcon type={hover? 'solid' : undefined}/>}
     >
       Продолжить с Facebook
     </Button>

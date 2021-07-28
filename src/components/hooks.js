@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import TouchHold from "../js/TouchHold";
+import {useWindowHeight} from "@react-hook/window-size";
 
 export function useOnFocusHook(func) {
   useEffect(() => {
@@ -56,4 +57,13 @@ export function useControlledState(state, setState) {
 export function useTouchHold(onTouchHold, onTouchEnd) {
   const [touchHold] = useState(new TouchHold(onTouchHold, onTouchEnd))
   return touchHold.actions
+}
+
+export function useWindowHeightResizeCallback(func) {
+  const [height, setHeight] = useState()
+  const heightWidow = useWindowHeight()
+  if (heightWidow !== height) {
+    setHeight(heightWidow)
+    func()
+  }
 }

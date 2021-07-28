@@ -12,6 +12,7 @@ class UserPageStore {
   error = false
   unconfirmedProjects = 0
   lastCalendarUpdate = new Date().getTime()
+  activeProfileTab = 'Tags'
 
   constructor() {
     makeAutoObservable(this)

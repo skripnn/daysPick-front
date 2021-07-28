@@ -3,13 +3,14 @@ import Calendar from '../components/test/components/Calendar';
 import {inject, observer} from "mobx-react";
 import {
   List,
-  ListSubheader
 } from "@material-ui/core";
 import {ProjectItemAutoFolder} from "../components/ProjectItem/ProjectItem";
 import PopOverDay from "../components/PopOverDay/PopOverDay";
 import Fetch from "../js/Fetch";
 import Info from "../js/Info";
 import UserProfile from "../components/UserProfile/UserProfile";
+import {useMobile} from "../components/hooks";
+import HeaderText from "../components/Text/HeaderText";
 
 function UserPage(props) {
   const [pick, setPick] = useState([])
@@ -54,6 +55,8 @@ function UserPage(props) {
     calendar.setValue({daysPick: new Set([])})
   }
 
+  const mobile = useMobile()
+
   if (userPage.loading) return <></>
 
   return (
@@ -73,13 +76,10 @@ function UserPage(props) {
         }}
         onError={Info.error}
       />
-      {userPage.profile ? <UserProfile user={user} />
+      {userPage.profile ? <UserProfile user={user} mobile={mobile}/>
         :
         <List dense>
-          <ListSubheader disableSticky className={'no-select'} style={{
-            textAlign: "center",
-            color: "rgba(0, 0, 0, 0.7)"
-          }}>{`Акутальные проекты${!projects.length ? ' отсутствуют' : ''}`}</ListSubheader>
+          <HeaderText center>{`Акутальные проекты${!projects.length ? ' отсутствуют' : ''}`}</HeaderText>
           {projects.map(project =>
             <ProjectItemAutoFolder
               project={project}

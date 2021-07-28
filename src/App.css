@@ -5,8 +5,6 @@
     -ms-user-select: none; /* Internet Explorer/Edge */
     user-select: none; /* Non-prefixed version, currently
                               supported by Chrome and Opera */
-
-    min-height: calc(100vh - 49px);
 }
 .content-block {
     display: flex;
@@ -23,6 +21,9 @@
 }
 /*маленькая ширина*/
 @media screen and (max-width:600px) {
+}
+.App {
+    min-height: calc(calc(var(--vh, 1vh) * 100) - env(safe-area-inset-bottom) - env(safe-area-inset-top) - 49px)
 }
 a {
     color: inherit;

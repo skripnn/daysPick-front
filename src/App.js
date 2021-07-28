@@ -22,12 +22,16 @@ import theme from "./js/theme";
 import InfoBar from "./components/InfoBar/InfoBar";
 import Keys from "./js/Keys";
 import TestPage from "./pages/TestPage";
-import {useMobile} from "./components/hooks";
+import {useMobile, useWindowHeightResizeCallback} from "./components/hooks";
 import FeedPage from "./pages/FeedPage";
 import TgAuthPage from "./pages/TgAuthPage";
 
 function App(props) {
   const mobile = useMobile()
+  useWindowHeightResizeCallback(() => {
+    let vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  })
 
   const { history } = props
   Fetch.history = history

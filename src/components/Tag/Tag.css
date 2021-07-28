@@ -5,3 +5,9 @@
 .tag.edit:hover {
     cursor: grab
 }
+
+@media screen and (max-width:600px) {
+    .tag {
+        height: 24px !important;
+    }
+}

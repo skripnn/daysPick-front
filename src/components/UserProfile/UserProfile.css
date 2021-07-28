@@ -1,0 +1,12 @@
+.tags-list {
+    padding-left: unset !important;
+    padding-right: unset !important;
+    padding-top: 0;
+}
+@media screen and (max-width:600px) {
+    .contacts-list-item {
+        padding-left: 4px !important;
+        padding-right: 4px !important;
+    }
+}
+
