@@ -38,7 +38,7 @@ function LoginPage() {
             if (r.token) {
               if (error) setError(null)
               mainStore.UsersStore.setLocalUser(r)
-              Fetch.link(['user', localStorage.User])
+              Fetch.link(`@${localStorage.User}`)
             }
             else {
               setLoading(false)

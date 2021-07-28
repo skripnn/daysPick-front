@@ -24,6 +24,7 @@ import Keys from "./js/Keys";
 import TestPage from "./pages/TestPage";
 import {useMobile} from "./components/hooks";
 import FeedPage from "./pages/FeedPage";
+import TgAuthPage from "./pages/TgAuthPage";
 
 function App(props) {
   const mobile = useMobile()
@@ -48,6 +49,7 @@ function App(props) {
           <Switch>
             {Keys.env === 'dev' && <Route history={history} path='/test/' component={TestPage}/>}
             {Keys.env === 'dev' && <Route history={history} path='/feed/' component={FeedPage}/>}
+            <Route history={history} path='/tgauth/' component={TgAuthPage}/>
             <Route history={history} path='/settings/' component={SettingsPage}/>
             <Route history={history} path='/profile/' component={ProfilePage}/>
             <Route history={history} path='/clients/' component={ClientsPage}/>

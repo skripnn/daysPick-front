@@ -11,7 +11,7 @@ import Typography from "@material-ui/core/Typography";
 import FolderField from "../Fields/FolderField/FolderField";
 
 function ProjectForm(props) {
-  const {title, is_paid, is_wait, client, setValue, user, creator, canceled, is_folder, parent, clientListStore} = props.ProjectStore
+  const {title, is_paid, is_wait, client, setValue, user, creator, creator_info, canceled, is_folder, parent, clientListStore} = props.ProjectStore
 
   const checkBoxes = (isPaid, isWait) => (
     <Grid container wrap={'nowrap'}>
@@ -30,7 +30,7 @@ function ProjectForm(props) {
     'title': <TextField label="Название" value={title} onChange={e => setValue({title: e.target.value})} required/>,
     'money': <MoneyField />,
     'client': <ClientField client={client} set={(client) => setValue({client: client})}/>,
-    'creator': <UserField value={creator} label={'Заказчик'} disabled required/>,
+    'creator': <UserField value={creator_info ? creator_info : creator} label={'Заказчик'} disabled required/>,
     'folder': <FolderField value={parent} set={(parent) => setValue({parent: parent})} f={clientListStore}/>,
     // 'user': <UserField value={user} set={v => setValue({user: v ? v.username : localStorage.User})} required disabled={creator !== localStorage.User} label={'Подрядчик'}/>,
     'user': <UserField value={user} disabled label={'Подрядчик'} required/>,

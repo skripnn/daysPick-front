@@ -31,6 +31,7 @@ class FetchClass {
 
   path = (URLs, params) => {
     if (URLs instanceof Array) URLs = URLs.filter(v => !!v).join('/')
+    if (URLs.startsWith('/')) URLs = URLs.slice(1)
     let path = this.url + URLs + '/'
     if (typeof URLs === 'string' && URLs.startsWith('http')) path = URLs
     if (params) {
@@ -75,8 +76,8 @@ class FetchClass {
     return await this.toBase64(await fetch(Fetch.host + path).then(r => r.blob()))
   }
 
-  get = (URLs, params={}, auth=true) => {
-    return fetch(this.path(URLs, params), {
+  get = (URLs, params, auth=true) => {
+    return fetch(this.path(URLs, params, false), {
       headers: this.authHeaders()
     }).then(
       res => this.checkAuth(res, auth),
@@ -128,7 +129,10 @@ class FetchClass {
     )
   }
 
-  getFromUrl = () => this.get(window.location.pathname)
+  getFromUrl = () => {
+    const params = Object.fromEntries(new URLSearchParams(window.location.search));
+    return this.get(window.location.pathname.slice(1), params)
+  }
 
   getCalendar = (dateStart, dateEnd, user, project) => this.get('calendar', {
     start: dateStart.format(),

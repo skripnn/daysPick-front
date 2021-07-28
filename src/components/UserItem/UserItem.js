@@ -10,7 +10,7 @@ import {useMobile} from "../hooks";
 function UserItem(props) {
   const user = props.user
   const mobile = useMobile()
-  const tags = user.tags.length ? (!mobile ?
+  const tags = user.tags && user.tags.length ? (!mobile ?
       <>
         {user.tags[0].title}
         {user.tags.length > 1 ? <>, <TextLoop children={user.tags.slice(1).map(tag => tag.title)}

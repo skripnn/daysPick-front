@@ -51,6 +51,7 @@ class UserStore {
       this.userPage.updateCalendar()
     }
     this.userPage.setValue({loading: false})
+    return this
   }
 
   delProject = (id) => {
