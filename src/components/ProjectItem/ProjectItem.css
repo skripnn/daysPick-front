@@ -5,6 +5,10 @@
     opacity: 0;
     transition: all 1s;
 }
+.project-item-text {
+    display: flex !important;
+    align-items: center;
+}
 
 /*большая ширина*/
 @media screen and (min-width:600px) {

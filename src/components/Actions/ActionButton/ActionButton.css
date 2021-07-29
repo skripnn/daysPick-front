@@ -18,3 +18,8 @@ button.action-button {
     color: #404040;
     font-size: x-small;
 }
+.action-button-wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}

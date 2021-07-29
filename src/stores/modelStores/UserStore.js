@@ -8,7 +8,9 @@ import {newDate} from "../../js/functions/date";
 class UserStore {
   user = new ProfileStore()
   calendar = new CalendarStore()
+  offersCalendar = new CalendarStore()
   projects = []
+  offers = []
   userPage = new UserPageStore()
   error
 
@@ -38,6 +40,12 @@ class UserStore {
     })
   }
 
+  getActualOffers = () => {
+    Fetch.get(`@${this.user.username}`, {offers: 1}).then(r => {
+      if (!r.error) this.setOffers(r)
+    })
+  }
+
   getProject = (id) => {
     return this.projects.find(project => project.id === id)
   }
@@ -58,7 +66,18 @@ class UserStore {
     this.projects = this.projects.filter(project => project.id !== id)
   }
 
-  setProjects = (projects) => {
+  projectListTransform = (projects) => {
+    const sort = (list) => {
+      const compareDates = (a, b) => {
+        if (a.date_start < b.date_start) return -1
+        if (a.date_start > b.date_start) return 1
+        if (a.date_end < b.date_end) return -1
+        if (a.date_end > b.date_end) return 1
+        return 0
+      }
+      list.sort(compareDates)
+      return [...list.filter(p => !p.confirmed), ...list.filter(p => p.confirmed)]
+    }
     const projectsNew = projects.map(project => {
       const isFolder = !!project.children && !!project.children.length
       if (isFolder) {
@@ -69,27 +88,26 @@ class UserStore {
         dates.sort()
         project.date_start = dates[0]
         project.date_end = dates[dates.length - 1]
+        project.children = sort(project.children)
       }
       return project
     })
-    const compareDates = (a, b) => {
-      if (a.date_start < b.date_start) return -1
-      if (a.date_start > b.date_start) return 1
-      if (a.date_end < b.date_end) return -1
-      if (a.date_end > b.date_end) return 1
-      return 0
-    }
-    projectsNew.sort(compareDates)
-    if (this.userPage.isSelf) {
-      this.projects = [...projectsNew.filter(p => !p.confirmed), ...projectsNew.filter(p => p.confirmed)]
-      this.userPage.setValue({unconfirmedProjects: this.projects.filter(i => !i.confirmed).length})
-    }
-    else this.projects = projectsNew
+    return sort(projectsNew)
+  }
+
+  setProjects = (projects) => {
+    this.projects = this.projectListTransform(projects)
+    this.userPage.setValue({unconfirmedProjects: this.projects.filter(i => !i.confirmed).length})
+  }
+
+  setOffers = (offers) => {
+    this.offers = this.projectListTransform(offers)
   }
 
   setValue = (obj={}) => {
     for (const [key, value] of Object.entries(obj)) {
       if (key === 'projects') this.setProjects(value)
+      else if (key === 'offers') this.setOffers(value)
       else this[key].setValue(value)
     }
   }

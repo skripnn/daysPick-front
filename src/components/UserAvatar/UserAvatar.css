@@ -1,3 +1,4 @@
 .user-avatar {
-    zoom: 0.7;
+    max-width: 30px;
+    max-height: 30px;
 }

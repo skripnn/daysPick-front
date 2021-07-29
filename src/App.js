@@ -9,7 +9,7 @@ import './App.css'
 import ActionsSwitch from "./components/Actions/ActionsSwitch";
 import ClientsPage from "./pages/ClientsPage";
 import Header from "./components/Header/Header";
-import ProjectsPage from "./pages/ProjectsPage";
+import {ProjectsPage, OffersPage} from "./pages/ProjectsPage";
 import ProfilePage from "./pages/ProfilePage";
 import SearchPage from "./pages/SearchPage";
 import { ThemeProvider } from '@material-ui/styles';
@@ -58,6 +58,7 @@ function App(props) {
             <Route history={history} path='/profile/' component={ProfilePage}/>
             <Route history={history} path='/clients/' component={ClientsPage}/>
             <Route history={history} path='/projects/' component={ProjectsPage}/>
+            <Route history={history} path='/offers/' component={OffersPage}/>
             <Route history={history} path='/project/:id/' component={ProjectPage}/>
             <Route history={history} path='/project/' component={ProjectPage}/>
             <Route history={history} path='/login/' component={LoginPage}/>

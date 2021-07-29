@@ -11,6 +11,7 @@ class mainStore {
     this.ProjectStore = new ProjectStore()
     this.ClientsPageStore = new ClientsPageStore()
     this.ProjectsPageStore = new ProjectsPageStore()
+    this.OffersPageStore = new ProjectsPageStore()
     this.SearchPageStore = new SearchPageStore()
     this.InfoBarStore = new InfoBarStore()
   }
@@ -20,6 +21,7 @@ class mainStore {
     this.ProjectStore = new ProjectStore()
     this.ClientsPageStore = new ClientsPageStore()
     this.ProjectsPageStore = new ProjectsPageStore()
+    this.OffersPageStore = new ProjectsPageStore()
     this.SearchPageStore = new SearchPageStore()
   }
 }

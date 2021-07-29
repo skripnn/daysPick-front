@@ -142,6 +142,12 @@ class FetchClass {
     project_id: project
   })
 
+  getOffersCalendar = (dateStart, dateEnd) => this.get('calendar', {
+    start: dateStart.format(),
+    end: dateEnd.format(),
+    offers: 1
+  })
+
   link = (link, set, replace=false) => {
     Info.loading(true)
     if (link instanceof Array) link = link.filter(v => !!v).join('/')

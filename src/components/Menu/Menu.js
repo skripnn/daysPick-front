@@ -64,6 +64,7 @@ function Menu(props) {
         <Divider />
         <List>
           <MenuItem text={'Мои проекты'} icon={<IconBadge content={props.unconfirmedProjects} circle><ListIcon/></IconBadge>} link={`projects`} set={props.setProjects} />
+          <MenuItem text={'Мои офферы'} icon={<ListIcon/>} link={`offers`} set={props.setOffers} />
           <MenuItem text={'Мои клиенты'} icon={<Group />} link={`clients`} set={props.setClients} />
         </List>
         <Divider />
@@ -88,6 +89,7 @@ export default inject(stores => {
     getUser: stores.UsersStore.getLocalUser().getUser,
     setUser: stores.UsersStore.setUser,
     setClients: stores.ClientsPageStore.c.set,
-    setProjects: stores.ProjectsPageStore.p.set
+    setProjects: stores.ProjectsPageStore.p.set,
+    setOffers: stores.OffersPageStore.p.set
   }
 })(observer(Menu))

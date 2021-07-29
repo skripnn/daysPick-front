@@ -43,16 +43,10 @@ function ProjectPageActionPanel(props) {
   }
 
   function save() {
-    let errors = []
-    if (!dates.length) errors.push('Выбери даты')
-    // if (!title) errors.push('Введи название проекта')
-    if (errors.length) {
-      let errorsString = 'Ошибка:\n'
-      for (let i = 0; i < errors.length; i++) {
-        errorsString += errors[i] + '\n'
-      }
-      Info.warning(errorsString)
-    } else {
+    if (!user) Info.warning('Ошибка: Выбери подрядчика для проекта')
+    else if (!dates.length) Info.warning('Ошибка: Выбери даты')
+    else if (user !== localStorage.User && !title) Info.warning('Ошибка: Введи название проекта')
+    else {
       setLoading('save')
       Fetch.post(['project', id], serializer()).then(
         () => back(),

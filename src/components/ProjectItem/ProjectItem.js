@@ -183,7 +183,6 @@ export function ProjectItem({project, child, onTouchHold, onTouchEnd, onMouseOve
   if (confirmButton && project.is_wait && !project.canceled) action = ConfirmMenu
   else if (paidButton && !project.is_paid && !project.canceled) action = PaidButton
   else if (deleteButton) action = DeleteButton
-
   const projectTitle = project.title || (formatDate(project.date_start) + (project.date_end === project.date_start ? '' : ` - ${formatDate(project.date_end)}`))
   const title = !child && project.parent_name ? project.parent_name + ' / ' + projectTitle : projectTitle
 
@@ -222,12 +221,12 @@ export function ProjectItemBase({project, deleting, child, onTouchHold, onTouchE
   let clientName = null
   if (project.user !== project.creator) {
     clientName = (
-      <div style={{display: 'flex', alignItems: 'center'}}>
+      <>
         {localStorage.User === project.creator
           ? <><DoubleArrow fontSize={"inherit"} style={{paddingRight: 4}}/>{project.user_info.full_name}</>
           : <><Person fontSize={"inherit"} style={{paddingRight: 4}}/>{project.creator_info.full_name}</>
         }
-      </div>
+      </>
     )
   }
   else if (project.client) clientName = mobile ? project.client.name : project.client.fullname
@@ -246,8 +245,12 @@ export function ProjectItemBase({project, deleting, child, onTouchHold, onTouchE
       onClick={deleting ? undefined : () => onClick(project)}
       {...touchActions}
     >
-      <ListItemText primary={primaryText}
-                    secondary={secondary || clientName}/>
+      <ListItemText
+        primaryTypographyProps={{className: 'project-item-text'}}
+        primary={primaryText}
+        secondaryTypographyProps={{className: 'project-item-text'}}
+        secondary={secondary || clientName}
+      />
       {(project.money === 0 || !!project.money) &&
       <ListItemText
         secondary={new Intl.NumberFormat('ru-RU').format(project.money) + " ₽"}

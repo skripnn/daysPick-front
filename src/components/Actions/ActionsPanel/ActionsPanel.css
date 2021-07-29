@@ -3,6 +3,9 @@
     align-items: center;
     justify-content: space-between;
 }
+.actions-panel > div {
+    display: flex;
+}
 .actions-panel.buttons-block {
     justify-content: flex-start;
 }
@@ -11,11 +14,11 @@
     position: sticky;
     z-index: 500;
     bottom: 0;
-    justify-content: space-around;
-    width: 100%;
     box-shadow: 0 5px 0 white, 0 0 5px rgba(0,0,0,0.5);
     background: white;
     padding-bottom: env(safe-area-inset-bottom);
+    display: flex;
+    width: 100%;
 }
 .actions-panel.bottom2 {
     position: absolute;

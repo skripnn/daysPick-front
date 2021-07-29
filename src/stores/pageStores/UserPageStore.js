@@ -7,12 +7,13 @@ class UserPageStore {
   showArchive = false
   dayInfo = null
   dayOffOver = false
-  daysPick = new Set()
+  daysPick = []
   isSelf = false
   error = false
   unconfirmedProjects = 0
   lastCalendarUpdate = new Date().getTime()
   activeProfileTab = 'Tags'
+  activeProjectTab = 'Projects'
 
   constructor() {
     makeAutoObservable(this)

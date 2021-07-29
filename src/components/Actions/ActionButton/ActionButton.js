@@ -15,11 +15,13 @@ export default function ActionButton(props) {
     : props.icon
 
   return (
-    <Button size={props.big ? undefined : "small"} onClick={onClick} className={className} disabled={props.disabled}>
-      <div className={"action-button"}>
-        {props.loading? <CircularProgress size={24} color={'inherit'}/> : icon}
-        {props.label}
-      </div>
-    </Button>
+    <div className={'action-button-wrapper'}>
+      <Button size={props.big ? undefined : "small"} onClick={onClick} className={className} disabled={props.disabled}>
+        <div className={"action-button"}>
+          {props.loading? <CircularProgress size={24} color={'inherit'}/> : icon}
+          {props.label}
+        </div>
+      </Button>
+    </div>
   )
 }

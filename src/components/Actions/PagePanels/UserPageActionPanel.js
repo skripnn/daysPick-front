@@ -11,7 +11,7 @@ import mainStore from "../../../stores/mainStore";
 
 
 function UserPageActionPanel(props) {
-  const {isSelf, edit, dayOffOver, profile, unconfirmedProjects, setValue} = props.userPage
+  const {isSelf, edit, dayOffOver, profile, unconfirmedProjects, setValue, activeProjectTab} = props.userPage
   const username = props.user.username
   const [image, setImage] = useState(null)
 
@@ -23,18 +23,17 @@ function UserPageActionPanel(props) {
       icon={<EventBusy/>}
       active={edit}
       red={dayOffOver}
-      onClick={() => setValue({profile: false, dayInfo: null, dayOffOver: false, edit: !edit})}
+      onClick={() => setValue({profile: false, dayInfo: null, dayOffOver: false, edit: !edit, activeProjectTab: 'Projects'})}
     />,
     <ActionButton
       key={'Добавить'}
-      label={isSelf ? 'Добавить' : 'Предложить'}
+      label={activeProjectTab === 'Projects' && username === localStorage.User ? 'Добавить' : 'Предложить'}
       icon={<PostAdd/>}
-      // onClick={isSelf? () => {
-      //   mainStore.ProjectStore.default({user: username})
-      //   Fetch.autoLink('/project/')
-      // } : () => Info.info('Функция пока недоступна')}
       onClick={() => {
-        mainStore.ProjectStore.default({user: username})
+        mainStore.ProjectStore.default({
+          user: activeProjectTab === 'Projects' ? username : null,
+          user_info: activeProjectTab === 'Projects' ? props.user : null
+        })
         Fetch.autoLink('/project/')
       }}
     />,

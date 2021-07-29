@@ -92,7 +92,10 @@ function ProjectPage(props) {
 export default inject(stores => {
   const id = getProjectId()
   if (id && stores.ProjectStore.id !== id) stores.ProjectStore.default({id: id, hidden: !!id})
-  const calendar = {}
+  const calendar = {
+    days: {},
+    daysOff: []
+  }
   if (stores.ProjectStore.user) {
     const userCalendar = stores.UsersStore.getUser(stores.ProjectStore.user).calendar
     calendar.days = JSON.parse(JSON.stringify(userCalendar.days))

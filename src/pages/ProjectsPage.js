@@ -5,7 +5,7 @@ import Fetch from "../js/Fetch";
 import LazyList from "../components/LazyList/LazyList";
 
 
-function ProjectsPage(props) {
+function ProjectsListPage(props) {
   const {f, p, setProject} = props
 
   function onAction(project) {
@@ -43,7 +43,7 @@ function ProjectsPage(props) {
             key={project.id}
             onClick={link}
             onDelete={onAction}
-            // confirmButton={false}
+            confirmButton={project.creator !== localStorage.User}
             paidButton={false}
           />
         )}
@@ -52,10 +52,18 @@ function ProjectsPage(props) {
   )
 }
 
-export default inject(stores => ({
-    f: stores.ProjectsPageStore.f,
-    p: stores.ProjectsPageStore.p,
-    pageStore: stores.ProjectsPageStore,
-    setProject: stores.ProjectStore.setProject,
-    calendar: stores.UsersStore.getLocalUser().calendar
-}))(observer(ProjectsPage))
+export const ProjectsPage = inject(stores => ({
+  f: stores.ProjectsPageStore.f,
+  p: stores.ProjectsPageStore.p,
+  pageStore: stores.ProjectsPageStore,
+  setProject: stores.ProjectStore.setProject,
+  calendar: stores.UsersStore.getLocalUser().calendar
+}))(observer(ProjectsListPage))
+
+export const OffersPage = inject(stores => ({
+  f: stores.OffersPageStore.f,
+  p: stores.OffersPageStore.p,
+  pageStore: stores.OffersPageStore,
+  setProject: stores.OffersPageStore.setProject,
+  calendar: stores.UsersStore.getLocalUser().offersCalendar
+}))(observer(ProjectsListPage))
