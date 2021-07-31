@@ -25,6 +25,7 @@ function ActualProjects({user, ...props}) {
   }
 
   function link(project) {
+    unHighlightDays()
     Fetch.autoLink(`/project/${project.id}/`)
   }
 

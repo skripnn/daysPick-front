@@ -21,7 +21,7 @@ class FetchClass {
   checkAuth = (res, redirect) => {
     Info.loading(false)
     if (redirect && res.status === 401) {
-      localStorage.removeItem('User')
+      localStorage.clear()
       window.location.href = "/login/"
       return
     }

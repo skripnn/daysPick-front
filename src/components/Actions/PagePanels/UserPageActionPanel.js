@@ -27,7 +27,7 @@ function UserPageActionPanel(props) {
     />,
     <ActionButton
       key={'Добавить'}
-      label={activeProjectTab === 'Projects' && username === localStorage.User ? 'Добавить' : 'Предложить'}
+      label={'Добавить'}
       icon={<PostAdd/>}
       onClick={() => {
         mainStore.ProjectStore.default({

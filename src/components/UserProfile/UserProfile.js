@@ -42,7 +42,7 @@ function UserProfile(props) {
     {!!showTags &&
     <>
       <HeaderText center={mobile}>Специализации</HeaderText>
-      <Tags user={user.tags}/>
+      <Tags user={user}/>
     </>
     }
     {!!showContacts &&

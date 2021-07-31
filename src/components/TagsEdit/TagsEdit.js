@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import Fetch from "../../js/Fetch";
-import {Chip, IconButton, List, ListSubheader, Paper} from "@material-ui/core";
+import {Chip, IconButton, List, ListItem, ListSubheader, Paper} from "@material-ui/core";
 import {AddCircle, ClearOutlined} from "@material-ui/icons";
 import AutosizeInput from "react-input-autosize/lib/AutosizeInput";
 import Tag from "../Tag/Tag";
@@ -200,13 +200,34 @@ export default function TagsEdit(props) {
     </ListSubheader>
     {(!mobile || (!!tags && !!tags.length)) &&
     <Paper ref={ref} variant={"outlined"} style={{padding: 5, marginLeft: 16, marginRight: 16}}>
-      {tags.map(i => <Tag tag={i} key={i.id} onTake={onTake} hidden={drag && drag.id === i.id}
-                          onDelete={delTag} edit/>)}
-      {!drag && !mobile && <NewTag tag={newTag} setTag={setNewTag} addTag={addTag} exist={exist()}/>}
-    </Paper>}
-    {!mobile && !!options && !!options.length && options.filter(tag => !!newTag ? tag.title !== newTag.title : tag).map(tag => <OptionTag
-      tag={tag} addTag={addOptionTag}
-      key={tag.id}/>)}
+      {tags.map(i => <Tag
+        tag={i}
+        key={i.id}
+        onTake={onTake}
+        hidden={drag && drag.id === i.id}
+        onDelete={delTag} edit
+      />)}
+      {!drag && !mobile &&
+      <NewTag
+        tag={newTag}
+        setTag={setNewTag}
+        addTag={addTag}
+        exist={exist()}
+      />
+      }
+    </Paper>
+    }
+    {!mobile && !!options && !!options.length &&
+    <ListItem style={{display: 'block'}}>
+      {options.filter(tag => !!newTag ? tag.title !== newTag.title : tag).map(tag =>
+        <OptionTag
+          tag={tag}
+          addTag={addOptionTag}
+          key={tag.id}
+        />)
+      }
+    </ListItem>
+    }
     {!!drag && <DragTag tag={drag} x={coordinates.x} y={coordinates.y} onDrop={onDrop}/>}
     {mobile && <TagChoiceDialog
       open={!!newTag}

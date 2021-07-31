@@ -12,7 +12,7 @@ export default function UserAvatar(props) {
     <>
       <Avatar
         className={'user-avatar'}
-        alt={props.full_name}
+        alt={props.full_name === '<DELETED>' ? ' ' : props.full_name}
         src={path}
         onClick={props.onClick}
         style={style}

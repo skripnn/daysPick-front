@@ -29,7 +29,13 @@ a {
     color: inherit;
     text-decoration: inherit;
 }
-
+.delete-profile-button {
+    cursor: pointer;
+    width: max-content;
+}
+.delete-profile-button:hover {
+    color: #ff6c6c;
+}
 .pulse {
     box-shadow: 0 0 0 0 rgba(0, 0, 0, 1);
     border-radius: 10px;

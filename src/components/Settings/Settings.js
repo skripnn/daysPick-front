@@ -8,6 +8,7 @@ import Fetch from "../../js/Fetch";
 import CheckBoxField from "../Fields/CheckBoxField/CheckBoxField";
 import FacebookField from "../Fields/FacebookField/FacebookField";
 import {inject, observer} from "mobx-react";
+import Typography from "@material-ui/core/Typography";
 
 
 function Settings(props) {
@@ -79,6 +80,18 @@ function Settings(props) {
     obj[name] = null
     setE(prevState => ({...prevState, ...obj}))
     setV(prevState => ({...prevState, ...obj}))
+  }
+
+  function delete_profile() {
+    // eslint-disable-next-line no-restricted-globals
+    if (confirm('Удалить профиль?\nДанные невозможно будет восстановить')) {
+      Fetch.delete(`@${localStorage.User}`).then((r) => {
+        if (!r.error) {
+          localStorage.clear()
+          Fetch.link('search')
+        }
+      })
+    }
   }
 
   function SaveButton(props) {
@@ -163,6 +176,10 @@ function Settings(props) {
       <ListItem>
         <FacebookField value={facebook_account} set={setValue}/>
       </ListItem>
+      <div style={{margin: 16}}>
+        <Typography variant={'subtitle2'} color={'secondary'} onClick={delete_profile} className={'delete-profile-button'} >Удалить профиль</Typography>
+      </div>
+      {/*<ListSubheader onClick={delete_profile} className={'delete-profile-button'}>Удалить профиль</ListSubheader>*/}
     </List>
   )
 }
