@@ -64,8 +64,8 @@ function Menu(props) {
         <Divider />
         <List>
           <MenuItem text={'Мои проекты'} icon={<IconBadge content={props.unconfirmedProjects} circle><ListIcon/></IconBadge>} link={`projects`} set={props.setProjects} />
-          <MenuItem text={'Мои офферы'} icon={<ListIcon/>} link={`offers`} set={props.setOffers} />
           <MenuItem text={'Мои клиенты'} icon={<Group />} link={`clients`} set={props.setClients} />
+          <MenuItem text={'Исходящие проекты'} icon={<ListIcon/>} link={`offers`} set={props.setOffers} />
         </List>
         <Divider />
         <List>
@@ -74,7 +74,7 @@ function Menu(props) {
           <MenuItem text={'Настройки'} icon={<SettingsOutlined />} link={`settings`} />
           <MenuItem text={'Выйти'} icon={<LogoutIcon />} noSelect onClick={() => {
             localStorage.clear()
-            window.location.href = '/search/'
+            Fetch.link('search')
           }}/>
         </List>
       </Drawer>

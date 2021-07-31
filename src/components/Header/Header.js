@@ -19,7 +19,8 @@ function Header(props) {
     ['/projects', 'Мои проекты'],
     ['/clients', 'Мои клиенты'],
     ['/profile', 'Профиль'],
-    ['/settings', 'Настройки']
+    ['/settings', 'Настройки'],
+    ['/offers', 'Исходящие проекты']
   ]
 
   const { pathname } = useLocation();
@@ -28,13 +29,15 @@ function Header(props) {
   useEffect(() => setTitle(getTitle()), [pathname])
 
   function getTitle() {
+    let title ='DaysPick'
     for (const [path, name] of titles) {
-      if (window.location.pathname.startsWith(path)) return name
+      if (window.location.pathname.startsWith(path)) {
+        title = name
+        break
+      }
     }
-    return 'DaysPick'
+    return title
   }
-
-
 
   const rightButton = !window.location.pathname.startsWith('/login')? (
     <Link to={'/login/'}>

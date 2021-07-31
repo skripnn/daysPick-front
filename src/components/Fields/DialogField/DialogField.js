@@ -62,7 +62,8 @@ function DialogField({value, required, disabled, label, ItemContent, ChoiceConte
 
 export default DialogField
 
-function ChoiceFieldDialog({open, close, label, actionsPanelProps, children}) {
+
+export function ChoiceFieldDialog({open, close, label, actionsPanelProps, children}) {
 
   const fullScreen = useMobile()
   const Actions = actionsPanelProps ?
@@ -83,7 +84,7 @@ function ChoiceFieldDialog({open, close, label, actionsPanelProps, children}) {
           <CloseButton onClick={close}/>
         </div>
       </DialogTitle>}
-      {!fullScreen && Actions}
+      {!fullScreen && <DialogTitle>{Actions}</DialogTitle>}
       <DialogContent>
         {children}
       </DialogContent>

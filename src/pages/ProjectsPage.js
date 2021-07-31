@@ -23,32 +23,32 @@ function ProjectsListPage(props) {
   }
 
   return (
-    <div>
-      <LazyList
-        searchFieldParams={{
-          set: f.set,
-          calendar: props.calendar,
-          user: localStorage.User
-        }}
-        getLink={'projects'}
-        getParams={{user: localStorage.User}}
-        pages={f.pages || p.pages}
-        page={f.page || p.page}
-        set={p.set}
-        add={f.pages ? f.add : p.add}
-      >
-        {(f.exist() ? f.list : p.list).map((project) =>
-          <ProjectItemAutoFolder
-            project={project}
-            key={project.id}
-            onClick={link}
-            onDelete={onAction}
-            confirmButton={project.creator !== localStorage.User}
-            paidButton={false}
-          />
-        )}
-      </LazyList>
-    </div>
+      <div>
+        <LazyList
+          searchFieldParams={{
+            set: f.set,
+            calendar: props.calendar,
+            user: localStorage.User
+          }}
+          getLink={'projects'}
+          getParams={{user: localStorage.User}}
+          pages={f.pages || p.pages}
+          page={f.page || p.page}
+          set={p.set}
+          add={f.pages ? f.add : p.add}
+        >
+          {(f.exist() ? f.list : p.list).map((project) =>
+            <ProjectItemAutoFolder
+              project={project}
+              key={project.id}
+              onClick={link}
+              onDelete={onAction}
+              confirmButton={project.creator !== localStorage.User}
+              paidButton={false}
+            />
+          )}
+        </LazyList>
+      </div>
   )
 }
 

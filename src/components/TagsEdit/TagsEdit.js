@@ -1,10 +1,14 @@
 import React, {useEffect, useRef, useState} from "react";
 import Fetch from "../../js/Fetch";
-import {Chip, IconButton, ListSubheader, Paper} from "@material-ui/core";
+import {Chip, IconButton, List, ListSubheader, Paper} from "@material-ui/core";
 import {AddCircle, ClearOutlined} from "@material-ui/icons";
 import AutosizeInput from "react-input-autosize/lib/AutosizeInput";
 import Tag from "../Tag/Tag";
 import "./TagsEdit.css"
+import {ChoiceFieldDialog} from "../Fields/DialogField/DialogField";
+import SearchField from "../Fields/SearchField/SearchField";
+import {useMobile} from "../hooks";
+import Tags from "../UserProfile/Tags";
 
 let dragState = false
 
@@ -21,7 +25,7 @@ export default function TagsEdit(props) {
   const [newTag, setNewTag] = useState(null)
   useEffect(() => setTags(value), [value])
   useEffect(() => {
-    if (!newTag || newTag.title.length < 3) setOptions(null)
+    if (!newTag) setOptions(null)
     else Fetch.get(['profile', 'tags'], {filter: newTag.title}).then(setOptions)
   }, [newTag])
 
@@ -185,20 +189,92 @@ export default function TagsEdit(props) {
     return newTag ? !!tags.find(i => newTag.title.toLowerCase() === i.title.toLowerCase()) : false
   }
 
+  const mobile = useMobile()
 
   return (<>
-    <ListSubheader>Специализации</ListSubheader>
+    <ListSubheader>
+      <div style={{display: 'flex'}}>
+        <span>Специализации</span>
+        {mobile && <NewTagButton onClick={() => setNewTag({title: ''})}/>}
+      </div>
+    </ListSubheader>
+    {(!mobile || (!!tags && !!tags.length)) &&
     <Paper ref={ref} variant={"outlined"} style={{padding: 5, marginLeft: 16, marginRight: 16}}>
       {tags.map(i => <Tag tag={i} key={i.id} onTake={onTake} hidden={drag && drag.id === i.id}
-                          onDelete={() => delTag(i)} edit/>)}
-      {!drag && <NewTag tag={newTag} setTag={setNewTag} addTag={addTag} exist={exist()}/>}
-    </Paper>
-    {!!options && <OptionTagList tags={options} addTag={addOptionTag}/>}
+                          onDelete={delTag} edit/>)}
+      {!drag && !mobile && <NewTag tag={newTag} setTag={setNewTag} addTag={addTag} exist={exist()}/>}
+    </Paper>}
+    {!mobile && !!options && !!options.length && options.filter(tag => !!newTag ? tag.title !== newTag.title : tag).map(tag => <OptionTag
+      tag={tag} addTag={addOptionTag}
+      key={tag.id}/>)}
     {!!drag && <DragTag tag={drag} x={coordinates.x} y={coordinates.y} onDrop={onDrop}/>}
+    {mobile && <TagChoiceDialog
+      open={!!newTag}
+      close={() => setNewTag(null)}
+      setValue={setValue}
+      tags={tags}
+    />}
   </>)
 }
 
+function TagChoiceDialog({open, close, setValue, tags}) {
+  const [newTagTitle, setNewTagTitle] = useState(null)
+  const [options, setOptions] = useState([])
 
+  function addOptionTag(tag) {
+    add(tag)
+    setOptions(options.filter(i => i.id !== tag.id))
+  }
+
+  useEffect(downloadOptions, [newTagTitle, open])
+
+  function downloadOptions() {
+    if (open && !newTagTitle) Fetch.get(['profile', 'tags']).then(setOptions)
+  }
+
+  function add(tag) {
+    Fetch.put(['profile', 'tags'], tag).then(setValue).then(downloadOptions)
+  }
+
+  function del(tag) {
+    Fetch.post(['profile', 'tags'], tags.filter(i => i.id !== tag.id)).then(setValue).then(downloadOptions)
+  }
+
+  function capitalize(string) {
+    if (!string) return string
+    return string ? string[0].toUpperCase() + string.slice(1) : string;
+  }
+
+  let hideNewTag = !newTagTitle
+  if (!hideNewTag && !!tags && tags.map(tag => tag.title).includes(newTagTitle)) hideNewTag = true
+  if (!hideNewTag && !!options && options.map(tag => tag.title).includes(newTagTitle)) hideNewTag = true
+
+  return (
+    <ChoiceFieldDialog
+      open={open}
+      close={close}
+      label={'Добавить специализации'}
+    >
+      <>
+        <SearchField
+          noFilter
+          get={() => Fetch.get(['profile', 'tags'], {filter: newTagTitle}).then(setOptions)}
+          onChangeFilter={value => setNewTagTitle(capitalize(value))}
+        />
+        <List dense>
+          {!hideNewTag && <OptionTag tag={{title: newTagTitle}} addTag={addOptionTag}/>}
+          {!!options && !!options.length && options.map(tag => <OptionTag tag={tag} addTag={addOptionTag}
+                                                                          key={tag.id}/>)}
+        </List>
+        {!!tags && !!tags.length &&
+        <List dense>
+          <ListSubheader>Мои специализации</ListSubheader>
+          <Tags tags={tags} tagProps={{onDelete: del}}/>
+        </List>}
+      </>
+    </ChoiceFieldDialog>
+  )
+}
 
 function DragTag(props) {
 
@@ -216,22 +292,36 @@ function DragTag(props) {
   )
 }
 
+function NewTagButton({onClick}) {
+  return (
+    <IconButton
+      size={"small"}
+      style={{margin: 2, color: "rgba(0, 0, 0, 0.26)"}}
+      onClick={onClick}
+    >
+      <AddCircle/>
+    </IconButton>
+  )
+}
+
 
 function NewTag(props) {
 
   const clear = () => props.setTag(null)
   const isEmpty = !props.tag || !props.tag.title
-  const add = () => isEmpty || props.exist? clear() : props.addTag()
+  const add = () => isEmpty || props.exist ? clear() : props.addTag()
 
   function capitalize(string) {
     return string ? string[0].toUpperCase() + string.slice(1) : string;
   }
 
-  return (props.tag ?
+  const mobile = useMobile()
+
+  return (props.tag && !mobile ?
       <Chip
         style={{margin: 2}}
         variant="outlined"
-        deleteIcon={isEmpty || props.exist? <ClearOutlined/> : <AddCircle/>}
+        deleteIcon={isEmpty || props.exist ? <ClearOutlined/> : <AddCircle/>}
         onDelete={add}
         onKeyDown={(e) => {
           if (e.key === 'Escape') clear()
@@ -244,58 +334,21 @@ function NewTag(props) {
             minWidth={50}
             value={props.tag.title}
             onChange={e => props.setTag({...props.tag, title: capitalize(e.target.value)})}
-            onBlur={isEmpty ? clear : undefined}
+            // onBlur={isEmpty ? clear : undefined}
           />
         }
-      /> : <IconButton
-        size={"small"}
-        style={{margin: 2, color: "rgba(0, 0, 0, 0.26)"}}
-        onClick={() => props.setTag({title: '', category: props.category})}
-      >
-        <AddCircle/>
-      </IconButton>
+      /> : <NewTagButton onClick={() => props.setTag({title: ''})}/>
   )
 }
 
-function OptionTag(props) {
+function OptionTag({tag, addTag}) {
   return (
     <Chip
       className={'tag'}
       variant="outlined"
-      label={props.tag.title}
+      label={tag.title}
       deleteIcon={<AddCircle/>}
-      onDelete={props.addTag}
+      onDelete={() => addTag(tag)}
     />
-  )
-}
-
-function OptionTagList({tags, addTag}) {
-  const ref = useRef()
-
-  useEffect(() => {
-    if (ref.current) {
-      ref.current.removeEventListener('wheel', wheelScroll, {passive: false})
-      ref.current.addEventListener('wheel', wheelScroll, {passive: false})
-    }
-    // eslint-disable-next-line
-  } ,[ref.current])
-
-  function wheelScroll(e) {
-    e.preventDefault()
-    e.stopPropagation()
-    let delta = e.deltaX + e.deltaY
-    const scroll = ref.current.scrollLeft + delta
-    const maxScroll = ref.current.scrollWidth - ref.current.clientWidth
-    ref.current.scrollLeft = (scroll > maxScroll ? maxScroll : scroll)
-  }
-
-  if (!tags) return null
-
-  return (
-    <div className={'tag-options'}>
-      <div ref={ref}>
-        {!!tags && tags.map(i => <OptionTag tag={i} key={i.id} addTag={() => addTag(i)}/>)}
-      </div>
-    </div>
   )
 }

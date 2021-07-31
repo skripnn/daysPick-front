@@ -17,7 +17,7 @@ export default function Tag(props) {
         className={'tag' + (props.edit? ' edit' : '') + (props.hidden ? ' hidden' : '')}
         variant="outlined"
         label={props.tag.title}
-        onDelete={props.onDelete}
+        onDelete={props.onDelete ? () => props.onDelete(props.tag) : undefined}
         onMouseDown={onTake}
         onTouchStart={e => onTake(e.touches[0])}
       />

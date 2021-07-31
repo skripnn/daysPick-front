@@ -2,10 +2,11 @@ import {ListItem} from "@material-ui/core";
 import Tag from "../Tag/Tag";
 import React from "react";
 
-export default function Tags({user}) {
+export default function Tags({tags, tagProps}) {
+  if (!tags) return null
   return (
     <ListItem style={{display: "flex", flexWrap: 'wrap'}} className={'tags-list'}>
-      {user.tags.map(tag => <Tag tag={tag} key={tag.id}/>)}
+      {tags.map(tag => <Tag tag={tag} key={tag.id} {...tagProps}/>)}
     </ListItem>
   )
 }

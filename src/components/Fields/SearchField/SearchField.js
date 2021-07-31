@@ -12,7 +12,7 @@ import Info from "../../../js/Info";
 
 
 function SearchField(props) {
-  const {get, set, noFilter, calendar, user, minFilter, initDays, onChangeDays, ...newProps} = props
+  const {get, set, noFilter, calendar, user, minFilter, initDays, onChangeDays, onChangeFilter, ...newProps} = props
 
   const [filter, setFilter] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -24,6 +24,8 @@ function SearchField(props) {
 
   // eslint-disable-next-line
   useEffect(download, [days, filter])
+  // eslint-disable-next-line
+  useEffect(() => onChangeFilter(filter), [filter])
 
   const changeRange = (v) => {
     setDays(v)
@@ -130,7 +132,8 @@ function SearchField(props) {
 }
 
 SearchField.defaultProps = {
-  set: () => {}
+  set: () => {},
+  onChangeFilter: () => {}
 }
 
 export default SearchField

@@ -6,6 +6,7 @@ import TelegramIcon from "../../Icons/TelegramIcon";
 import Button from "@material-ui/core/Button";
 import TelegramLoginButton from "react-telegram-login";
 import './TelegramLogin.css'
+import Keys from "../../../js/Keys";
 
 export default function TelegramLogin(props) {
   const {loading, icon, ...rest} = props
@@ -13,7 +14,7 @@ export default function TelegramLogin(props) {
 
   const handleClick = () => {
     window.Telegram.Login.auth(
-      { bot_id: '1686627352', request_access: true },
+      { bot_id: Keys.telegramBotId, request_access: true },
       (data) => {
         if (!data) {
           Info.error('Ошибка авторизации')

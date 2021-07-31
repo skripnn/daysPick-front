@@ -5,9 +5,11 @@ import {PostAdd} from "@material-ui/icons";
 import BackOrProfileActionButton from "../BackOrProfileActionButton/BackOrProfileActionButton";
 import Fetch from "../../../js/Fetch";
 import mainStore from "../../../stores/mainStore";
+import {useLocation} from "react-router-dom";
 
 
 function ProjectsPageActionPanel(props) {
+  const {pathname} = useLocation()
 
   const left = <BackOrProfileActionButton type={'profile'} />
 
@@ -17,7 +19,9 @@ function ProjectsPageActionPanel(props) {
       label={'Добавить'}
       icon={<PostAdd/>}
       onClick={() => {
-        mainStore.ProjectStore.default()
+        pathname.startsWith('/projects')
+          ? mainStore.ProjectStore.default()
+          : mainStore.ProjectStore.default({user: null, user_info: null})
         Fetch.autoLink('project')
       }}
     />,

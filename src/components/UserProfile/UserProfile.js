@@ -14,7 +14,7 @@ function UserProfile(props) {
   if (!user) return null
 
   const showContacts = (user.show_email && user.email_confirm) || (user.show_phone && user.phone_confirm)
-  const showTags = user.tags && user.tags.length
+  const showTags = !!user.tags && !!user.tags.length
 
   if (mobile && showContacts && showTags) {
     return (
@@ -26,7 +26,7 @@ function UserProfile(props) {
           {
             id: 'Tags',
             label: 'Специализации',
-            content: <Tags user={user}/>
+            content: <Tags user={user.tags}/>
           },
           {
             id: 'Contacts',
@@ -39,13 +39,13 @@ function UserProfile(props) {
   }
 
   return (<List dense>
-    {showTags &&
+    {!!showTags &&
     <>
       <HeaderText center={mobile}>Специализации</HeaderText>
-      <Tags user={user}/>
+      <Tags user={user.tags}/>
     </>
     }
-    {showContacts &&
+    {!!showContacts &&
     <>
       <HeaderText center={mobile}>Контакты</HeaderText>
       <Contacts user={user}/>

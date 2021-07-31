@@ -50,58 +50,58 @@ function LoginPage() {
   }
 
   return (
-      <Container maxWidth={'xs'}>
-        <List>
-          <form noValidate>
-          <Typography variant={"h6"} color={'secondary'} align={'center'}>Авторизация</Typography>
-          <ListItem>
-            <ValidateTextField
-              autoFocus
-              required
-              type={'username'}
-              label={'Имя пользователя'}
-              name={'username'}
-              value={data.username}
-              convertValue={v => (v? v.toLowerCase() : v)}
-              onChange={set}
-            />
-          </ListItem>
-          <ListItem>
-            <ValidatePasswordField
-              required
-              label={'Пароль'}
-              name={'password'}
-              value={data.password}
-              onChange={set}
-            />
-          </ListItem>
-          <ListItem>
-            <Button
-              disabled={Object.values(data).includes(null) || loading}
-              variant={'outlined'}
-              type={'submit'}
-              className={classNames.button}
-              fullWidth
-              onClick={onSubmit}
-            >
-              {loading? <CircularProgress color={'secondary'} size={24}/> : "Войти"}
-            </Button>
-            <Button
-              variant={'outlined'}
-              color={'secondary'}
-              fullWidth
-              onClick={() => Fetch.link('signup')}
-            >
-              Регистрация
-            </Button>
-          </ListItem>
-          <ListItem>
-            <SocialLogin />
-          </ListItem>
-          {!!error && <ListSubheader className={classNames.error}>{error}</ListSubheader>}
-          </form>
-        </List>
-      </Container>
+    <Container maxWidth={'xs'}>
+      <List>
+        <form noValidate>
+        <Typography variant={"h6"} color={'secondary'} align={'center'}>Авторизация</Typography>
+        <ListItem>
+          <ValidateTextField
+            autoFocus
+            required
+            type={'username'}
+            label={'Имя пользователя'}
+            name={'username'}
+            value={data.username}
+            convertValue={v => (v? v.toLowerCase() : v)}
+            onChange={set}
+          />
+        </ListItem>
+        <ListItem>
+          <ValidatePasswordField
+            required
+            label={'Пароль'}
+            name={'password'}
+            value={data.password}
+            onChange={set}
+          />
+        </ListItem>
+        <ListItem>
+          <Button
+            disabled={Object.values(data).includes(null) || loading}
+            variant={'outlined'}
+            type={'submit'}
+            className={classNames.button}
+            fullWidth
+            onClick={onSubmit}
+          >
+            {loading? <CircularProgress color={'secondary'} size={24}/> : "Войти"}
+          </Button>
+          <Button
+            variant={'outlined'}
+            color={'secondary'}
+            fullWidth
+            onClick={() => Fetch.link('signup')}
+          >
+            Регистрация
+          </Button>
+        </ListItem>
+        <ListItem>
+          <SocialLogin />
+        </ListItem>
+        {!!error && <ListSubheader className={classNames.error}>{error}</ListSubheader>}
+        </form>
+      </List>
+    </Container>
   )
 }
 

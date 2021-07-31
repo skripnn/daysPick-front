@@ -43,7 +43,7 @@ function UserChoiceDialog({open, close, f, onClick}) {
             <ListItem button key={user.username} onClick={() => {
               onClick(user)
               close()
-            }}>
+            }} style={{paddingLeft: 0, paddingRight: 0}}>
               <ListItemIcon style={{minWidth: "unset", paddingRight: 8}}>
                 <UserAvatar {...user}/>
               </ListItemIcon>

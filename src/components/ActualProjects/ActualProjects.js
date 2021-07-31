@@ -5,7 +5,6 @@ import {inject, observer} from "mobx-react";
 import Fetch from "../../js/Fetch";
 import Tabs from "../Tabs/Tabs";
 import {List} from "@material-ui/core";
-import {toJS} from "mobx";
 
 function ActualProjects({user, ...props}) {
   const {projects, offers, getActualProjects, getActualOffers} = props.UserStore
@@ -29,7 +28,7 @@ function ActualProjects({user, ...props}) {
     Fetch.autoLink(`/project/${project.id}/`)
   }
 
-  const renderer = (project) => (
+  const render = list => list.map(project =>
     <ProjectItemAutoFolder
       project={project}
       key={project.id}
@@ -49,18 +48,16 @@ function ActualProjects({user, ...props}) {
     />
   )
 
-  const renderChoice = (list, label) => {
-    if (list && list.length) return list.map(renderer)
-    return <HeaderText center>{label + ' отсутствуют'}</HeaderText>
+  const renderChoice = (list) => {
+    if (list && list.length) return render(list)
+    return <HeaderText center>{'Актуальные проекты отсутствуют'}</HeaderText>
   }
-
-  console.log(toJS(projects))
 
   if (user.username !== localStorage.User) {
     return (
       <List dense>
         <HeaderText center>{`Актуальные проекты ${!projects || !projects.length ? ' отсутствуют' : ''}`}</HeaderText>
-        {!!projects && !!projects.length && projects.map(renderer)}
+        {!!projects && !!projects.length && render(projects)}
       </List>
     )
   }
@@ -74,12 +71,12 @@ function ActualProjects({user, ...props}) {
         {
           id: 'Projects',
           label: 'Мои проекты',
-          content: renderChoice(projects, 'Актуальные проекты')
+          content: renderChoice(projects)
         },
         {
           id: 'Offers',
-          label: 'Мои офферы',
-          content: renderChoice(offers, 'Актуальные офферы')
+          label: 'Исходящие проекты',
+          content: renderChoice(offers)
         }
       ]}
     </Tabs>
