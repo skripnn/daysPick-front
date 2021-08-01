@@ -11,6 +11,8 @@ import {IconButton, LinearProgress, Tooltip} from "@material-ui/core";
 import {Search} from "@material-ui/icons";
 import Fetch from "../../js/Fetch";
 import {inject, observer} from "mobx-react";
+import './Header.css'
+import NotConfirmBar from "./NotConfirmBar";
 
 
 function Header(props) {
@@ -52,7 +54,7 @@ function Header(props) {
   return (
     <AppBar position="sticky">
       {props.InfoBarStore.loading && <LinearProgress style={{position: 'absolute', top: 0, width: "100%"}}/>}
-      <Toolbar className={'header'} variant={"dense"}>
+      <Toolbar variant={"dense"}>
         <Box flexGrow={1} display={'flex'} alignItems={'center'}>
           <Typography variant="h6" onClick={() => Fetch.autoLink('/')} style={{cursor: 'pointer'}}>{title}</Typography>
           {!window.location.pathname.startsWith('/search')  &&
@@ -62,6 +64,7 @@ function Header(props) {
         </Box>
         {auth?  <Menu /> : rightButton}
       </Toolbar>
+      {!!localStorage.User && <NotConfirmBar/>}
     </AppBar>
   );
 }

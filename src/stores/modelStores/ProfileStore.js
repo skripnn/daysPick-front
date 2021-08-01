@@ -12,6 +12,7 @@ class ProfileStore {
   positions = []
   tags = []
   is_public = false
+  is_confirmed = true
   show_email = true
   show_phone = true
   avatar = null

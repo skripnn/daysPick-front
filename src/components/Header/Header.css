@@ -1,0 +1,14 @@
+.header-info-text {
+    background-color: #ff6c6c;
+    min-height: unset !important;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    justify-content: center;
+    cursor: pointer;
+}
+.text-red {
+    color: #ff6c6c !important;
+    line-height: unset !important;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}

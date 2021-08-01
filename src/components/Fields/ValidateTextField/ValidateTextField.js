@@ -146,7 +146,7 @@ export function ValidatePasswordField(props) {
       InputProps={{
       endAdornment:
         <InputAdornment position="end">
-          <IconButton onClick={() => setShow(!show)}>
+          <IconButton onClick={() => setShow(!show)} size={'small'}>
           {show ? <Visibility /> : <VisibilityOff />}
           </IconButton>
         </InputAdornment>
