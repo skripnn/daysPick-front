@@ -13,7 +13,7 @@ function UserProfile(props) {
 
   if (!user) return null
 
-  const showContacts = (user.show_email && user.email_confirm) || (user.show_phone && user.phone_confirm)
+  const showContacts = Object.values(user.contacts).find(i => i !== null)
   const showTags = !!user.tags && !!user.tags.length
 
   if (mobile && showContacts && showTags) {

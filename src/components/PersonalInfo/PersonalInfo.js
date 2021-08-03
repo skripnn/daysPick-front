@@ -20,18 +20,22 @@ function PersonalInfo(props) {
       <ListItem>
         <AvatarField value={avatar} onChange={setValue} full_name={full_name} photo={photo}/>
       </ListItem>
-      <SaveTextField
-        label={'Имя'}
-        name={'first_name'}
-        defaultValue={first_name}
-        onSave={onSave}
-      />
-      <SaveTextField
-        label={'Фамилия'}
-        name={'last_name'}
-        defaultValue={last_name}
-        onSave={onSave}
-      />
+      <ListItem>
+        <SaveTextField
+          label={'Имя'}
+          name={'first_name'}
+          defaultValue={first_name}
+          onSave={onSave}
+        />
+      </ListItem>
+      <ListItem>
+        <SaveTextField
+          label={'Фамилия'}
+          name={'last_name'}
+          defaultValue={last_name}
+          onSave={onSave}
+        />
+      </ListItem>
     </List>
   )
 }

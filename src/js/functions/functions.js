@@ -49,3 +49,11 @@ export function convertClients(clients=[]) {
 export function formatDate(d) {
   return d[8] + d[9] + '.' + d[5] + d[6] + '.' + d[2] + d[3]
 }
+
+export function emailValidator(value) {
+  return /^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/.test(value)
+}
+
+export function phoneValidator(value) {
+  return /^\+7 \(9[0-9]{2}\) [0-9]{3}-[0-9]{2}-[0-9]{2}$/.test(value)
+}

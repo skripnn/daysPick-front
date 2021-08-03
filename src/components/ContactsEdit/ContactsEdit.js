@@ -2,18 +2,11 @@ import Fetch from "../../js/Fetch";
 import SaveTextField from "../Fields/SaveTextField/SaveTextField";
 import {inject, observer} from "mobx-react";
 import React from "react";
-import {List, ListSubheader} from "@material-ui/core";
+import {List, ListItem, ListSubheader} from "@material-ui/core";
+import {emailValidator, phoneValidator} from "../../js/functions/functions";
 
 function ContactsEdit({contacts}) {
   const {email, phone, telegram, setValue} = contacts
-
-  function emailValidator(value) {
-    return /^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/.test(value)
-  }
-
-  function phoneValidator(value) {
-    return /^\+7 \(9[0-9]{2}\) [0-9]{3}-[0-9]{2}-[0-9]{2}$/.test(value)
-  }
 
   function onSave(data) {
     Fetch.post(['profile', 'contacts'], data).then(setValue)
@@ -22,27 +15,33 @@ function ContactsEdit({contacts}) {
   return (
     <List dense>
       <ListSubheader disableSticky>Контакты</ListSubheader>
-      <SaveTextField
-        label={'E-mail'}
-        name={'email'}
-        convertValue={value => value.toLowerCase()}
-        validator={emailValidator}
-        onSave={onSave}
-        defaultValue={email}
-      />
-      <SaveTextField
-        label={'Телефон'}
-        name={'phone'}
-        onSave={onSave}
-        defaultValue={phone}
-        validator={phoneValidator}
-      />
-      <SaveTextField
-        label={'Telegram'}
-        name={'telegram'}
-        onSave={onSave}
-        defaultValue={telegram}
-      />
+      <ListItem>
+        <SaveTextField
+          label={'E-mail'}
+          name={'email'}
+          convertValue={value => value.toLowerCase()}
+          validator={emailValidator}
+          onSave={onSave}
+          defaultValue={email}
+        />
+      </ListItem>
+      <ListItem>
+        <SaveTextField
+          label={'Телефон'}
+          name={'phone'}
+          onSave={onSave}
+          defaultValue={phone}
+          validator={phoneValidator}
+        />
+      </ListItem>
+      <ListItem>
+        <SaveTextField
+          label={'Telegram'}
+          name={'telegram'}
+          onSave={onSave}
+          defaultValue={telegram}
+        />
+      </ListItem>
     </List>
   )
 }
