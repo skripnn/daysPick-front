@@ -22,6 +22,7 @@ class FetchClass {
     Info.loading(false)
     if (redirect && res.status === 401) {
       localStorage.clear()
+      mainStore.reset()
       window.location.href = "/login/"
       return
     }

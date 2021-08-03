@@ -176,13 +176,9 @@ function Settings(props) {
     )
   }
 
-  console.log(v)
-  console.log(e)
-
   return (
     <List dense>
-      {is_confirmed ?
-        <ListSubheader>Данные регистрации</ListSubheader> :
+      {!is_confirmed &&
         <ListSubheader className={'text-red'}>Подтвердите аккаунт с помощью e-mail или номера телефона</ListSubheader>
       }
       <ListItem>

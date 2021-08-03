@@ -1,0 +1,9 @@
+.save-text-field-progress {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+.save-text-field-button-wrapper {
+    margin-top: 16px;
+    padding-left: 6px;
+}

@@ -1,4 +1,5 @@
 import {makeAutoObservable} from "mobx";
+import ContactsStore from "./ContactsStore";
 
 class ProfileStore {
   username = null
@@ -21,6 +22,8 @@ class ProfileStore {
   vk_account = null
   badge = false
 
+  contacts = new ContactsStore()
+
   constructor(username) {
     this.username = username
     makeAutoObservable(this)
@@ -28,7 +31,8 @@ class ProfileStore {
 
   setValue = (obj={}) => {
     for (const [key, value] of Object.entries(obj)) {
-      this[key] = value
+      if (key === 'contacts') this.contacts.setValue(value)
+      else this[key] = value
     }
   }
 

@@ -4,6 +4,7 @@ import CalendarStore from "./CalendarStore";
 import ProfileStore from "./ProfileStore";
 import Fetch from "../../js/Fetch";
 import {newDate} from "../../js/functions/date";
+import Info from "../../js/Info";
 
 class UserStore {
   user = new ProfileStore()
@@ -22,14 +23,13 @@ class UserStore {
   }
 
   getUser = () => {
+    Info.loading(true)
     Fetch.get(`@${this.user.username}`).then(r => {
       if (r.error) {
         this.userPage.setValue({error: r.error})
-        // localStorage.clear()
-        // mainStore.reset()
-        // Fetch.link('login')
       }
       else this.load(r)
+      Info.loading(false)
     })
     return this
   }

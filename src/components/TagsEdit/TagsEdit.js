@@ -9,21 +9,21 @@ import {ChoiceFieldDialog} from "../Fields/DialogField/DialogField";
 import SearchField from "../Fields/SearchField/SearchField";
 import {useMobile} from "../hooks";
 import Tags from "../UserProfile/Tags";
+import {inject, observer} from "mobx-react";
 
 let dragState = false
 
-export default function TagsEdit(props) {
-
-  const {value, setValue} = props
+function TagsEdit(props) {
+  const {tags, setValue} = props.ProfileStore
+  const setTags = (v) => setValue({tags: v})
 
   const ref = useRef()
 
-  const [options, setOptions] = useState(value)
+  const [options, setOptions] = useState(tags)
 
-
-  const [tags, setTags] = useState(value)
+  const [state, setState] = useState(tags)
   const [newTag, setNewTag] = useState(null)
-  useEffect(() => setTags(value), [value])
+  useEffect(() => setState(tags), [tags])
   useEffect(() => {
     if (!newTag) setOptions(null)
     else Fetch.get(['profile', 'tags'], {filter: newTag.title}).then(setOptions)
@@ -104,17 +104,17 @@ export default function TagsEdit(props) {
   }
 
   function toEnd() {
-    let newTags = [...tags]
+    let newTags = [...state]
     let eI = newTags.findIndex(i => i.id === drag.id)
     const e = newTags[eI]
     newTags.splice(eI, 1, e)
-    setTags(newTags)
+    setState(newTags)
   }
 
   function change() {
     if (!trigger) return
 
-    let newTags = [...tags]
+    let newTags = [...state]
     let eI = newTags.findIndex(i => i.id === drag.id)
     const e = newTags[eI]
     newTags.splice(eI, 1)
@@ -124,28 +124,28 @@ export default function TagsEdit(props) {
     } else if (trigger.x < trigger.centerX) {
       newTags = [...newTags.slice(0, trI), e, ...newTags.slice(trI)]
     }
-    setTags(newTags)
+    setState(newTags)
     setCh(false)
   }
 
   function addTag() {
     if (newTag.title) Fetch.put(['profile', 'tags'], newTag).then((r) => {
-      setValue(r)
+      setTags(r)
       setNewTag(null)
     })
   }
 
 
   function delTag(tag) {
-    Fetch.post(['profile', 'tags'], tags.filter(i => i.id !== tag.id)).then((r) => {
-      setValue(r)
+    Fetch.post(['profile', 'tags'], state.filter(i => i.id !== tag.id)).then((r) => {
+      setTags(r)
       setNewTag(null)
     })
   }
 
   function addOptionTag(value) {
-    Fetch.post(['profile', 'tags'], [...tags, value]).then((r) => {
-      setValue(r)
+    Fetch.post(['profile', 'tags'], [...state, value]).then((r) => {
+      setTags(r)
       const newOptions = options.filter(i => i.id !== value.id)
       setOptions(newOptions.length ? newOptions : null)
     })
@@ -179,14 +179,14 @@ export default function TagsEdit(props) {
     setDrag(null)
     setCoordinates({x: 0, y: 0})
     setSize({width: 0, height: 0})
-    Fetch.post(['profile', 'tags'], tags).then(r => {
-      if (r.error) setTags(value)
-      else setValue(r)
-    }, () => setTags(value))
+    Fetch.post(['profile', 'tags'], state).then(r => {
+      if (r.error) setState(tags)
+      else setTags(r)
+    }, () => setState(tags))
   }
 
   function exist() {
-    return newTag ? !!tags.find(i => newTag.title.toLowerCase() === i.title.toLowerCase()) : false
+    return newTag ? !!state.find(i => newTag.title.toLowerCase() === i.title.toLowerCase()) : false
   }
 
   const mobile = useMobile()
@@ -198,9 +198,9 @@ export default function TagsEdit(props) {
         {mobile && <NewTagButton onClick={() => setNewTag({title: ''})}/>}
       </div>
     </ListSubheader>
-    {(!mobile || (!!tags && !!tags.length)) &&
+    {(!mobile || (!!state && !!state.length)) &&
     <Paper ref={ref} variant={"outlined"} style={{padding: 5, marginLeft: 16, marginRight: 16}}>
-      {tags.map(i => <Tag
+      {state.map(i => <Tag
         tag={i}
         key={i.id}
         onTake={onTake}
@@ -232,11 +232,15 @@ export default function TagsEdit(props) {
     {mobile && <TagChoiceDialog
       open={!!newTag}
       close={() => setNewTag(null)}
-      setValue={setValue}
-      tags={tags}
+      setValue={setTags}
+      tags={state}
     />}
   </>)
 }
+
+export default inject(stores => ({
+  ProfileStore: stores.UsersStore.getLocalUser().user
+}))(observer(TagsEdit))
 
 function TagChoiceDialog({open, close, setValue, tags}) {
   const [newTagTitle, setNewTagTitle] = useState(null)

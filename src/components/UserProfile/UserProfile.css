@@ -3,6 +3,18 @@
     padding-right: unset !important;
     padding-top: 0;
 }
+.contacts-item {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    color: #5b5b5b;
+}
+.contacts-item > svg {
+    margin-right: 8px;
+}
+.contacts-item:active {
+    color: #4db34b;
+}
 @media screen and (max-width:600px) {
     .contacts-list-item {
         padding-left: 4px !important;
