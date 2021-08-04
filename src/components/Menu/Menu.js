@@ -49,7 +49,7 @@ function Menu(props) {
   return (
     <div>
         <IconButton onClick={() => setOpen(prevState => !prevState)} style={{marginRight: -12}}>
-          <IconBadge dot content={props.unconfirmedProjects}>
+          <IconBadge dot content={props.unconfirmedProjects || !props.user.is_confirmed}>
             <UserAvatar {...props.user} />
           </IconBadge>
         </IconButton>
@@ -60,7 +60,7 @@ function Menu(props) {
         className={'menu'}
         {...handlers}
       >
-        <MenuItem text={<UserFullName user={props.user} avatar={'right'} badge={props.unconfirmedProjects}/>} link={`@${props.user.username}`} set={props.setUser} noSelect className={'menu-item-top'}/>
+        <MenuItem text={<UserFullName user={props.user} avatar={'right'} badge={props.unconfirmedProjects || !props.user.is_confirmed}/>} link={`@${props.user.username}`} set={props.setUser} noSelect className={'menu-item-top'}/>
         <Divider />
         <List>
           <MenuItem text={'Мои проекты'} icon={<IconBadge content={props.unconfirmedProjects} circle><ListIcon/></IconBadge>} link={`projects`} set={props.setProjects} />
@@ -71,7 +71,7 @@ function Menu(props) {
         <List>
           <MenuItem text={'Поиск'} icon={<Search />} link={`search`} />
           <MenuItem text={'Профиль'} icon={<PermIdentity />} link={`profile`} />
-          <MenuItem text={'Настройки'} icon={<SettingsOutlined />} link={`settings`} />
+          <MenuItem text={'Настройки'} icon={<IconBadge dot content={!props.user.is_confirmed} circle><SettingsOutlined /></IconBadge>} link={`settings`} />
           <MenuItem text={'Выйти'} icon={<LogoutIcon />} noSelect onClick={() => {
             localStorage.clear()
             Fetch.link('search')

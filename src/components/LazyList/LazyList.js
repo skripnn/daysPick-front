@@ -23,7 +23,7 @@ function LazyList(props) {
   const ref = useRef()
 
   useEffect(() => {
-    onFilterChange(filter)
+    if (onFilterChange) onFilterChange(filter)
   // eslint-disable-next-line
   }, [filter])
 
