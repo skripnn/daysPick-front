@@ -3,7 +3,7 @@ import {Close, DateRange, Search} from "@material-ui/icons";
 import TextField from "../TextField/TextField";
 import React, {useEffect, useRef, useState} from "react";
 import Box from "@material-ui/core/Box";
-import Calendar from "../../Calendar";
+import Calendar from '../../test/components/Calendar';
 import Loader from "../../../js/Loader";
 import Fetch from "../../../js/Fetch";
 import "./SearchField.css"
@@ -12,7 +12,7 @@ import Info from "../../../js/Info";
 
 
 function SearchField(props) {
-  const {get, set, noFilter, calendar, user, minFilter, initDays, onChangeDays, onChangeFilter, ...newProps} = props
+  const {get, set, noFilter, calendar, user, minFilter, initDays, onChangeDays, onChangeFilter, preSearch, ...newProps} = props
 
   const [filter, setFilter] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -53,6 +53,7 @@ function SearchField(props) {
     const valid = minFilter ? search_filter.filter && search_filter.filter.length >= minFilter : !!Object.keys(search_filter).length
     if (valid) {
       setLoading(true)
+      preSearch(search_filter)
       Loader.set(() => {
         get(search_filter).then(r => {
           set(r)
@@ -133,7 +134,8 @@ function SearchField(props) {
 
 SearchField.defaultProps = {
   set: () => {},
-  onChangeFilter: () => {}
+  onChangeFilter: () => {},
+  preSearch: () => {}
 }
 
 export default SearchField

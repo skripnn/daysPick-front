@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import SearchField from "../Fields/SearchField/SearchField";
 
 function LazyList(props) {
-  const {children, set, add, pages, page, setPage, getLink, getParams, searchFieldParams, noSearchField, observableRoot, preLoader, ...otherProps} = props
+  const {children, set, add, pages, page, setPage, getLink, getParams, searchFieldParams, noSearchField, observableRoot, preLoader, onFilterChange, ...otherProps} = props
   const [filter, setFilter] = useState(null)
 
   const [loading, setLoading] = useState(!!preLoader)
@@ -21,6 +21,11 @@ function LazyList(props) {
   if (filter) params = {...params, ...filter}
 
   const ref = useRef()
+
+  useEffect(() => {
+    onFilterChange(filter)
+  // eslint-disable-next-line
+  }, [filter])
 
   useEffect(() => {
     if (pages === null && set) {
@@ -113,7 +118,8 @@ LazyList.propTypes = {
   pages: PropTypes.number,
   page: PropTypes.number,
   getParams: PropTypes.object,
-  getLink: PropTypes.oneOfType([PropTypes.array, PropTypes.string])
+  getLink: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
+  onFilterChange: PropTypes.func
 }
 
 export default LazyList

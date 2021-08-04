@@ -3,10 +3,13 @@ import {inject, observer} from "mobx-react";
 import {ProjectItemAutoFolder} from "../components/ProjectItem/ProjectItem";
 import Fetch from "../js/Fetch";
 import LazyList from "../components/LazyList/LazyList";
+import {useMobile} from "../components/hooks";
+import ProjectsStatistics from "../components/ProjectsStatistics/ProjectsStatistics";
 
 
 function ProjectsListPage(props) {
-  const {f, p, setProject} = props
+  const {f, p, setProject, statistics, setValue} = props
+  const mobile = useMobile()
 
   function onAction(project) {
     if (project.parent) {
@@ -22,13 +25,17 @@ function ProjectsListPage(props) {
     Fetch.link(`project/${project.id}`, setProject)
   }
 
+  function getStatistics(filter) {
+    if (setValue) Fetch.post(['projects', 'statistics'], filter).then(v => setValue({statistics: v}))
+  }
+
   return (
       <div>
         <LazyList
           searchFieldParams={{
             set: f.set,
             calendar: props.calendar,
-            user: localStorage.User
+            user: localStorage.User,
           }}
           getLink={'projects'}
           getParams={{user: localStorage.User}}
@@ -36,7 +43,9 @@ function ProjectsListPage(props) {
           page={f.page || p.page}
           set={p.set}
           add={f.pages ? f.add : p.add}
+          onFilterChange={getStatistics}
         >
+          {(f.exist() || p.exist()) && <ProjectsStatistics statistics={statistics} mobile={mobile}/>}
           {(f.exist() ? f.list : p.list).map((project) =>
             <ProjectItemAutoFolder
               project={project}
@@ -57,7 +66,9 @@ export const ProjectsPage = inject(stores => ({
   p: stores.ProjectsPageStore.p,
   pageStore: stores.ProjectsPageStore,
   setProject: stores.ProjectStore.setProject,
-  calendar: stores.UsersStore.getLocalUser().calendar
+  calendar: stores.UsersStore.getLocalUser().calendar,
+  statistics: stores.ProjectsPageStore.statistics,
+  setValue: stores.ProjectsPageStore.setValue
 }))(observer(ProjectsListPage))
 
 export const OffersPage = inject(stores => ({
@@ -65,5 +76,5 @@ export const OffersPage = inject(stores => ({
   p: stores.OffersPageStore.p,
   pageStore: stores.OffersPageStore,
   setProject: stores.OffersPageStore.setProject,
-  calendar: stores.UsersStore.getLocalUser().offersCalendar
+  calendar: stores.UsersStore.getLocalUser().offersCalendar,
 }))(observer(ProjectsListPage))

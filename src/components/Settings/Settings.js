@@ -70,14 +70,16 @@ function Settings(props) {
       <ListItem>
         <Grid container spacing={1}>
           <Grid item xs={12} sm>
-            <CheckBoxField
-              name={'is_public'}
-              label={'Публичный профиль'}
-              checked={is_public}
-              onChange={v => Fetch.post('profile', {is_public: v}).then(setValue)}
-              disabled={!is_confirmed}
-              helperText={!is_confirmed ? 'Необходимо подтвердить аккаунт' : undefined}
-            />
+            <div onClick={!is_confirmed ? () => Info.warning('Необходимо подтвердить аккаунт') : undefined}>
+              <CheckBoxField
+                name={'is_public'}
+                label={'Публичный профиль'}
+                checked={is_public}
+                onChange={v => Fetch.post('profile', {is_public: v}).then(setValue)}
+                disabled={!is_confirmed}
+                helperText={'Доступен через поиск'}
+              />
+            </div>
           </Grid>
           <Grid item xs={12} sm>
             <div className={'delete-account-button'}>

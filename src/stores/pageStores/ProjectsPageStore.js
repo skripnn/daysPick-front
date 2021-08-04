@@ -5,6 +5,11 @@ class ProjectsPageStore {
 
   p = new ListStore()
   f = new ListStore()
+  statistics = {
+    days: 0,
+    projects: 0,
+    sum: 0
+  }
 
   constructor() {
     makeAutoObservable(this)
@@ -27,6 +32,13 @@ class ProjectsPageStore {
 
   getProject = (id) => {
     return this.p.getItem(id) || this.f.getItem(id)
+  }
+
+
+  setValue = (obj) => {
+    for (const [key, value] of Object.entries(obj)) {
+      this[key] = value
+    }
   }
 
 }
