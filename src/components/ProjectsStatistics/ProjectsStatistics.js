@@ -24,6 +24,8 @@ export default function ProjectsStatistics({statistics: value, mobile}) {
     noWrap: true
   }
 
+  if (!value.projects) return <Typography {...typographyProps}>Нет проектов</Typography>
+
   return (<>
     {mobile &&
     <div className={'projects-statistics-header'}>

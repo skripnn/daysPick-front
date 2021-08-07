@@ -69,8 +69,7 @@ class ProjectStore {
 
   setMoney = () => {
     const valid = (x) => {
-      x = Math.floor(x)
-      if (Number.isInteger(x)) return x || null
+      if (Number.isFinite(x)) return x || null
       return null
     }
     if (this.money_calculating) this.money = valid(this.money_per_day * this.dates.length)
@@ -83,6 +82,7 @@ class ProjectStore {
 
   setValue = (obj={}, errors=true) => {
     for (const [key, value] of Object.entries(obj)) {
+      console.log(key, value)
       if (errors && this.canceled) {
         Info.info('Изменение недоступно')
         return
