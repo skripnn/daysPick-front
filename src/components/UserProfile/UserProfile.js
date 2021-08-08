@@ -6,6 +6,7 @@ import Tags from "./Tags";
 import Contacts from "./Contacts";
 import HeaderText from "../Text/HeaderText";
 import Tabs from "../Tabs/Tabs";
+import ProfileInfo from "./ProfileInfo";
 
 function UserProfile(props) {
   const {user, mobile} = props
@@ -13,44 +14,38 @@ function UserProfile(props) {
 
   if (!user) return null
 
-  const showContacts = Object.values(user.contacts).find(i => i !== null)
+  const showInfo = !!user.info
   const showTags = !!user.tags && !!user.tags.length
+  const showContacts = Object.values(user.contacts).find(i => i !== null)
 
-  if (mobile && showContacts && showTags) {
+  const tabObj = (id, label, content) => ({
+    id: id,
+    label: label,
+    content: content
+  })
+
+  const tabs = []
+  if (showInfo) tabs.push(tabObj('Info', 'Описание', <ProfileInfo user={user}/>))
+  if (showTags) tabs.push(tabObj('Tags', 'Специализации', <Tags user={user}/>))
+  if (showContacts) tabs.push(tabObj('Contacts', 'Контакты', <Contacts user={user}/>))
+
+  if (mobile && tabs.length > 1) {
     return (
       <Tabs
         activeTab={activeProfileTab}
-        setActiveTab={(v) => setValue({activeProfileTab: v})}
-      >
-        {[
-          {
-            id: 'Tags',
-            label: 'Специализации',
-            content: <Tags user={user.tags}/>
-          },
-          {
-            id: 'Contacts',
-            label: 'Контакты',
-            content: <Contacts user={user}/>
-          }
-        ]}
-      </Tabs>
+        setActiveTab={v => setValue({activeProfileTab: v})}
+        children={tabs}
+      />
     )
   }
 
   return (<List dense>
-    {!!showTags &&
-    <>
-      <HeaderText center={mobile}>Специализации</HeaderText>
-      <Tags user={user}/>
-    </>
-    }
-    {!!showContacts &&
-    <>
-      <HeaderText center={mobile}>Контакты</HeaderText>
-      <Contacts user={user}/>
-    </>
-    }
+    {tabs.map(tab => (
+      <div key={tab.id}>
+        <HeaderText center={mobile}>{tab.label}</HeaderText>
+        {tab.content}
+      </div>
+    ))}
   </List>)
 }
 

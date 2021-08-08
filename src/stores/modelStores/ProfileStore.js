@@ -21,6 +21,7 @@ class ProfileStore {
   facebook_account = null
   vk_account = null
   badge = false
+  info = null
 
   contacts = new ContactsStore()
 

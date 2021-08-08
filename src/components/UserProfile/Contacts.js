@@ -26,7 +26,7 @@ export default function Contacts({user}) {
       contactItemProps.icon = <Telegram/>
     }
 
-    return <ContactItem {...contactItemProps}/>
+    return <ContactItem {...contactItemProps} key={key}/>
   }
 
   return (

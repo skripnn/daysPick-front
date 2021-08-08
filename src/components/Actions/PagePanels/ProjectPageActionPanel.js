@@ -30,7 +30,7 @@ function ProjectPageActionPanel(props) {
 
   function back() {
     setLoading(null)
-    Fetch.autoLink(lastLocation ? lastLocation.pathname : `/@${localStorage.User}/`)
+    Fetch.autoLink(lastLocation ? lastLocation.pathname : `@${localStorage.User}`)
     props.ProjectStore.default()
   }
 

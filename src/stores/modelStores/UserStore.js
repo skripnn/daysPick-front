@@ -53,7 +53,12 @@ class UserStore {
   load = (obj) => {
     if (obj.user.username === localStorage.User) this.userPage.setValue({isSelf: true})
     else this.userPage.setValue({isSelf: false, profile: (!obj.projects || !obj.projects.length)})
-    if (this.userPage.loading) this.setValue(obj)
+    if (this.userPage.loading) {
+      this.setValue(obj)
+      if (!!obj.user.info) this.userPage.setValue({activeProfileTab: 'Info'})
+      else if (!!obj.user.tags && !!obj.user.tags.length) this.userPage.setValue({activeProfileTab: 'Tags'})
+      else if (Object.values(obj.user.contacts).find(i => i !== null)) this.userPage.setValue({activeProfileTab: 'Contacts'})
+    }
     else {
       this.setValue({...obj, calendar: undefined})
       this.userPage.updateCalendar()

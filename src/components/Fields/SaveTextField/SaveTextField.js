@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {CircularProgress, InputAdornment} from "@material-ui/core";
+import {CircularProgress, InputAdornment, TextField} from "@material-ui/core";
 import ValidateTextField from "../ValidateTextField/ValidateTextField";
 import IconButton from "@material-ui/core/IconButton";
 import {Save} from "@material-ui/icons";
@@ -79,7 +79,6 @@ function PhoneField({defaultValue, value, onChange, error, label, name, cancel, 
       size="small"
       fullWidth
       autoComplete='off'
-      // defaultValue={defaultValue}
       onChange={(v) => onChange(v === '+7' ? null : convertValue(v))}
       error={!!error}
       helperText={error}
@@ -96,13 +95,56 @@ function PhoneField({defaultValue, value, onChange, error, label, name, cancel, 
   )
 }
 
-export function SaveFieldButton({onClick, disabled, loading}) {
+
+export function SaveFieldButton({onClick, disabled, loading, ...props}) {
   return (
-    <div className={'save-text-field-button-wrapper'}>
+    <div className={'save-text-field-button-wrapper'} {...props}>
       <IconButton size={'small'} onClick={onClick} disabled={disabled || loading}>
         <Save/>
         {loading && <CircularProgress className={'save-text-field-progress'} color={"inherit"} size={30}/>}
       </IconButton>
+    </div>
+  )
+}
+
+
+export function SaveInfoField({defaultValue, onSave, name, label}) {
+  const [value, setValue] = useState(null)
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    setLoading(false)
+    setValue(defaultValue)
+    //eslint-disable-next-line
+  }, [defaultValue])
+
+  function handleClick() {
+    setLoading(true)
+    const obj = Object.fromEntries([[name, value === '' ? null : value]])
+    onSave(obj)
+  }
+
+  return (
+    <div className={'field-wrapper'}>
+      <TextField
+        onChange={e => setValue(e.target.value === '' ? null : e.target.value)}
+        multiline
+        fullWidth
+        name={name}
+        label={label}
+        value={value || ''}
+        onKeyDown={e => {
+          if (e.key === 'Escape') setValue(defaultValue)
+        }}
+        InputProps={value !== defaultValue ? {
+          endAdornment: <InputAdornment position="end" style={{alignSelf: 'flex-end', marginBottom: 8}}>
+            <IconButton onClick={() => setValue(defaultValue)} size={'small'}>
+              <RefreshIcon />
+            </IconButton>
+          </InputAdornment>,
+        } : undefined}
+      />
+      {value !== defaultValue && <SaveFieldButton onClick={handleClick} loading={loading} style={{alignSelf: 'flex-end'}}/>}
     </div>
   )
 }

@@ -82,7 +82,6 @@ class ProjectStore {
 
   setValue = (obj={}, errors=true) => {
     for (const [key, value] of Object.entries(obj)) {
-      console.log(key, value)
       if (errors && this.canceled) {
         Info.info('Изменение недоступно')
         return
