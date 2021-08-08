@@ -1,11 +1,11 @@
 import Button from "@material-ui/core/Button";
-import React from "react";
+import React, {forwardRef} from "react";
 import './ActionButton.css'
 import {CircularProgress} from "@material-ui/core";
 import Fetch from "../../../js/Fetch";
 import IconBadge from "../../IconBadge/IconBadge";
 
-export default function ActionButton(props) {
+function ActionButton(props, ref) {
   if (props.hidden) return null
 
   const className = "action-button" + (props.active? " pick" : (props.red? " red" : "")) + (props.className? ` ${props.className}` : '')
@@ -15,7 +15,7 @@ export default function ActionButton(props) {
     : props.icon
 
   return (
-    <div className={'action-button-wrapper'}>
+    <div className={'action-button-wrapper'} ref={ref}>
       <Button size={props.big ? undefined : "small"} onClick={onClick} className={className} disabled={props.disabled}>
         <div className={"action-button"}>
           {props.loading? <CircularProgress size={24} color={'inherit'}/> : icon}
@@ -25,3 +25,5 @@ export default function ActionButton(props) {
     </div>
   )
 }
+
+export default forwardRef(ActionButton)

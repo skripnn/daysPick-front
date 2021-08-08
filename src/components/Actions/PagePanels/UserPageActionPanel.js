@@ -1,18 +1,17 @@
 import {AccountCircle, EventBusy, List, PostAdd} from "@material-ui/icons";
-import React, {useState} from "react";
+import React, {useRef, useState} from "react";
 import ActionButton from "../ActionButton/ActionButton";
 import ActionsPanel from "../ActionsPanel/ActionsPanel";
 import {inject, observer} from "mobx-react";
 import UserFullName from "../../UserFullName/UserFullName";
 import {parseUser} from "../../../js/functions/functions";
-import {Dialog, DialogContent} from "@material-ui/core";
+import {Dialog, DialogContent, Popover} from "@material-ui/core";
 import Fetch from "../../../js/Fetch";
 import mainStore from "../../../stores/mainStore";
 
 
 function UserPageActionPanel(props) {
-  const {isSelf, edit, dayOffOver, profile, unconfirmedProjects, setValue, activeProjectTab} = props.userPage
-  const username = props.user.username
+  const {isSelf, edit, dayOffOver, profile, unconfirmedProjects, setValue} = props.userPage
   const [image, setImage] = useState(null)
 
   const buttonsBlock = [
@@ -25,16 +24,13 @@ function UserPageActionPanel(props) {
       red={dayOffOver}
       onClick={() => setValue({profile: false, dayInfo: null, dayOffOver: false, edit: !edit, activeProjectTab: 'Projects'})}
     />,
-    <ActionButton
+    <AddProjectActionButton
       key={'Добавить'}
-      label={'Добавить'}
-      icon={<PostAdd/>}
-      onClick={() => {
-        mainStore.ProjectStore.default({
-          user: activeProjectTab === 'Projects' ? username : null,
-          user_info: activeProjectTab === 'Projects' ? props.user : null
-        })
-        Fetch.autoLink('/project/')
+      bottom={props.bottom}
+      user={props.user}
+      setProject={(obj) => {
+        mainStore.ProjectStore.default(obj)
+        Fetch.autoLink('project')
       }}
     />,
     <ActionButton
@@ -79,3 +75,62 @@ function UserPageActionPanel(props) {
 }
 
 export default inject(stores => stores.UsersStore.getUser(parseUser()))(observer(UserPageActionPanel))
+
+
+function AddProjectActionButton({bottom, setProject, user}) {
+  const [anchorEl, setAnchorEl] = useState(null)
+  const ref = useRef()
+
+  const origin = {
+    vertical: bottom ? 'bottom' : 'top',
+    horizontal: 'center',
+  }
+
+  const label = (title) => <><span style={{paddingTop: 3.5}}>{title}</span><span style={{paddingBottom: 3.5}}>проект</span></>
+
+  const isSelf = user.username === localStorage.User
+
+  const setUserProject = () => setProject({
+    user: user.username,
+    user_info: user
+  })
+
+  return (
+    <>
+      <ActionButton
+        ref={ref}
+        key={'Добавить'}
+        label={'Добавить'}
+        icon={<PostAdd/>}
+        onClick={isSelf ? () => setAnchorEl(ref.current) : setUserProject}
+      />
+      <Popover
+        anchorEl={anchorEl}
+        open={!!anchorEl}
+        onClose={() => setAnchorEl(null)}
+        marginThreshold={0}
+        anchorOrigin={origin}
+        transformOrigin={origin}
+      >
+        <ActionButton
+          className={'full-width'}
+          label={label('Собственный')}
+          onClick={setUserProject}
+        />
+        <ActionButton
+          className={'full-width'}
+          label={label('Исходящий')}
+          onClick={() => setProject({
+            user: null,
+            user_info: null
+          })}
+        />
+        <ActionButton
+          disabled
+          className={'full-width'}
+          label={label('Открытый')}
+        />
+      </Popover>
+    </>
+  )
+}

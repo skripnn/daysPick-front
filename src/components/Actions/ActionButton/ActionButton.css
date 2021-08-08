@@ -23,3 +23,6 @@ button.action-button {
     justify-content: center;
     width: 100%;
 }
+.action-button.full-width {
+    width: 100%;
+}
