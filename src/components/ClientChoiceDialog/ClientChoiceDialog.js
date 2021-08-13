@@ -75,7 +75,7 @@ function ClientChoiceDialog(props) {
           observableRoot={ref.current || undefined}
         >
           {convertClients(props.f.list).map(i => (
-            <>
+            <div key={i.company}>
               <ListSubheader disableSticky key={i.company}>{i.company}</ListSubheader>
               {i.clients.map(client => <ClientItem
                   client={client}
@@ -83,7 +83,7 @@ function ClientChoiceDialog(props) {
                   onClick={() => props.set(client)}
                 />
               )}
-            </>
+            </div>
           ))}
         </LazyList>
       </DialogContent>

@@ -49,10 +49,9 @@ function ProjectPageActionPanel(props) {
     else {
       setLoading('save')
       Fetch.post(['project', id], serializer()).then(
-        () => back(),
-        (error) => {
-          setLoading(null)
-          Info.error(error)
+        r => {
+          if (r && r.error) setLoading(null)
+          else back()
         }
       )
     }
