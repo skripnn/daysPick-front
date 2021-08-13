@@ -15,7 +15,7 @@ function FacebookLogin(props) {
   const handleError = (e) => Info.error(e.message)
 
   return (
-    <FacebookProvider appId={props.id.toString()}>
+    <FacebookProvider appId={props.id.toString()} version={'v11.0'} cookie xfbml>
       <Login
         {...Login.defaultProps}
         spinner

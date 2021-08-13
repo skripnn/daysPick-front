@@ -3,7 +3,6 @@ import {makeAutoObservable} from "mobx";
 import CalendarStore from "./CalendarStore";
 import ProfileStore from "./ProfileStore";
 import Fetch from "../../js/Fetch";
-import {newDate} from "../../js/functions/date";
 import Info from "../../js/Info";
 
 class UserStore {
@@ -83,21 +82,25 @@ class UserStore {
       list.sort(compareDates)
       return [...list.filter(p => !p.confirmed), ...list.filter(p => p.confirmed)]
     }
-    const projectsNew = projects.map(project => {
-      const isFolder = !!project.children && !!project.children.length
-      if (isFolder) {
-        project.children = project.children.filter(p => !(p.date_end < newDate().format() && p.is_paid))
-        project.days = {}
-        project.children.forEach(p => Object.keys(p.days).forEach(d => project.days[d] = null))
-        const dates = Object.keys(project.days)
-        dates.sort()
-        project.date_start = dates[0]
-        project.date_end = dates[dates.length - 1]
-        project.children = sort(project.children)
+
+    const folders = []
+    projects.forEach(p => {
+      if (p.parent) {
+        const indexFolder = folders.findIndex(i => i.id === p.parent.id)
+        if (indexFolder === -1) {
+          folders.push({...p.parent, dates: [...p.dates], date_start: p.date_start, date_end: p.date_end, children: [p], confirmed: true})
+        }
+        else {
+          const parent = folders[indexFolder]
+          parent.dates = [...parent.dates, ...p.dates]
+          parent.children.push(p)
+          if (p.date_start < parent.date_start) parent.date_start = p.date_start
+          if (p.date_end > parent.date_end) parent.date_end = p.date_end
+          folders[indexFolder] = parent
+        }
       }
-      return project
     })
-    return sort(projectsNew)
+    return sort([...projects.filter(p => !p.parent), ...folders])
   }
 
   setProjects = (projects) => {

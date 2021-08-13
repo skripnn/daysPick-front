@@ -5,13 +5,14 @@ import {inject, observer} from "mobx-react";
 import Fetch from "../../js/Fetch";
 import Tabs from "../Tabs/Tabs";
 import {List} from "@material-ui/core";
+import {compareProfiles} from "../../js/functions/functions";
 
 function ActualProjects({user, ...props}) {
   const {projects, offers, getActualProjects, getActualOffers} = props.UserStore
   const {setValue, updateCalendar, activeProjectTab} = props.UserStore.userPage
 
   function highlightDays(project) {
-    setValue({daysPick: Object.keys(project.days)})
+    setValue({daysPick: project.dates})
   }
 
   function unHighlightDays() {
@@ -38,9 +39,8 @@ function ActualProjects({user, ...props}) {
       onDelete={onAction}
       onPaid={onAction}
       onConfirm={onAction}
-      paidButton={project.user === localStorage.User}
-      confirmButton={project.user === localStorage.User}
-      childListFilter={l => l.slice(0).reverse()}
+      paidButton={compareProfiles(project.user, localStorage.User)}
+      confirmButton={compareProfiles(project.user, localStorage.User)}
 
       onTouchHold={highlightDays}
       onTouchEnd={unHighlightDays}
@@ -54,7 +54,7 @@ function ActualProjects({user, ...props}) {
     return <HeaderText center>{'Актуальные проекты отсутствуют'}</HeaderText>
   }
 
-  if (user.username !== localStorage.User) {
+  if (!compareProfiles(user, localStorage.User)) {
     return (
       <List dense>
         <HeaderText center>{`Актуальные проекты ${!projects || !projects.length ? ' отсутствуют' : ''}`}</HeaderText>

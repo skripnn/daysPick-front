@@ -57,3 +57,9 @@ export function emailValidator(value) {
 export function phoneValidator(value) {
   return /^\+7 \(9[0-9]{2}\) [0-9]{3}-[0-9]{2}-[0-9]{2}$/.test(value)
 }
+
+export function compareProfiles(a, b) {
+  const _a = typeof a === 'string' || !a ? a : a.username
+  const _b = typeof b === 'string' || !b ? b : b.username
+  return _a === _b
+}

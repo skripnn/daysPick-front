@@ -32,15 +32,7 @@ function ProjectForm(props) {
     'client': <ClientField client={client} set={(client) => setValue({client: client})}/>,
     'creator': <UserField value={creator_info ? creator_info : creator} label={'Заказчик'} disabled required/>,
     'folder': <FolderField value={parent} set={(parent) => setValue({parent: parent})} f={clientListStore}/>,
-    'user': <UserField
-      value={user_info ? user_info : user}
-      set={v => setValue({
-        user: v ? v.username : null,
-        user_info: v
-      })}
-      required
-      label={'Подрядчик'}
-    />,
+    'user': <UserField value={user_info ? user_info : user} label={'Подрядчик'} required set={v => setValue({user: v ? v.username : null, user_info: v})}/>
   }
 
   const getField = (fieldName) => fields[fieldName] || fieldName

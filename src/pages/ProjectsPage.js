@@ -8,7 +8,7 @@ import ProjectsStatistics from "../components/ProjectsStatistics/ProjectsStatist
 
 
 function ProjectsListPage(props) {
-  const {f, p, setProject, statistics, setValue} = props
+  const {link, f, p, setProject, statistics, setValue} = props
   const mobile = useMobile()
 
   function onAction(project) {
@@ -21,12 +21,12 @@ function ProjectsListPage(props) {
     else props.pageStore.delProject(project.id)
   }
 
-  function link(project) {
-    Fetch.link(`project/${project.id}`, setProject)
+  function onProjectClick(project) {
+    Fetch.link(`${link}/${project.id}`, setProject)
   }
 
   function getStatistics(filter) {
-    if (setValue) Fetch.post(['projects', 'statistics'], filter).then(v => setValue({statistics: v}))
+    if (setValue) Fetch.post([link, 'statistics'], filter).then(v => setValue({statistics: v}))
   }
 
   return (
@@ -37,7 +37,7 @@ function ProjectsListPage(props) {
             calendar: props.calendar,
             user: localStorage.User,
           }}
-          getLink={'projects'}
+          getLink={link}
           getParams={{user: localStorage.User}}
           pages={f.pages || p.pages}
           page={f.page || p.page}
@@ -45,12 +45,12 @@ function ProjectsListPage(props) {
           add={f.pages ? f.add : p.add}
           onFilterChange={getStatistics}
         >
-          {(f.exist() || p.exist()) && <ProjectsStatistics statistics={statistics} mobile={mobile}/>}
+          {!!statistics && (f.exist() || p.exist()) && <ProjectsStatistics statistics={statistics} mobile={mobile}/>}
           {(f.exist() ? f.list : p.list).map((project) =>
             <ProjectItemAutoFolder
               project={project}
               key={project.id}
-              onClick={link}
+              onClick={onProjectClick}
               onDelete={onAction}
               confirmButton={project.creator !== localStorage.User}
               paidButton={false}
@@ -68,7 +68,8 @@ export const ProjectsPage = inject(stores => ({
   setProject: stores.ProjectStore.setProject,
   calendar: stores.UsersStore.getLocalUser().calendar,
   statistics: stores.ProjectsPageStore.statistics,
-  setValue: stores.ProjectsPageStore.setValue
+  setValue: stores.ProjectsPageStore.setValue,
+  link: 'projects'
 }))(observer(ProjectsListPage))
 
 export const OffersPage = inject(stores => ({
@@ -77,4 +78,5 @@ export const OffersPage = inject(stores => ({
   pageStore: stores.OffersPageStore,
   setProject: stores.OffersPageStore.setProject,
   calendar: stores.UsersStore.getLocalUser().offersCalendar,
+  link: 'offers'
 }))(observer(ProjectsListPage))

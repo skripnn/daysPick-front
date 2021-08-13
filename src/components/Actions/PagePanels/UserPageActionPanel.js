@@ -125,11 +125,15 @@ function AddProjectActionButton({bottom, setProject, user}) {
             user_info: null
           })}
         />
-        <ActionButton
-          disabled
-          className={'full-width'}
-          label={label('Открытый')}
-        />
+        {/*<ActionButton*/}
+        {/*  className={'full-width'}*/}
+        {/*  label={label('Открытый')}*/}
+        {/*  onClick={() => setProject({*/}
+        {/*    user: null,*/}
+        {/*    user_info: null,*/}
+        {/*    open: true*/}
+        {/*  })}*/}
+        {/*/>*/}
       </Popover>
     </>
   )

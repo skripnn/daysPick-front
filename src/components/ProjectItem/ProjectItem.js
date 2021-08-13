@@ -17,7 +17,7 @@ import {
 } from "@material-ui/icons";
 import "./ProjectItem.css"
 import Fetch from "../../js/Fetch";
-import {formatDate} from "../../js/functions/functions";
+import {compareProfiles, formatDate} from "../../js/functions/functions";
 import PopoverButtonsBlock from "../PopoverButtonsBlock/PopoverButtonsBlock";
 import {useControlledState, useMobile, useTouchHold} from "../hooks";
 import IconBadge from "../IconBadge/IconBadge";
@@ -77,7 +77,7 @@ export function ProjectFolderItem({project, onTouchHold, onTouchEnd, onMouseOver
   const mobile = useMobile()
   const [folderOpen, setFolderOpen] = useControlledState(open, setOpen)
 
-  let clients = [...new Set(project.children.map(p => p.client ? (mobile ? p.client.name : p.client.fullname) : null))]
+  let clients = [...new Set(project.children.map(p => p.client ? (mobile ? p.client.name : p.client.full_name) : null))]
   if (clients.includes(null)) clients = clients.filter(v => !!v).concat([null])
   const client = clients.length > 1 ? clients[0] + ', ...' : clients[0]
 
@@ -126,6 +126,7 @@ ProjectFolderItem.defaultProps = {
 export function ProjectItem({project, child, onTouchHold, onTouchEnd, onMouseOver, onMouseLeave, onClick,
                                onConfirm, onPaid, onDelete, confirmButton, paidButton, deleteButton}) {
   const [transparent, setTransparent] = useState(false)
+  const past = project.date_end < newDate().format()
 
   function onHandleDelete() {
     Fetch.delete(['project', project.id]).then(() => onDelete(project))
@@ -155,19 +156,19 @@ export function ProjectItem({project, child, onTouchHold, onTouchEnd, onMouseOve
 
   const DeleteButton = (
     <IconButton edge="end" disabled={transparent} onClick={() => {
-      const text = project.user === project.creator || project.canceled ? "Удалить проект?" : (project.user === localStorage.User ? "Отказаться от проекта?" : "Отменить проект?")
+      const text = compareProfiles(project.user, project.creator) || project.canceled ? "Удалить проект?" : (compareProfiles(project.user, localStorage.User) ? "Отказаться от проекта?" : "Отменить проект?")
       // eslint-disable-next-line no-restricted-globals
       if (!confirm(text)) return
       setTransparent(true)
       onHandleDelete()
     }}>
-      {project.user === project.creator || project.canceled ? <DeleteIcon/> : <Cancel/>}
+      {compareProfiles(project.user, project.creator) || project.canceled ? <DeleteIcon/> : <Cancel/>}
     </IconButton>
   )
 
   const ConfirmMenu = (
     <PopoverButtonsBlock
-      icon={project.user === project.creator
+      icon={compareProfiles(project.user, project.creator)
         ? <MoreHoriz/>
         : <IconBadge dot content><Help color={'secondary'}/></IconBadge>
       }
@@ -181,10 +182,10 @@ export function ProjectItem({project, child, onTouchHold, onTouchEnd, onMouseOve
 
   let action = null
   if (confirmButton && project.is_wait && !project.canceled) action = ConfirmMenu
-  else if (paidButton && !project.is_paid && !project.canceled) action = PaidButton
+  else if (paidButton && past && !project.is_paid && !project.canceled) action = PaidButton
   else if (deleteButton) action = DeleteButton
   const projectTitle = project.title || (formatDate(project.date_start) + (project.date_end === project.date_start ? '' : ` - ${formatDate(project.date_end)}`))
-  const title = !child && project.parent_name ? project.parent_name + ' / ' + projectTitle : projectTitle
+  const title = !child && project.parent && project.parent.title ? project.parent.title + ' / ' + projectTitle : projectTitle
 
   return (
     <ProjectItemBase
@@ -219,22 +220,24 @@ export function ProjectItemBase({project, deleting, child, onTouchHold, onTouchE
   const touchActions = useTouchHold(() => onTouchHold(project), () => onTouchEnd(project))
 
   let clientName = null
-  if (project.user !== project.creator) {
+  if (!compareProfiles(project.user, project.creator)) {
     clientName = (
       <>
-        {localStorage.User === project.creator
-          ? <><DoubleArrow fontSize={"inherit"} style={{paddingRight: 4}}/>{project.user_info.full_name}</>
-          : <><Person fontSize={"inherit"} style={{paddingRight: 4}}/>{project.creator_info.full_name}</>
+        {compareProfiles(project.creator, localStorage.User)
+          ? <><DoubleArrow fontSize={"inherit"} style={{paddingRight: 4}}/>{project.user ? project.user.full_name : null}</>
+          : <><Person fontSize={"inherit"} style={{paddingRight: 4}}/>{project.creator.full_name}</>
         }
       </>
     )
   }
-  else if (project.client) clientName = mobile ? project.client.name : project.client.fullname
+  else if (project.client) clientName = mobile ? project.client.name : project.client.full_name
 
   let primaryText = primary || project.title
-  if (!project.confirmed && project.creator === localStorage.User) primaryText += ' (Ожидание ответа)'
-  else if (project.canceled === project.creator) primaryText += ' (Отменен)'
-  else if (project.canceled === project.user) primaryText += ' (Отказ)'
+  if (typeof primaryText === 'string') {
+    if (!project.confirmed && compareProfiles(project.creator, localStorage.User)) primaryText += ' (Ожидание ответа)'
+    else if (compareProfiles(project.canceled, project.creator)) primaryText += ' (Отменен)'
+    else if (compareProfiles(project.canceled, project.user)) primaryText += ' (Отказ)'
+  }
 
   return (
     <ListItem

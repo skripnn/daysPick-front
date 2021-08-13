@@ -25,7 +25,7 @@ function ClientItem(props) {
       <ListItemIcon style={{minWidth: "unset", paddingRight: 8}}>
         <Avatar style={{zoom: 0.7}}>{client.name[0].toUpperCase()}</Avatar>
       </ListItemIcon>
-      <ListItemText primary={props.showCompany ? client.fullname : client.name} style={{whiteSpace: "nowrap", overflow: "hidden"}}/>
+      <ListItemText primary={props.showCompany ? client.full_name : client.name} style={{whiteSpace: "nowrap", overflow: "hidden"}}/>
       {!!props.onDelete &&
       <ListItemSecondaryAction className={className + ' delete-button'}>
         <IconButton
