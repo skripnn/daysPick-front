@@ -37,8 +37,10 @@ function LoginPage() {
         .then(r => {
             if (r.token) {
               if (error) setError(null)
-              mainStore.UsersStore.setLocalUser(r)
-              Fetch.link(`@${localStorage.User}`)
+              localStorage.setItem("Authorization", `Token ${r.token}`)
+              localStorage.setItem("User", r.account.username)
+              mainStore.AccountStore.setValue(r.account)
+              Fetch.autoLink(`@${localStorage.User}`)
             }
             else {
               setLoading(false)

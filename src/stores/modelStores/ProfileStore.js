@@ -1,5 +1,5 @@
 import {makeAutoObservable} from "mobx";
-import ContactsStore from "./ContactsStore";
+// import ContactsStore from "./ContactsStore";
 
 class ProfileStore {
   username = null
@@ -7,23 +7,21 @@ class ProfileStore {
   first_name = null
   last_name = null
   email = null
-  email_confirm = null
+  // email_confirm = null
   phone = null
-  phone_confirm = null
-  positions = []
+  telegram = null
+  // phone_confirm = null
+  // positions = []
   tags = []
-  is_public = false
+  // is_public = false
   is_confirmed = true
-  show_email = true
-  show_phone = true
   avatar = null
   photo = null
-  facebook_account = null
-  vk_account = null
-  badge = false
+  // facebook_account = null
+  // badge = false
   info = null
 
-  contacts = new ContactsStore()
+  // contacts = new ContactsStore()
 
   constructor(username) {
     this.username = username
@@ -32,8 +30,9 @@ class ProfileStore {
 
   setValue = (obj={}) => {
     for (const [key, value] of Object.entries(obj)) {
-      if (key === 'contacts') this.contacts.setValue(value)
-      else this[key] = value
+      // if (key === 'contacts') this.contacts.setValue(value)
+      // else this[key] = value
+      this[key] = value
     }
   }
 

@@ -16,7 +16,7 @@ function UserProfile(props) {
 
   const showInfo = !!user.info
   const showTags = !!user.tags && !!user.tags.length
-  const showContacts = Object.values(user.contacts).find(i => i !== null)
+  const showContacts = !!user.email || !!user.phone || !!user.telegram
 
   const tabObj = (id, label, content) => ({
     id: id,

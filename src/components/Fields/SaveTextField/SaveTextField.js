@@ -28,6 +28,7 @@ function SaveTextField({defaultValue, label, name, validator, convertValue, onSa
   }, [defaultValue])
 
   function handleClick() {
+    if (value === defaultValue) return
     setLoading(true)
     const obj = Object.fromEntries([[name, value === '' ? null : value]])
     onSave(obj)

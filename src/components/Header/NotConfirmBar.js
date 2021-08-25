@@ -15,5 +15,5 @@ function NotConfirmBar({is_confirmed}) {
 }
 
 export default inject(stores => ({
-  is_confirmed: stores.UsersStore.getLocalUser().user.is_confirmed
+  is_confirmed: stores.AccountStore.is_confirmed
 }))(observer(NotConfirmBar))

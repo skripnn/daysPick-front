@@ -26,6 +26,7 @@ import {useMobile, useWindowHeightResizeCallback} from "./components/hooks";
 import FeedPage from "./pages/FeedPage";
 import TgAuthPage from "./pages/TgAuthPage";
 import Terms from "./pages/terms";
+import mainStore from "./stores/mainStore";
 
 function App(props) {
   const mobile = useMobile()
@@ -44,6 +45,13 @@ function App(props) {
     if (lightTheme) favicon.href = favicon.href.replace('favicon.ico', 'favicon-black.ico')
     else favicon.href = favicon.href.replace('favicon-black.ico', 'favicon.ico')
   }, [lightTheme])
+
+  useEffect(() => {
+    if (localStorage.User && localStorage.User !== mainStore.AccountStore.username) {
+      Fetch.get('account').then(mainStore.AccountStore.setValue)
+    }
+  // eslint-disable-next-line
+  }, [localStorage.User])
 
   return (
     <ThemeProvider theme={theme}>

@@ -47,7 +47,7 @@ function Settings(props) {
   function delete_profile() {
     // eslint-disable-next-line no-restricted-globals
     if (confirm('Удалить профиль?\nДанные невозможно будет восстановить')) {
-      Fetch.delete(`@${localStorage.User}`).then((r) => {
+      Fetch.delete('account').then((r) => {
         if (!r.error) {
           Info.info('Данные успешно удалены')
           localStorage.clear()
@@ -75,7 +75,7 @@ function Settings(props) {
                 name={'is_public'}
                 label={'Публичный профиль'}
                 checked={is_public}
-                onChange={v => Fetch.post('profile', {is_public: v}).then(setValue)}
+                onChange={v => Fetch.post('account', {is_public: v}).then(setValue)}
                 disabled={!is_confirmed}
                 helperText={'Доступен через поиск'}
               />
@@ -94,7 +94,8 @@ function Settings(props) {
 }
 
 export default inject(stores => ({
-  store: stores.UsersStore.getLocalUser().user,
+  store: stores.AccountStore,
+  // store: stores.UsersStore.getLocalUser().account,
   changeLocalUsername: stores.UsersStore.changeLocalUsername
 }))(observer(Settings))
 
@@ -143,7 +144,7 @@ function NewUsernameField({username, changeUsername}) {
   function onSave() {
     if (error) return
     setLoading(true)
-    Fetch.post('profile', {username: newUsername})
+    Fetch.post('account', {username: newUsername})
       .then(r => {
         if (r.error) setError(r.error)
         else {
@@ -213,7 +214,7 @@ function NewPasswordField() {
 
   function onSave() {
     setLoading(true)
-    Fetch.post('profile', {password: password}).then(r => {
+    Fetch.post('account', {password: password}).then(r => {
       setPassword(null)
       setPassword2(null)
       setError(false)
@@ -268,7 +269,7 @@ function EmailChangeField({email, email_confirm, setValue}) {
   const [emailSend, setEmailSend] = useState(true)
 
   function onSave() {
-    Fetch.post('profile', {email: newEmail})
+    Fetch.post('account', {email: newEmail})
       .then(r => {
         if (r.error) setError(r.error)
         else {
@@ -279,7 +280,7 @@ function EmailChangeField({email, email_confirm, setValue}) {
   }
 
   function cancel() {
-    Fetch.post('profile', {email: null}).then(setValue).then(() => setEmailSend(true))
+    Fetch.post('account', {email: null}).then(setValue).then(() => setEmailSend(true))
   }
 
   function reset() {
@@ -355,7 +356,7 @@ function EmailChangeField({email, email_confirm, setValue}) {
                     <Tooltip title="Повторить отправку письма">
                       <InputAdornment position="end">
                         <IconButton
-                          onClick={() => Fetch.post('profile', {email: email})
+                          onClick={() => Fetch.post('account', {email: email})
                             .then(() => {
                               setEmailSend(false)
                               Info.info('Письмо отправлено')
@@ -413,13 +414,13 @@ function PhoneChangeField({phone, phone_confirm, setValue}) {
   }
 
   function cancel() {
-    Fetch.post('profile', {phone: null}).then(setValue)
+    Fetch.post('account', {phone: null}).then(setValue)
   }
 
   function onSave() {
     if (error) return
     setLoading(true)
-    Fetch.post('profile', {phone: newPhone})
+    Fetch.post('account', {phone: newPhone})
       .then(r => {
         if (r.error) setError(r.error)
         else {

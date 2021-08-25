@@ -5,38 +5,30 @@ import Typography from "@material-ui/core/Typography";
 
 export default function Contacts({user}) {
 
-  function autoContactItem([key, value]) {
-    if (!value) return null
-
-    const contactItemProps = {
-      text: value,
-    }
-
-    if (key === 'phone') {
-      contactItemProps.link = `tel:${contactItemProps.text}`
-      contactItemProps.icon = <Call/>
-      contactItemProps.noTargetBlank = true
-    }
-    else if (key === 'email') {
-      contactItemProps.link = `mailto:${value}`
-      contactItemProps.icon = <Mail/>
-    }
-    else if (key === 'telegram') {
-      contactItemProps.link = `https://t.me/${value}`
-      contactItemProps.icon = <Telegram/>
-    }
-
-    return <ContactItem {...contactItemProps} key={key}/>
-  }
-
   return (
     <>
-      {Object.entries(user.contacts).map(autoContactItem)}
+      <ContactItem
+        text={user.phone}
+        link={`tel:${user.phone}`}
+        icon={<Call/>}
+        noTargetBlank
+      />
+      <ContactItem
+        text={user.email}
+        link={`mailto:${user.email}`}
+        icon={<Mail/>}
+      />
+      <ContactItem
+        text={user.telegram}
+        link={`https://t.me/${user.telegram}`}
+        icon={<Telegram/>}
+      />
     </>
   )
 }
 
 function ContactItem({text, link, icon, noTargetBlank}) {
+  if (!text) return null
   return (
     <ListItem className={'contacts-list-item'}>
       <a

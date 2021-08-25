@@ -133,13 +133,13 @@ export function ProjectItem({project, child, onTouchHold, onTouchEnd, onMouseOve
   }
 
   function onHandleConfirm() {
-    project.is_wait = false
-    Fetch.post(['project', project.id], project).then(() => onConfirm(project))
+    // project.is_wait = false
+    Fetch.post(['project', project.id], {is_wait: false}).then(() => onConfirm(project))
   }
 
   function onHandlePaid() {
-    project.is_paid = !project.is_paid
-    Fetch.post(['project', project.id], project).then(() => onPaid(project))
+    // project.is_paid = !project.is_paid
+    Fetch.post(['project', project.id], {is_paid: true}).then(() => onPaid(project))
   }
 
   const PaidButton = (

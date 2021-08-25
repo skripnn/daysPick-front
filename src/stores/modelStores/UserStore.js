@@ -26,6 +26,7 @@ class UserStore {
     Fetch.get(`@${this.user.username}`).then(r => {
       if (r.error) {
         this.userPage.setValue({error: r.error})
+        Info.error(r.error)
       }
       else this.load(r)
       Info.loading(false)
@@ -56,7 +57,7 @@ class UserStore {
       this.setValue(obj)
       if (!!obj.user.info) this.userPage.setValue({activeProfileTab: 'Info'})
       else if (!!obj.user.tags && !!obj.user.tags.length) this.userPage.setValue({activeProfileTab: 'Tags'})
-      else if (Object.values(obj.user.contacts).find(i => i !== null)) this.userPage.setValue({activeProfileTab: 'Contacts'})
+      else if (!!obj.user.email || !!obj.user.phone || !!obj.user.telegram) this.userPage.setValue({activeProfileTab: 'Contacts'})
     }
     else {
       this.setValue({...obj, calendar: undefined})
@@ -114,6 +115,7 @@ class UserStore {
 
   setValue = (obj={}) => {
     for (const [key, value] of Object.entries(obj)) {
+      if (key === 'account' || value === undefined) continue
       if (key === 'projects') this.setProjects(value)
       else if (key === 'offers') this.setOffers(value)
       else this[key].setValue(value)

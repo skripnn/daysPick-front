@@ -50,7 +50,7 @@ function Menu(props) {
   return (
     <div>
         <IconButton onClick={() => setOpen(prevState => !prevState)} style={{marginRight: -12}}>
-          <IconBadge dot content={props.unconfirmedProjects || !props.user.is_confirmed}>
+          <IconBadge dot content={props.unconfirmedProjects || !props.account.is_confirmed}>
             <UserAvatar {...props.user} />
           </IconBadge>
         </IconButton>
@@ -61,10 +61,10 @@ function Menu(props) {
         className={'menu'}
         {...handlers}
       >
-        <MenuItem text={<UserFullName user={props.user} avatar={'right'} badge={props.unconfirmedProjects || !props.user.is_confirmed}/>} link={`@${props.user.username}`} set={props.setUser} noSelect className={'menu-item-top'}/>
+        <MenuItem text={<UserFullName user={props.user} avatar={'right'} badge={props.unconfirmedProjects || !props.account.is_confirmed}/>} link={`@${props.account.username}`} set={props.setUser} noSelect className={'menu-item-top'}/>
         <Divider />
         <List>
-          <MenuItem text={'Мои проекты'} icon={<IconBadge content={props.unconfirmedProjects} circle><ListIcon/></IconBadge>} link={`projects`} set={props.setProjects} />
+          <MenuItem text={'Мои проекты'} icon={<IconBadge content={props.unconfirmedProjects} rect={false}><ListIcon/></IconBadge>} link={`projects`} set={props.setProjects} />
           <MenuItem text={'Мои клиенты'} icon={<Group />} link={`clients`} set={props.setClients} />
           <MenuItem text={'Исходящие проекты'} icon={<ListIcon/>} link={`offers`} set={props.setOffers} />
         </List>
@@ -72,7 +72,7 @@ function Menu(props) {
         <List>
           <MenuItem text={'Поиск'} icon={<Search />} link={`search`} />
           <MenuItem text={'Профиль'} icon={<PermIdentity />} link={`profile`} />
-          <MenuItem text={'Настройки'} icon={<IconBadge dot content={!props.user.is_confirmed} circle><SettingsOutlined /></IconBadge>} link={`settings`} />
+          <MenuItem text={'Настройки'} icon={<IconBadge dot content={!props.account.is_confirmed} rect={false}><SettingsOutlined /></IconBadge>} link={`settings`} />
           <MenuItem text={'Выйти'} icon={<LogoutIcon />} noSelect onClick={() => {
             localStorage.clear()
             mainStore.reset()
@@ -86,6 +86,8 @@ function Menu(props) {
 
 export default inject(stores => {
   return {
+    account: stores.AccountStore,
+    // account: stores.UsersStore.getLocalUser().account,
     user: stores.UsersStore.getLocalUser().user,
     unconfirmedProjects: stores.UsersStore.getLocalUser().userPage.unconfirmedProjects,
     getUser: stores.UsersStore.getLocalUser().getUser,

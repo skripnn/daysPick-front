@@ -1,6 +1,7 @@
 import {makeAutoObservable} from "mobx";
 import UserStore from "./UserStore";
 import {parseUser} from "../../js/functions/functions";
+import mainStore from "../mainStore";
 
 
 class UsersStore {
@@ -12,7 +13,7 @@ class UsersStore {
 
   getUser = (user) => {
     if (!user) user = parseUser()
-    if (!user) document.location.href = '/'
+    // if (!user) document.location.href = '/'
     if (!this.users[user]) {
       this.users[user] = new UserStore(user).getUser(true)
     }
@@ -32,10 +33,12 @@ class UsersStore {
   getLocalUser = () => this.getUser(localStorage.User)
 
   setLocalUser = (r) => {
+    console.log('setLocalUser')
     const username = r.user.username
     localStorage.setItem("Authorization", `Token ${r.token}`)
     localStorage.setItem("User", username)
     delete r.token
+    mainStore.AccountStore.setValue(r.account)
     this.users[username] = new UserStore(username).load(r)
   }
 
@@ -43,7 +46,10 @@ class UsersStore {
     const oldUsername = localStorage.User
     localStorage.User = r.username
     this.users[r.username] = this.users[oldUsername]
-    this.users[r.username].setValue({user: r})
+    // this.users[r.username].setValue({user: r})
+    // this.users[r.username].setValue({account: r})
+    mainStore.AccountStore.setValue(r)
+    this.users[r.username].user.setValue({username: r.username})
     delete this.users[oldUsername]
   }
 
