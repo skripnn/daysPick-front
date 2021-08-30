@@ -68,6 +68,7 @@ function ProjectPage(props) {
       {is_folder && <List dense>
         {children.map(project =>
           <ProjectItem
+            child
             project={project}
             key={project.id}
 

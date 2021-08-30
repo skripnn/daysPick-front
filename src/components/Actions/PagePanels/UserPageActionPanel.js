@@ -77,7 +77,7 @@ function UserPageActionPanel(props) {
 export default inject(stores => stores.UsersStore.getUser(parseUser()))(observer(UserPageActionPanel))
 
 
-function AddProjectActionButton({bottom, setProject, user}) {
+function AddProjectActionButtonComponent({bottom, setProject, user, AccountStore}) {
   const [anchorEl, setAnchorEl] = useState(null)
   const ref = useRef()
 
@@ -102,7 +102,7 @@ function AddProjectActionButton({bottom, setProject, user}) {
         key={'Добавить'}
         label={'Добавить'}
         icon={<PostAdd/>}
-        onClick={isSelf ? () => setAnchorEl(ref.current) : setUserProject}
+        onClick={isSelf && AccountStore.is_confirmed ? () => setAnchorEl(ref.current) : setUserProject}
       />
       <Popover
         anchorEl={anchorEl}
@@ -138,3 +138,5 @@ function AddProjectActionButton({bottom, setProject, user}) {
     </>
   )
 }
+
+const AddProjectActionButton = inject('AccountStore')(observer(AddProjectActionButtonComponent))

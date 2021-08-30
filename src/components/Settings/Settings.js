@@ -43,6 +43,7 @@ function Settings(props) {
     is_confirmed
   } = props.store
 
+  if (!username) return null
 
   function delete_profile() {
     // eslint-disable-next-line no-restricted-globals
@@ -95,7 +96,6 @@ function Settings(props) {
 
 export default inject(stores => ({
   store: stores.AccountStore,
-  // store: stores.UsersStore.getLocalUser().account,
   changeLocalUsername: stores.UsersStore.changeLocalUsername
 }))(observer(Settings))
 

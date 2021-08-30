@@ -22,7 +22,7 @@ function ProjectsListPage(props) {
   }
 
   function onProjectClick(project) {
-    Fetch.link(`${link}/${project.id}`, setProject)
+    Fetch.link(`project/${project.id}`, setProject)
   }
 
   function getStatistics(filter) {

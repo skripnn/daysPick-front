@@ -33,7 +33,8 @@ class FetchClass {
   path = (URLs, params) => {
     if (URLs instanceof Array) URLs = URLs.filter(v => !!v).join('/')
     if (URLs.startsWith('/')) URLs = URLs.slice(1)
-    let path = this.url + URLs + '/'
+    let path = this.url + URLs
+    if (!path.endsWith('/')) path += '/'
     if (typeof URLs === 'string' && URLs.startsWith('http')) path = URLs
     if (params) {
       path += '?'
