@@ -28,10 +28,10 @@ function UserFullName(props) {
       {props.avatar === 'left' && avatar}
       <Box>{props.user.full_name}</Box>
       {props.avatar === 'right' && avatar}
-      {props.raise && props.user.can_be_raised &&
+      {props.raise && props.AccountStore.can_be_raised &&
       <Tooltip title={'Поднять в поиске'}>
         <IconButton size={"small"}
-                    onClick={() => Fetch.get(['profile', 'raise']).then(props.setUser)}>
+                    onClick={() => Fetch.post('account', {raised: true}).then(props.AccountStore.setValue)}>
             <Publish className={"edit-button"}/>
         </IconButton>
       </Tooltip>
@@ -44,6 +44,4 @@ UserFullName.defaultProps = {
   badge: false
 }
 
-export default inject(stores => ({
-  setUser: stores.UsersStore.setUser
-}))(observer(UserFullName))
+export default inject('AccountStore')(observer(UserFullName))
