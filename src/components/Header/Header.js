@@ -54,7 +54,7 @@ function Header(props) {
   return (
     <AppBar position="sticky">
       {props.InfoBarStore.loading && <LinearProgress style={{position: 'absolute', top: 0, width: "100%"}}/>}
-      <Toolbar variant={"dense"}>
+      <Toolbar variant={"dense"} style={{minHeight: 54}}>
         <Box flexGrow={1} display={'flex'} alignItems={'center'}>
           <Typography variant="h6" onClick={() => Fetch.autoLink('/')} style={{cursor: 'pointer'}}>{title}</Typography>
           {!window.location.pathname.startsWith('/search')  &&

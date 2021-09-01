@@ -11,7 +11,7 @@ import {ProjectItem} from "../components/ProjectItem/ProjectItem";
 
 function ProjectPage(props) {
   const {id, user, setDays, dates, setProject, hidden, creator, children, is_folder} = props.project
-  const [content, setContent] = useState({...props.calendar})
+  // const [content, setContent] = useState({...props.calendar})
   const [pick, setPick] = useState(null)
   const [triggerGet, setTriggerGet] = useState(new Date().getTime())
 
@@ -41,7 +41,7 @@ function ProjectPage(props) {
       onClose={() => setDayInfo(null)}
     />)
   }
-
+  console.log(user)
   if (!localStorage.User) Fetch.autoLink('/')
   if (hidden) return null
   return (
@@ -52,13 +52,13 @@ function ProjectPage(props) {
         triggerGet={triggerGet}
         triggerNew={id}
         edit={!is_folder && creator === localStorage.User}
-        get={(start, end) => Fetch.getCalendar(start, end, user, id)}
+        get={user ? (start, end) => Fetch.getCalendar(start, end, user, id) : undefined}
         onChange={setDays}
         content={{
-          ...content,
+          ...props.content,
           daysPick: pick || dates
         }}
-        setContent={setContent}
+        // setContent={setContent}
         onDay={{
           onTouchHold: showInfo,
           onContextMenu: showInfo

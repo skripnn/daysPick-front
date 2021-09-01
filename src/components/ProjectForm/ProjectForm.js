@@ -32,7 +32,7 @@ function ProjectForm(props) {
     'client': <ClientField client={client} set={(client) => setValue({client: client})}/>,
     'creator': <UserField value={creator_info ? creator_info : creator} label={'Заказчик'} disabled required/>,
     'folder': <FolderField value={parent} set={(parent) => setValue({parent: parent})} f={clientListStore}/>,
-    'user': <UserField value={user_info ? user_info : user} label={'Подрядчик'} required set={v => setValue({user: v ? v.username : null, user_info: v})}/>
+    'user': <UserField value={user_info ? user_info : user} label={'Подрядчик'} required set={v => setValue({user: v ? v.username : null, user_info: v})} disabled={canceled}/>
   }
 
   const getField = (fieldName) => fields[fieldName] || fieldName
@@ -59,7 +59,7 @@ function ProjectForm(props) {
     }
     else if (creator === localStorage.User) {
       left = ['title', 'money', 'user', 'creator']
-      right = [<InfoField height={286}/>]
+      right = [<InfoField height={290}/>]
     }
   }
 

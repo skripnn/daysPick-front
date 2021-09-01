@@ -63,3 +63,16 @@ export function compareProfiles(a, b) {
   const _b = typeof b === 'string' || !b ? b : b.username
   return _a === _b
 }
+
+export function getProjectStatus(project) {
+  if (!project.confirmed) {
+    if (compareProfiles(project.creator, localStorage.User)) return 'Ожидание ответа'
+    else {
+      if (project.is_wait) return 'Новый проект'
+      if (!project.is_wait) return 'Проект изменён'
+    }
+  }
+  else if (compareProfiles(project.canceled, project.creator)) return 'Отменен'
+  else if (compareProfiles(project.canceled, project.user)) return 'Отказ'
+  return null
+}

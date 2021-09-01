@@ -17,7 +17,6 @@ import LogoutIcon from "../Icons/LogoutIcon";
 import Fetch from "../../js/Fetch";
 import {useSwipeable} from "react-swipeable";
 import IconBadge from "../IconBadge/IconBadge";
-import mainStore from "../../stores/mainStore";
 
 
 function Menu(props) {
@@ -75,8 +74,7 @@ function Menu(props) {
           <MenuItem text={'Настройки'} icon={<IconBadge dot content={!props.account.is_confirmed} rect={false}><SettingsOutlined /></IconBadge>} link={`settings`} />
           <MenuItem text={'Выйти'} icon={<LogoutIcon />} noSelect onClick={() => {
             localStorage.clear()
-            mainStore.reset()
-            Fetch.link('search')
+            window.location.pathname = "/search"
           }}/>
         </List>
       </Drawer>

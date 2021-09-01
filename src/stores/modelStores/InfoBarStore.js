@@ -24,7 +24,13 @@ class InfoBarStore {
     const obj = {}
     obj[time] = {...this.list[time], close: true}
     this.list = {...this.list, ...obj}
-    this.loader.set(() => delete this.list[time], 1000)
+    this.loader.set(() => this.deleteTime(time), 1000)
+  }
+
+  deleteTime = (time) => {
+    const list = {...this.list}
+    delete list[time]
+    this.list = list
   }
 
   setConfirm = (obj) => {

@@ -8,7 +8,7 @@ function LazyList(props) {
   const {children, set, add, pages, page, setPage, getLink, getParams, searchFieldParams, noSearchField, observableRoot, preLoader, onFilterChange, ...otherProps} = props
   const [filter, setFilter] = useState(null)
 
-  const [loading, setLoading] = useState(!!preLoader)
+  const [loading, setLoading] = useState(false)
   const [request, setRequest] = useState(false)
   const [element, setElement] = useState(null)
   const [observer, setObserver] = useState(new IntersectionObserver(changeIntersection, observableRoot? {root: observableRoot} : undefined))
@@ -86,13 +86,15 @@ function LazyList(props) {
     if (searchFieldParams) searchFieldParams.set(v)
   }
 
+  const preLoading = preLoader && page == null && pages == null
+
   return (
     <List dense ref={ref} {...otherProps}>
       {!!searchFieldParams && <ListSubheader style={{background: 'white', lineHeight: "unset", padding: "unset"}} disableSticky>
         <SearchField {...searchFieldParams} get={filterGet} set={filterSet}/>
       </ListSubheader>}
       {children}
-      {(loading || page < pages) && <div style={{display: "flex", justifyContent: 'center', opacity: 0.5}}><CircularProgress size={24} color={'secondary'} /></div>}
+      {(loading || preLoading || page < pages) && <div style={{display: "flex", justifyContent: 'center', opacity: 0.5, paddingTop: 8}}><CircularProgress size={24} color={'secondary'} /></div>}
     </List>
   )
 }

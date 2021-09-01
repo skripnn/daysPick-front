@@ -9,7 +9,7 @@ import {useMobile} from "../components/hooks";
 import ActualProjects from "../components/ActualProjects/ActualProjects";
 
 function UserPage(props) {
-  const {userPage, user, calendar, offersCalendar, getProject} = props.UserStore
+  const {userPage, user, calendar, offersCalendar} = props.UserStore
   const {edit, daysPick, activeProjectTab} = props.UserStore.userPage
   const [DayInfo, setDayInfo] = useState(null);
 
@@ -45,9 +45,7 @@ function UserPage(props) {
   }
 
   function popoverLink(project) {
-    const p = getProject(project.id)
-    p ? props.setProject(p) : props.default({id: project.id, hidden: true})
-    props.history.push(`/project/${project.id}/`)
+    Fetch.autoLink(`/project/${project.id}/`)
   }
 
   const mobile = useMobile()

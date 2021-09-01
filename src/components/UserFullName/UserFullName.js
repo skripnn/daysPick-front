@@ -7,6 +7,7 @@ import {IconButton, Tooltip} from "@material-ui/core";
 import Fetch from "../../js/Fetch";
 import {inject, observer} from "mobx-react";
 import IconBadge from "../IconBadge/IconBadge";
+import Info from "../../js/Info";
 
 function UserFullName(props) {
   if (!props.user.full_name) return null
@@ -31,7 +32,7 @@ function UserFullName(props) {
       {props.raise && props.AccountStore.can_be_raised &&
       <Tooltip title={'Поднять в поиске'}>
         <IconButton size={"small"}
-                    onClick={() => Fetch.post('account', {raised: true}).then(props.AccountStore.setValue)}>
+                    onClick={() => Fetch.post('account', {raised: true}).then(props.AccountStore.setValue).then(() => Info.success('Профиль поднят в поиске'))}>
             <Publish className={"edit-button"}/>
         </IconButton>
       </Tooltip>

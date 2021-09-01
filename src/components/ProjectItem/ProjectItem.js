@@ -17,7 +17,7 @@ import {
 } from "@material-ui/icons";
 import "./ProjectItem.css"
 import Fetch from "../../js/Fetch";
-import {compareProfiles, formatDate} from "../../js/functions/functions";
+import {compareProfiles, formatDate, getProjectStatus} from "../../js/functions/functions";
 import PopoverButtonsBlock from "../PopoverButtonsBlock/PopoverButtonsBlock";
 import {useControlledState, useMobile, useTouchHold} from "../hooks";
 import IconBadge from "../IconBadge/IconBadge";
@@ -181,7 +181,7 @@ export function ProjectItem({project, child, onTouchHold, onTouchEnd, onMouseOve
   )
 
   let action = null
-  if (confirmButton && project.is_wait && !project.canceled) action = ConfirmMenu
+  if (confirmButton && !project.confirmed && !project.canceled) action = ConfirmMenu
   else if (paidButton && past && !project.is_paid && !project.canceled) action = PaidButton
   else if (deleteButton) action = DeleteButton
   const projectTitle = project.title || (formatDate(project.date_start) + (project.date_end === project.date_start ? '' : ` - ${formatDate(project.date_end)}`))
@@ -234,9 +234,8 @@ export function ProjectItemBase({project, deleting, child, onTouchHold, onTouchE
 
   let primaryText = primary || project.title
   if (typeof primaryText === 'string') {
-    if (!project.confirmed && compareProfiles(project.creator, localStorage.User)) primaryText += ' (Ожидание ответа)'
-    else if (compareProfiles(project.canceled, project.creator)) primaryText += ' (Отменен)'
-    else if (compareProfiles(project.canceled, project.user)) primaryText += ' (Отказ)'
+    const status = getProjectStatus(project)
+    if (status) primaryText += ` (${status})`
   }
 
   return (

@@ -5,7 +5,9 @@ class ProjectStore {
   id = null
   dates = []
   user = localStorage.User
+  user_info = null
   creator = localStorage.User
+  creator_info = null
   children = []
   date_start = null
   date_end = null
@@ -31,7 +33,9 @@ class ProjectStore {
     this.id = null
     this.dates = []
     this.user = localStorage.User
+    this.user_info = null
     this.creator = localStorage.User
+    this.creator_info = null
     this.children = []
     this.date_start = null
     this.date_end = null
