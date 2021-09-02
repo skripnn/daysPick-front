@@ -101,6 +101,19 @@ export default function Login({onSuccess}) {
             <SocialLogin />
           </ListItem>
           {!!error && <ListSubheader className={classNames.error}>{error}</ListSubheader>}
+          <ListItem dense>
+            <Button
+              className={'colored-button'}
+              style={{zoom: 0.8}}
+              variant={"text"}
+              color={'secondary'}
+              size={"small"}
+              fullWidth
+              onClick={() => Fetch.autoLink('recovery')}
+            >
+              Восстановление доступа
+            </Button>
+          </ListItem>
         </form>
       </List>
     </Container>

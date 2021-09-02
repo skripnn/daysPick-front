@@ -219,7 +219,7 @@ function NewPasswordField() {
       setPassword2(null)
       setError(false)
       setLoading(false)
-      r.error ? Info.warning(r.error) : Info.info('Пароль обновлен')
+      r.error ? Info.warning(r.error) : Info.success('Пароль обновлен')
       if (r.token) localStorage.setItem("Authorization", `Token ${r.token}`)
     })
   }

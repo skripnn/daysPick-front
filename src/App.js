@@ -4,7 +4,7 @@ import ProjectPage from "./pages/ProjectPage";
 import UserPage from "./pages/UserPage";
 import {Route, Switch, withRouter} from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
-import ConfirmPage from "./pages/confirmPage";
+import EmailLinkPage from "./pages/EmailLinkPage";
 import './App.css'
 import ActionsSwitch from "./components/Actions/ActionsSwitch";
 import ClientsPage from "./pages/ClientsPage";
@@ -27,6 +27,7 @@ import FeedPage from "./pages/FeedPage";
 import Terms from "./pages/terms";
 import mainStore from "./stores/mainStore";
 import Login from "./components/Login/Login";
+import RecoveryPage from "./pages/RecoveryPage";
 
 function App(props) {
   const mobile = useMobile()
@@ -63,6 +64,7 @@ function App(props) {
             {Keys.env === 'dev' && <Route history={history} path='/test/' component={TestPage}/>}
             {Keys.env === 'dev' && <Route history={history} path='/feed/' component={FeedPage}/>}
             <Route history={history} path={'/terms/'} component={Terms}/>
+            <Route history={history} path={'/recovery/'} component={RecoveryPage}/>
             <AuthRoute history={history} path='/settings/' component={SettingsPage}/>
             <AuthRoute history={history} path='/profile/' component={ProfilePage}/>
             <AuthRoute history={history} path='/clients/' component={ClientsPage}/>
@@ -72,7 +74,7 @@ function App(props) {
             <AuthRoute history={history} path='/project/' component={ProjectPage}/>
             <Route history={history} path='/login/' component={LoginPage}/>
             <Route history={history} path='/signup/' component={SignupPage}/>
-            <Route history={history} path='/confirm/' component={ConfirmPage}/>
+            <Route history={history} path='/confirm/' component={EmailLinkPage}/>
             <Route history={history} path='/user/:username/' component={UserPage}/>
             <Route history={history} path='/search/' component={SearchPage}/>
             <Route history={history} path={'/:prefix([@]):username([0-9a-z]*)/'} component={UserPage}/>

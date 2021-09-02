@@ -42,6 +42,12 @@ a {
     transform: scale(1);
     animation: pulse-animation 5s infinite;
 }
+.colored-button:hover {
+    color: #4db34b;
+}
+.colored-button:active {
+    color: #4db34b;
+}
 
 @keyframes pulse-animation {
     80% {
