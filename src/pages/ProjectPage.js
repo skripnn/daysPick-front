@@ -8,6 +8,7 @@ import Fetch from "../js/Fetch";
 import Info from "../js/Info"
 import {List} from "@material-ui/core";
 import {ProjectItem} from "../components/ProjectItem/ProjectItem";
+import mainStore from "../stores/mainStore";
 
 function ProjectPage(props) {
   const {id, user, setDays, dates, setProject, hidden, creator, children, is_folder} = props.project
@@ -16,7 +17,7 @@ function ProjectPage(props) {
   const [triggerGet, setTriggerGet] = useState(new Date().getTime())
 
   function getProject(id) {
-    if (id) {
+    if (id && localStorage.User) {
       Fetch.get(['project', id]).then(project => {
         setPick(null)
         if (Object.keys(project).includes('error')) Fetch.autoLink('/')
@@ -26,7 +27,7 @@ function ProjectPage(props) {
   }
 
   // eslint-disable-next-line
-  useEffect(() => getProject(id),[id])
+  useEffect(() => getProject(id),[id, localStorage.User])
   useEffect(() => setTriggerGet(new Date().getTime()), [user, children])
 
 
@@ -41,8 +42,11 @@ function ProjectPage(props) {
       onClose={() => setDayInfo(null)}
     />)
   }
-  console.log(user)
-  if (!localStorage.User) Fetch.autoLink('/')
+
+  if (!localStorage.User) {
+    mainStore.InfoBarStore.setLoginDialog(true)
+    return null
+  }
   if (hidden) return null
   return (
     <div className={'project-block'}>

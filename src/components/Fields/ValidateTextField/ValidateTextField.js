@@ -204,7 +204,7 @@ export function ValidateUsernameField(props) {
         InputProps={!defaultValue ? {
           endAdornment:
             <InputAdornment position={'end'}>
-              <IconButton onClick={(e) => setAnchorEl(e.target)}>
+              <IconButton onClick={(e) => setAnchorEl(e.target)} size={'small'}>
                 <InfoOutlined />
               </IconButton>
             </InputAdornment>

@@ -4,11 +4,10 @@ import TagsEdit from "../components/TagsEdit/TagsEdit";
 import React from "react";
 import ContactsEdit from "../components/ContactsEdit/ContactsEdit";
 
-function ProfilePage({loading}) {
-
+function ProfilePage({userStore}) {
 
   if (!localStorage.User) return null
-  if (loading) return null
+  if (userStore && userStore.userPage.loading) return null
 
   return (
     <>
@@ -20,5 +19,5 @@ function ProfilePage({loading}) {
 }
 
 export default inject(stores => ({
-  loading: stores.UsersStore.getLocalUser().userPage.loading
+  userStore: stores.UsersStore.getLocalUser()
 }))(observer(ProfilePage))

@@ -16,7 +16,7 @@ import NotConfirmBar from "./NotConfirmBar";
 
 
 function Header(props) {
-  const auth = !!localStorage.User
+  const auth = !!localStorage.User || !!props.AccountStore.username
   const titles = [
     ['/projects', 'Мои проекты'],
     ['/clients', 'Мои клиенты'],
@@ -64,10 +64,13 @@ function Header(props) {
         </Box>
         {auth?  <Menu /> : rightButton}
       </Toolbar>
-      {!!localStorage.User && <NotConfirmBar/>}
+      {auth && <NotConfirmBar/>}
     </AppBar>
   );
 }
 
-export default inject('InfoBarStore')(observer(Header))
+export default inject(stores => ({
+  InfoBarStore: stores.InfoBarStore,
+  AccountStore: stores.AccountStore
+}))(observer(Header))
 

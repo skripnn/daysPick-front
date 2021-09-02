@@ -13,7 +13,7 @@ class UsersStore {
 
   getUser = (user) => {
     if (!user) user = parseUser()
-    // if (!user) document.location.href = '/'
+    if (!user) document.location.href = '/'
     if (!this.users[user]) {
       this.users[user] = new UserStore(user).getUser(true)
     }
@@ -33,7 +33,6 @@ class UsersStore {
   getLocalUser = () => this.getUser(localStorage.User)
 
   setLocalUser = (r) => {
-    console.log('setLocalUser')
     const username = r.user.username
     localStorage.setItem("Authorization", `Token ${r.token}`)
     localStorage.setItem("User", username)

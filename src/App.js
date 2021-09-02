@@ -16,7 +16,7 @@ import { ThemeProvider } from '@material-ui/styles';
 import SignupPage from "./pages/SignupPage";
 import MainPage from "./pages/MainPage";
 import SettingsPage from "./pages/SettingsPage";
-import {useMediaQuery} from "@material-ui/core";
+import {Dialog, useMediaQuery} from "@material-ui/core";
 import Fetch from "./js/Fetch";
 import theme from "./js/theme";
 import InfoBar from "./components/InfoBar/InfoBar";
@@ -24,9 +24,9 @@ import Keys from "./js/Keys";
 import TestPage from "./pages/TestPage";
 import {useMobile, useWindowHeightResizeCallback} from "./components/hooks";
 import FeedPage from "./pages/FeedPage";
-import TgAuthPage from "./pages/TgAuthPage";
 import Terms from "./pages/terms";
 import mainStore from "./stores/mainStore";
+import Login from "./components/Login/Login";
 
 function App(props) {
   const mobile = useMobile()
@@ -63,14 +63,13 @@ function App(props) {
             {Keys.env === 'dev' && <Route history={history} path='/test/' component={TestPage}/>}
             {Keys.env === 'dev' && <Route history={history} path='/feed/' component={FeedPage}/>}
             <Route history={history} path={'/terms/'} component={Terms}/>
-            <Route history={history} path='/tgauth/' component={TgAuthPage}/>
-            <Route history={history} path='/settings/' component={SettingsPage}/>
-            <Route history={history} path='/profile/' component={ProfilePage}/>
-            <Route history={history} path='/clients/' component={ClientsPage}/>
-            <Route history={history} path='/projects/' component={ProjectsPage}/>
-            <Route history={history} path='/offers/' component={OffersPage}/>
-            <Route history={history} path='/project/:id/' component={ProjectPage}/>
-            <Route history={history} path='/project/' component={ProjectPage}/>
+            <AuthRoute history={history} path='/settings/' component={SettingsPage}/>
+            <AuthRoute history={history} path='/profile/' component={ProfilePage}/>
+            <AuthRoute history={history} path='/clients/' component={ClientsPage}/>
+            <AuthRoute history={history} path='/projects/' component={ProjectsPage}/>
+            <AuthRoute history={history} path='/offers/' component={OffersPage}/>
+            <AuthRoute history={history} path='/project/:id/' component={ProjectPage}/>
+            <AuthRoute history={history} path='/project/' component={ProjectPage}/>
             <Route history={history} path='/login/' component={LoginPage}/>
             <Route history={history} path='/signup/' component={SignupPage}/>
             <Route history={history} path='/confirm/' component={ConfirmPage}/>
@@ -88,3 +87,12 @@ function App(props) {
 }
 
 export default withRouter(App)
+
+function AuthRoute({history, path, component}) {
+  if (localStorage.User) return <Route history={history} path={path} component={component}/>
+  return (
+    <Dialog open={true} fullWidth maxWidth={'xs'}>
+      <Login onSuccess={() => window.open(window.location.href,"_self")}/>
+    </Dialog>
+  )
+}

@@ -2,7 +2,11 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    min-height: 49px;
+}
+@media screen and (min-width:600px) {
+    .actions-panel {
+        min-height: 49px
+    }
 }
 .actions-panel > div {
     display: flex;
