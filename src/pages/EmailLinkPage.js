@@ -10,6 +10,7 @@ export default function EmailLinkPage() {
   const link = params.get('to')
 
   useEffect(() => {
+    localStorage.clear()
     Info.loading(true)
     Fetch.getFromUrl().then(r => {
       if (r.error) Info.error(r.error)
