@@ -5,9 +5,10 @@ import mainStore from "../../stores/mainStore";
 import Container from "@material-ui/core/Container";
 import {CircularProgress, List, ListItem, ListSubheader} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
-import ValidateTextField, {ValidatePasswordField} from "../Fields/ValidateTextField/ValidateTextField";
+import {ValidatePasswordField} from "../Fields/ValidateTextField/ValidateTextField";
 import Button from "@material-ui/core/Button";
 import SocialLogin from "../SocialLogin/SocialLogin";
+import UsernameEmailPhoneField from "../Fields/ValidateTextField/UsernameEmailPhoneField";
 
 export default function Login({onSuccess}) {
   const classNames = useStyle()
@@ -21,11 +22,6 @@ export default function Login({onSuccess}) {
   useEffect(() => {
     if (localStorage.Authorization && localStorage.User) Fetch.autoLink(`@${localStorage.User}`)
   }, [])
-
-  function set(value, key) {
-    const obj = Object.fromEntries([[key, value]])
-    setData(prevState => ({...prevState, ...obj}))
-  }
 
   function onSubmit(e) {
     e.preventDefault()
@@ -57,15 +53,13 @@ export default function Login({onSuccess}) {
         <form noValidate>
           <Typography variant={"h6"} color={'secondary'} align={'center'}>Авторизация</Typography>
           <ListItem>
-            <ValidateTextField
-              autoFocus
-              required
-              type={'username'}
-              label={'Имя пользователя или email'}
-              name={'username'}
-              value={data.username}
-              convertValue={v => (v? v.toLowerCase() : v)}
-              onChange={set}
+            <UsernameEmailPhoneField
+              onChange={(value, type, error) => {
+                const newData = {password: data.password}
+                if (!error) newData[type] = value
+                else newData.username = null
+                setData(newData)
+              }}
             />
           </ListItem>
           <ListItem>
@@ -74,7 +68,7 @@ export default function Login({onSuccess}) {
               label={'Пароль'}
               name={'password'}
               value={data.password}
-              onChange={set}
+              onChange={(v) => setData({...data, password: v})}
             />
           </ListItem>
           <ListItem>

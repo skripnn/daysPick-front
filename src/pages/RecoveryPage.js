@@ -1,17 +1,16 @@
 import Container from "@material-ui/core/Container";
 import {CircularProgress, List, ListItem, ListSubheader} from "@material-ui/core";
-import ValidateTextField from "../components/Fields/ValidateTextField/ValidateTextField";
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import Button from "@material-ui/core/Button";
 import {useStyle} from "../js/core/auth";
 import {emailValidator} from "../js/functions/functions";
 import IconButton from "@material-ui/core/IconButton";
-import MuiPhoneNumber from "material-ui-phone-number";
 import Fetch from "../js/Fetch";
 import {Email, Telegram} from "@material-ui/icons";
 import Keys from "../js/Keys";
 import {useLocation} from "react-router-dom";
 import EmailLinkPage from "./EmailLinkPage";
+import UsernameEmailPhoneField from "../components/Fields/ValidateTextField/UsernameEmailPhoneField";
 
 export default function RecoveryPage() {
   const classNames = useStyle()
@@ -21,17 +20,6 @@ export default function RecoveryPage() {
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState(null)
   const [choice, setChoice] = useState(null)
-
-  useEffect(() => {
-    if (!value) setType('username')
-    if (/^(\+7|7|8) ?\(?9/.test(value) || /^9/.test(value)) {
-      setType('phone')
-      if (value === '89' || value === '9') setValue('79')
-    }
-    else if (/^([\w.%+-]+)@/.test(value)) setType('email')
-    else setType('username')
-    setError(null)
-  }, [value])
 
   const location = useLocation()
   if (location.search) return <EmailLinkPage />
@@ -60,20 +48,6 @@ export default function RecoveryPage() {
     }
   }
 
-  const fieldProps = {
-    disabled: !!loading || !!result,
-    autoFocus: true,
-    required: true,
-    value: value,
-    onChange: setValue,
-    error: !!error,
-    helperText: error || 'Введи имя пользователя, email или телефон в международном формате',
-    onKeyDown: (e) => {
-      if (e.key === 'Escape') setValue('')
-      if (e.key === 'Enter') onSubmit()
-    }
-  }
-
   let message = null
   if (result === 'telegram') {
     const TeleBotLink = `https://t.me/${Keys.telegramBot}?start=_recovery`
@@ -84,38 +58,22 @@ export default function RecoveryPage() {
     <Container maxWidth={'xs'}>
       <List>
         <ListItem>
-          {type === 'username' &&
-            <ValidateTextField
-              {...fieldProps}
-              label={'Имя пользователя, email или телефон'}
-              name={'username'}
-              convertValue={v => (v ? v.toLowerCase() : v)}
-            />
-          }
-          {type === 'email' &&
-          <ValidateTextField
-            {...fieldProps}
-            label={'Email'}
-            name={'email'}
-            convertValue={v => (v ? v.toLowerCase() : v)}
+          <UsernameEmailPhoneField
+            onChange={(value, type) => {
+              setValue(value)
+              setType(type)
+              setError(null)
+            }}
+            fieldProps={{
+              disabled: !!loading || !!result,
+              helperText: error || 'Введи имя пользователя, email или телефон в международном формате',
+              onKeyDown: (e) => {
+                if (e.key === 'Enter') onSubmit()
+              },
+              error: !!error
+            }}
+            validate={false}
           />
-          }
-          {type === 'phone' &&
-          <MuiPhoneNumber
-            {...fieldProps}
-            label={'Телефон'}
-            name={'phone'}
-            disableDropdown
-            color={'secondary'}
-            countryCodeEditable={false}
-            defaultCountry={'ru'}
-            onlyCountries={['ru']}
-            size="small"
-            fullWidth
-            autoComplete='off'
-            onChange={(v) => setValue([...v.matchAll(/[0-9]+/g)].join(''))}
-          />
-          }
         </ListItem>
         {!result &&
           <ListItem>
