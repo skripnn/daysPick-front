@@ -60,6 +60,7 @@ export default function Login({onSuccess}) {
                 else newData.username = null
                 setData(newData)
               }}
+              validate={false}
             />
           </ListItem>
           <ListItem>

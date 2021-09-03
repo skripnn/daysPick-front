@@ -13,6 +13,7 @@ export default function UsernameEmailPhoneField({fieldProps={}, onChange=() => {
     if (/^(\+7|7|8) ?\(?9/.test(value) || /^9/.test(value)) {
       setType('phone')
       if (/^(\+7|7|8) ?\(?9$/.test(value) || /^9$/.test(value)) setValue('79')
+      setValue([...value.matchAll(/[0-9]+/g)].join(''))
     }
     else if (/^([\w.%+-]+)@/.test(value)) setType('email')
     else setType('username')
