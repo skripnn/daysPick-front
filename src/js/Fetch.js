@@ -186,7 +186,6 @@ class FetchClass {
   }
 
   autoLink = (link, replace) => {
-    // if (link === '/') link = localStorage.User? `@${localStorage.User}` : 'search'
     if (link instanceof Array) link = link.filter(v => !!v).join('/')
     if (link.search(/projects/) > -1) this.link(link, mainStore.ProjectsPage.fullList.set)
     else if (link.search(/offers/) > -1) this.link(link, mainStore.OffersPage.fullList.set)

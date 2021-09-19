@@ -22,6 +22,7 @@ import {SaveFieldButton} from "../Fields/SaveTextField/SaveTextField";
 import {useControlledState, useMobile} from "../hooks";
 import RefreshIcon from "../Icons/RefreshIcon";
 import MuiPhoneNumber from "material-ui-phone-number";
+import {useAccount} from "../../stores/storeHooks";
 
 
 export function NewUsernameField({username, setValue}) {
@@ -314,8 +315,9 @@ export function PhoneChangeField({phone, phone_confirm, setValue}) {
   const [newPhone, setNewPhone] = useControlledState(phone_confirm)
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
+  const {username} = useAccount()
 
-  const TeleBotLink = `https://t.me/${Keys.telegramBot}?start=${localStorage.User}`
+  const TeleBotLink = `https://t.me/${Keys.telegramBot}?start=${username}`
   const isValid = (v) => /^79[0-9]{9}$/.test(v)
 
   // eslint-disable-next-line

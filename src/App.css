@@ -26,6 +26,9 @@
         height: 55px;
         width: 100%;
     }
+    .content-block {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
 }
 a {
     color: inherit;

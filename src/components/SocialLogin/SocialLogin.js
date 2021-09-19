@@ -7,8 +7,8 @@ import React from "react";
 export default function SocialLogin() {
   function onComplete(r) {
     if (!r.token) return
-    mainStore.UsersStore.setLocalUser(r)
-    Fetch.link(`@${localStorage.User}`)
+    mainStore.Account.setValue(r)
+    Fetch.link(`@${r.username}`)
   }
 
   function post(name, value) {

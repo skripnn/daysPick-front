@@ -9,16 +9,6 @@ export function actualProjects(projects) {
   return actualProjects
 }
 
-export function LocalUser() {
-  if (localStorage.User) return localStorage.User
-  window.location.href = '/'
-}
-
-export function checkUser() {
-  const user = parseUser()
-  if (user !== localStorage.getItem("User")) return true
-}
-
 export function parseUser(username) {
   const match = window.location.pathname.match(/\/(user\/(?<username>[0-9a-z_]*))|(@(?<usernamePrefix>[0-9a-z_]*))\/?/)
   if (!!match && match.groups.username) return match.groups.username
