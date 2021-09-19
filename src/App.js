@@ -34,9 +34,9 @@ function App(props) {
 
   useColorScheme()
   useMobileUpdate()
-  const auth = useAuthorization()
+  const authorization = useAuthorization()
   const loading = usePreLoader()
-  if (!auth || loading) return null
+  if (!authorization || loading) return null
 
   return (
     <ThemeProvider theme={theme}>

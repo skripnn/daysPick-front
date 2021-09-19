@@ -29,12 +29,13 @@ export function useUserLink() {
 }
 
 export function useAuthorization() {
-  const username = useUsername()
+  const [loaded, setLoaded] = useState(false)
   useEffect(() => {
-    if (localStorage.Authorization) Fetch.get('account').then(mainStore.Account.setValue)
+    if (localStorage.Authorization) Fetch.get('account').then(mainStore.Account.setValue).then(() => setLoaded(true))
+    else setLoaded(true)
     // eslint-disable-next-line
   }, [])
-  return localStorage.Authorization ? !!username : true
+  return loaded
 }
 
 export function useMobile() {

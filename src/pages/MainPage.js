@@ -1,9 +1,15 @@
-import {useUsername} from "../stores/storeHooks";
+import {Redirect} from "react-router-dom";
+import {useAccount} from "../stores/storeHooks";
 import Fetch from "../js/Fetch";
+import {useState} from "react";
 
 export default function MainPage() {
-  const username = useUsername()
-  if (username) Fetch.autoLink(`@${username}`, true)
-  else return Fetch.link('search', undefined, true)
-  return null
+  const [loading, setLoading] = useState(false)
+  const {username} = useAccount()
+  if (username && !loading) {
+    setLoading(true)
+    Fetch.autoLink(`/@${username}`, true)
+  }
+  if (username) return null
+  return <Redirect from="/" to='/search'/>
 }
