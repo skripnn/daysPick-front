@@ -1,53 +1,46 @@
-import React, {useState} from "react";
-import IconButton from "@material-ui/core/IconButton";
-import {ArrowDropDown, ArrowDropUp} from "@material-ui/icons";
+import React from "react";
 import Typography from "@material-ui/core/Typography";
-import TextLoop from "react-text-loop";
-import Grid from "@material-ui/core/Grid";
 import './ProjectsStatistics.css'
+import {Dialog, DialogContent, DialogTitle} from "@material-ui/core";
+import CloseButton from "../CloseButton/CloseButton";
 
-export default function ProjectsStatistics({statistics: value, mobile}) {
-  const [open, setOpen] = useState(false)
+export function StatisticsDialog({value, close}) {
 
-  const textSum = new Intl.NumberFormat('ru-RU').format(value.sum) + " ₽"
-  const sumPerDay = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 2 }).format(value.sum / value.days || 0) + " ₽ / день"
-
-  const statistics = [
-    'Проектов: ' + value.projects,
-    'Дней: ' + value.days,
-    'Гонорар: ' + textSum,
-    'Средний гонорар: ' + sumPerDay
-  ]
   const typographyProps = {
     variant: 'body2',
     color: 'secondary',
     noWrap: true
   }
 
-  if (!value.projects) return <Typography {...typographyProps}>Нет проектов</Typography>
+  const statistics = value ? [
+    'Проектов: ' + value.projects,
+    'Дней: ' + value.days,
+    'Гонорар: ' + new Intl.NumberFormat('ru-RU').format(value.sum) + " ₽",
+    'Средний гонорар: ' + new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 2 }).format(value.sum / value.days || 0) + " ₽ / день"
+  ] : []
 
-  return (<>
-    {mobile &&
-    <div className={'projects-statistics-header'}>
-      <IconButton size={'small'} onClick={() => setOpen(!open)}>
-        {open ? <ArrowDropUp/> : <ArrowDropDown/>}
-      </IconButton>
-      {open ?
-        <Typography {...typographyProps}>Статистика:</Typography> :
-        <TextLoop springConfig={{stiffness: 180, damping: 8}} className={'text-loop'}>
-          {statistics.map(i => <Typography {...typographyProps}>{i}</Typography>)}
-        </TextLoop>
+  return (
+    <Dialog
+      maxWidth={'xs'}
+      onClose={close}
+      open={!!value}
+      fullWidth
+    >
+      <DialogTitle>
+        <div style={{display: "flex", justifyContent: "space-between", alignItems: "flex-end"}}>
+          <Typography>{'Статистика'}</Typography>
+          <CloseButton onClick={close}/>
+        </div>
+      </DialogTitle>
+      {!!value &&
+        <DialogContent>
+          {!value.projects ?
+            <Typography {...typographyProps}>Нет проектов</Typography> :
+            statistics.map((i, n) => (
+            <Typography {...typographyProps} key={n.toString()}>{i}</Typography>
+          ))}
+        </DialogContent>
       }
-    </div>
-    }
-    {(!mobile || open) &&
-    <Grid container justify={"space-around"} className={'projects-statistics-list'}>
-      {statistics.map((i, n) => (
-        <Grid item xs={12} sm={6} md={'auto'} key={n}>
-          <Typography {...typographyProps}>{i}</Typography>
-        </Grid>
-      ))}
-    </Grid>
-    }
-  </>)
+    </Dialog>
+  )
 }

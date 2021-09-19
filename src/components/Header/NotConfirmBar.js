@@ -2,9 +2,10 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Fetch from "../../js/Fetch";
 import React from "react";
-import {inject, observer} from "mobx-react";
+import {useAccount} from "../../stores/storeHooks";
 
-function NotConfirmBar({is_confirmed}) {
+export function NotConfirmBar() {
+  const is_confirmed = useAccount().is_confirmed
   if (is_confirmed) return null
 
   return (
@@ -13,7 +14,3 @@ function NotConfirmBar({is_confirmed}) {
     </Toolbar>
   )
 }
-
-export default inject(stores => ({
-  is_confirmed: stores.AccountStore.is_confirmed
-}))(observer(NotConfirmBar))

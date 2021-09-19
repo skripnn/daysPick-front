@@ -8,6 +8,8 @@ function LazyList(props) {
   const {children, set, add, pages, page, setPage, getLink, getParams, searchFieldParams, noSearchField, observableRoot, preLoader, onFilterChange, ...otherProps} = props
   const [filter, setFilter] = useState(null)
 
+  const ref = useRef()
+
   const [loading, setLoading] = useState(false)
   const [request, setRequest] = useState(false)
   const [element, setElement] = useState(null)
@@ -20,7 +22,6 @@ function LazyList(props) {
   params.page = page
   if (filter) params = {...params, ...filter}
 
-  const ref = useRef()
 
   useEffect(() => {
     if (onFilterChange) onFilterChange(filter)
@@ -75,13 +76,13 @@ function LazyList(props) {
     if (element) observer.observe(element)
   }
 
-  const filterGet = (v) => Fetch.post(getLink, {...params, page: 0, ...v}).then(r => {
-      setFilter(v)
-      return r
-    })
+  const filterGet = (v) => Fetch.post(getLink, {...params, page: 0, ...v}) // .then(r => {
+      // setFilter(v)
+      // return r
+    // })
 
   function filterSet(v) {
-    setRequest(false)
+    // setRequest(false)
     if (v === null) setFilter(null)
     if (searchFieldParams) searchFieldParams.set(v)
   }
@@ -107,7 +108,7 @@ LazyList.propTypes = {
       daysOff: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
       daysPick: PropTypes.oneOfType([PropTypes.array, PropTypes.object])
     }),
-    user: PropTypes.string,
+    calendarGet: PropTypes.func,
     noFilter: PropTypes.bool,
     minFilter: PropTypes.number,
     initDays: PropTypes.array,

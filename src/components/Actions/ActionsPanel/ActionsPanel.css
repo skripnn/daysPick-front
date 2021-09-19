@@ -25,8 +25,21 @@
     display: flex;
     width: 100%;
 }
+@media screen and (max-width:600px) {
+    .actions-panel {
+        position: fixed;
+        z-index: 500;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        justify-content: space-around;
+        box-shadow: 0 5px 0 white, 0 0 5px rgba(0,0,0,0.5);
+        background: white;
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+}
 .actions-panel.bottom2 {
-    position: absolute;
+    position: fixed;
     z-index: 500;
     bottom: 0;
     left: 0;
@@ -39,4 +52,10 @@
 .action-panel.pre-bottom2 {
     height: 55px;
     width: 100%;
+}
+.actions-panel-2{
+    width: fit-content !important;
+}
+.actions-panel-2 > *:not(:last-child){
+    margin-right: 4px;
 }

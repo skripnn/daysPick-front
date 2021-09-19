@@ -5,7 +5,7 @@ import Keys from "../js/Keys";
 import Container from "@material-ui/core/Container";
 import {
   CircularProgress,
-  InputAdornment, InputLabel,
+  InputAdornment,
   List,
   ListItem,
   ListSubheader,
@@ -13,16 +13,16 @@ import {
 } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import {
-  ValidateEmailField,
   ValidatePasswordField,
   ValidatePhoneField,
-  ValidateUsernameField
 } from "../components/Fields/ValidateTextField/ValidateTextField";
 import IconButton from "@material-ui/core/IconButton";
-import {Email, Telegram} from "@material-ui/icons";
+import {Telegram} from "@material-ui/icons";
 import Button from "@material-ui/core/Button";
 import TextField from "../components/Fields/TextField/TextField";
-
+import UsernameEmailPhoneField from "../components/Fields/ValidateTextField/UsernameEmailPhoneField";
+import {emailValidator} from "../js/functions/functions";
+import Loader from "../js/Loader";
 
 export default function SignupPage() {
   const classNames = useStyle()
@@ -31,18 +31,15 @@ export default function SignupPage() {
   const [confirm, setConfirm] = useState(false)
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState({
-    username: null,
+    main: null,
     password: null,
     password2: null,
-    // email: null,
-    phone: null
   })
   const [valid, setValid] = useState({
-    username: false,
+    main: false,
     password2: false,
-    // email: false,
-    phone: false
   })
+  const [confirmType, setConfirmType] = useState('username')
   useEffect(() => setError(null), [data])
 
   function set(value, key, valid) {
@@ -54,21 +51,28 @@ export default function SignupPage() {
     }
   }
 
-  function changeConfirmType() {
-    if (confirm) return
-    const newData = {...data, phone: null, email: null}
-    const newValid = {...valid, phone: false, email: false}
-    delete newData[confirmType]
-    delete newValid[confirmType]
-    setData(newData)
-    setValid(newValid)
+  function validation() {
+    if (
+      (confirmType === 'username' && !!data.main) ||
+      (confirmType === 'phone' && !/^7[0-9]{10}$/.test(data.main)) ||
+      (confirmType === 'email' && !emailValidator(data.main))
+    ) {
+      setValid(prevState => ({...prevState, main: 'Неверный формат'}))
+      return false
+    }
+    return true
   }
 
   function onSubmit(e) {
     e.preventDefault()
-    if (Object.values(data).includes(null) || Object.values(valid).includes(false)) return
+    if (!validation() || disabled) return
     setLoading(true)
-    Fetch.post('signup', data)
+    Fetch
+      .post('signup', Object.fromEntries([
+        [confirmType, data.main],
+        ['password', data.password],
+        ['password2', data.password2],
+      ]))
       .then(r => {
           if (r.error) {
             setLoading(false)
@@ -105,27 +109,81 @@ export default function SignupPage() {
     password2Validation(value)
   }
 
+  function mainFieldChange(value, type, error) {
+    Loader.clear()
+    set(value, 'main', error ? error : false)
+    setConfirmType(type)
+    let check = false
+    if (type === 'phone' && /^7[0-9]{10}$/.test(value)) check = true
+    else if (type === 'email'  && emailValidator(value)) check = true
+    if (check) {
+      Loader.set(() => Fetch.get('signup', Object.fromEntries([[type, value]])).then(r => {
+        setValid(prevState => ({...prevState, main: r.error || true}))
+      }))
+    }
+  }
+
   const TeleBotLink = `https://t.me/${Keys.telegramBot}?start=${data.username}`
-  const confirmType = Object.keys(data).includes('email') ? 'email' : 'phone'
+  let helperText = typeof valid.main === 'string' && valid.main
+  if (!helperText && confirmType === 'phone') helperText = 'Для подтверждения используется Telegram'
+  const disabled = confirmType === 'username' || Object.values(data).includes(null) || valid.main !== true || valid.password2 !== true
 
   return (
     <Container maxWidth={'xs'}>
       <List>
-        <form noValidate>
+        <form noValidate autoComplete={'off'}>
           <Typography variant={"h6"} color={'secondary'} align={'center'}>Регистрация</Typography>
-          <ListItem>
-            <ValidateUsernameField
-              disabled={confirm}
-              autoFocus
-              required
-              label={'Имя пользователя'}
-              name={'username'}
-              value={data.username}
-              onChange={set}
-            />
+            {!confirm &&
+            <ListItem>
+              <UsernameEmailPhoneField
+                fieldProps={{
+                  label: 'Email или телефон',
+                  error: typeof valid.main === 'string',
+                  helperText: helperText,
+                  onBlur: validation,
+                  onKeyDown: (e) => {
+                    if (e.key === 'Enter') onSubmit(e)
+                  },
+                }}
+                onChange={mainFieldChange}
+                validate={false}
+              />
+            </ListItem>
+            }
+            {confirmType === 'email' && confirm &&
+            <ListItem>
+              <TextField
+                required
+                label={'E-mail на подтверждении'}
+                disabled
+                value={data.main}
+                helperText={'На этот e-mail было выслано письмо'}
+              />
+            </ListItem>
+            }
+            {confirmType === 'phone' && confirm &&
+            <ListItem>
+              <ValidatePhoneField
+                label={'Телефон на подтверждении'}
+                disabled
+                value={data.main}
+                helperText={<>Перейди в telegram-бот <a href={TeleBotLink} target={'_blank'} rel={"noreferrer"}>@dayspick_bot</a></>}
+                InputProps={{
+                  endAdornment:
+                    <Tooltip title="@dayspick_bot">
+                      <InputAdornment position="end">
+                        <IconButton onClick={() => window.open(TeleBotLink)}>
+                          <Telegram />
+                        </IconButton>
+                      </InputAdornment>
+                    </Tooltip>
+                }}
+              />
           </ListItem>
+          }
           <ListItem>
             <ValidatePasswordField
+              autoComplete={false}
               disabled={confirm}
               required
               label={'Пароль'}
@@ -147,73 +205,8 @@ export default function SignupPage() {
             />
           </ListItem>
           <ListItem>
-            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginTop: 8}}>
-              <InputLabel onClick={changeConfirmType} style={confirm ? undefined : {cursor: 'pointer'}}>Способ подтверждения аккаунта:</InputLabel>
-              <div style={{display: 'flex'}}>
-                <IconButton size={'small'} onClick={changeConfirmType} className={confirmType === 'phone' ? classNames.confirm : undefined}>
-                  <Telegram />
-                </IconButton>
-                <IconButton size={'small'} onClick={changeConfirmType} className={confirmType === 'email' ? classNames.confirm : undefined}>
-                  <Email/>
-                </IconButton>
-              </div>
-            </div>
-          </ListItem>
-          {confirmType === 'email' &&
-            <ListItem>
-              {!confirm ?
-                <ValidateEmailField
-                  required
-                  label={'E-mail'}
-                  name={'email'}
-                  value={data.email}
-                  onChange={set}
-                  onBlur={set}
-                  helperText={'На этот e-mail будет выслано письмо'}
-                /> :
-                <TextField
-                  required
-                  label={'E-mail на подтверждении'}
-                  disabled
-                  value={data.email}
-                  helperText={'На этот e-mail было выслано письмо'}
-                />
-              }
-            </ListItem>
-          }
-          {confirmType === 'phone' &&
-            <ListItem>
-              {!confirm?
-                <ValidatePhoneField
-                  required
-                  label={'Телефон'}
-                  name={'phone'}
-                  value={data.phone}
-                  onChange={set}
-                  onBlur={set}
-                /> :
-                <ValidatePhoneField
-                  label={'Телефон на подтверждении'}
-                  disabled
-                  value={data.phone}
-                  helperText={<>Перейди в telegram-бот <a href={TeleBotLink} target={'_blank'} rel={"noreferrer"}>@dayspick_bot</a></>}
-                  InputProps={{
-                    endAdornment:
-                      <Tooltip title="@dayspick_bot">
-                        <InputAdornment position="end">
-                          <IconButton onClick={() => window.open(TeleBotLink)}>
-                            <Telegram />
-                          </IconButton>
-                        </InputAdornment>
-                      </Tooltip>
-                  }}
-                />
-              }
-            </ListItem>
-          }
-          <ListItem>
             <Button
-              disabled={Object.values(data).includes(null) || Object.values(valid).includes(false) || loading}
+              disabled={disabled || loading}
               variant={'outlined'}
               type={'submit'}
               className={classNames.button}

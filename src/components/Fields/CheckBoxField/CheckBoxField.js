@@ -5,17 +5,18 @@ import React from "react";
 import PropTypes from 'prop-types'
 
 function CheckBoxField(props) {
-  const {checked, onChange, name, label, disabled, helperText} = props
+  const {checked, onChange, name, label, disabled, helperText, readOnly} = props
 
   return (
     <FormControl>
       <FormControlLabel
+        style={{height: 45}}
         labelPlacement="end"
         name={name}
         label={<Typography color={"textPrimary"}>{label}</Typography>}
         disabled={disabled}
         control={
-          <Checkbox color={"default"} checked={checked} onChange={e => onChange(e.target.checked)}/>
+          <Checkbox color={"default"} checked={checked} onChange={!readOnly ? e => onChange(e.target.checked) : undefined}/>
         }/>
       {!!helperText && <FormHelperText style={{marginTop: -9}}>{helperText}</FormHelperText>}
     </FormControl>

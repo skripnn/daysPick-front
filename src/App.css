@@ -21,9 +21,11 @@
 }
 /*маленькая ширина*/
 @media screen and (max-width:600px) {
-}
-.App {
-    min-height: calc(calc(var(--vh, 1vh) * 100) - env(safe-area-inset-bottom) - env(safe-area-inset-top) - 49px)
+    .bottom-space {
+        display: block;
+        height: 55px;
+        width: 100%;
+    }
 }
 a {
     color: inherit;

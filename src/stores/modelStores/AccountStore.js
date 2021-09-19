@@ -11,6 +11,8 @@ class AccountStore {
   facebook_account = null
   badge = false
   can_be_raised = false
+  profile = {}
+  unconfirmed_projects = 0
 
   constructor() {
     makeAutoObservable(this)
@@ -20,6 +22,22 @@ class AccountStore {
     for (const [key, value] of Object.entries(obj)) {
       this[key] = value
     }
+  }
+
+  logOut = () => {
+    localStorage.clear()
+    this.username = null
+    this.email = null
+    this.email_confirm = null
+    this.phone = null
+    this.phone_confirm = null
+    this.is_public = false
+    this.is_confirmed = true
+    this.facebook_account = null
+    this.badge = false
+    this.can_be_raised = false
+    this.profile = {}
+    this.unconfirmed_projects = 0
   }
 
 }

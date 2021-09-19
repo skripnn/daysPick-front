@@ -6,6 +6,7 @@ class InfoBarStore {
   loader = new Loader()
   confirm = null
   loading = false
+  mobile = false
 
   constructor() {
     makeAutoObservable(this)
@@ -39,6 +40,10 @@ class InfoBarStore {
 
   setLoading = (bool) => {
     this.loading = bool
+  }
+
+  setMobile = (bool) => {
+    this.mobile = bool
   }
 
 }

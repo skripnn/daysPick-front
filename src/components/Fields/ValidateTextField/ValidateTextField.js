@@ -13,8 +13,7 @@ import Fetch from "../../../js/Fetch";
 export default function ValidateTextField(props) {
   const {onChange, value, defaultValue, onBlur, error, helperText, cancel, convertValue, endAdornment, ...newProps} = props
 
-  function handleChange(e) {
-    let value = e.target.value
+  function handleChange(value) {
     if (convertValue) value = convertValue(value)
     if (value === defaultValue) value = null
     if (onChange) onChange(value, props.name)

@@ -5,7 +5,6 @@ import Day from "../../Calendar/components/Day/Day";
 import {newDate} from "../../../js/functions/date";
 import './InfoField.css'
 import TextField from "../TextField/TextField";
-import {inject, observer} from "mobx-react";
 
 
 function TabPanel(props) {
@@ -18,29 +17,30 @@ function TabPanel(props) {
                multiline
                name={props.index}
                label={props.label}
-               value={props.value || ''}
+               value={props.value}
                inputProps={{style: style}}
+               readOnly={props.readOnly}
+               emptyNull
     />
   )
 }
 
-function InfoField(props) {
+function InfoField({info, days={}, setInfo, is_folder, height, rowsHeight, readOnly}) {
+  if (rowsHeight) height = rowsHeight * 69
   const [state, setState] = React.useState('info');
-  const {info, days, dates, setInfo, is_folder} = props.ProjectStore
-  const {height} = props
 
-  if (state !== 'info' && !dates.includes(state)) setState('info')
+  if (state !== 'info' && !Object.keys(days).includes(state)) setState('info')
 
 
-  function Tab(props) {
-    const pick = state === props.date
+  function Tab({date}) {
+    const pick = state === date
     function handleClick() {
-      pick? setState('info') : setState(props.date)
+      pick? setState('info') : setState(date)
     }
 
     return (
       <Box>
-        <Day date={newDate(props.date)} pick={pick} onClick={handleClick}/>
+        <Day date={newDate(date)} pick={pick} onClick={handleClick}/>
       </Box>
     )
   }
@@ -51,22 +51,24 @@ function InfoField(props) {
         value={info}
         index={'info'}
         label={'Информация о проекте'}
-        onChange={e => setInfo(e.target.value)}
-        plusSize={!dates.length}
+        onChange={setInfo}
+        plusSize={!Object.keys(days).length}
         height={height}
+        readOnly={readOnly}
       />
     )
 
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    const fdate = (new Intl.DateTimeFormat('ru-RU', options).format(newDate(date)));
+    const fDate = (new Intl.DateTimeFormat('ru-RU', options).format(newDate(date)));
     return (
       <TabPanel
         value={days[date]}
         index={date}
         key={date}
-        label={fdate}
-        onChange={(e) => setInfo(e.target.value, date)}
+        label={fDate}
+        onChange={(v) => setInfo(v, date)}
         height={height}
+        readOnly={readOnly}
       />
     )
   }
@@ -80,11 +82,12 @@ function InfoField(props) {
         variant="scrollable"
         scrollButtons="auto"
       >
-        {dates.map(date => <Tab date={date} key={date}/>)}
+        {Object.keys(days).map(date => <Tab date={date} key={date}/>)}
       </Tabs>}
       {tabPanel(state)}
     </Box>
   )
 }
 
-export default inject('ProjectStore')(observer(InfoField))
+// export default inject('ProjectStore')(observer(InfoField))
+export default InfoField

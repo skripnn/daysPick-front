@@ -1,7 +1,6 @@
 import Calendar, {UsersList} from "../components/test/components/Calendar";
 import Fetch from "../js/Fetch";
 import {useState} from "react";
-import UserField from "../components/Fields/UserField/UserField";
 import {CalendarBase} from "../components/test/Calendar";
 
 function TestPageCalendar() {

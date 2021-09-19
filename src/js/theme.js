@@ -47,6 +47,19 @@ const theme = createMuiTheme({
           "borderBottom": "2px solid #5b5b5b"
         }
       }
+    },
+    MuiDialogTitle: {
+      root: {
+        paddingTop: 8,
+        paddingBottom: 0,
+        paddingLeft: 16,
+        paddingRight: 16
+      }
+    },
+    MuiDialogContent: {
+      root: {
+        paddingTop: 0
+      }
     }
   }
 });

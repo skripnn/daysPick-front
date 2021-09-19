@@ -1,6 +1,8 @@
 import {Redirect} from "react-router-dom";
+import {useUsername} from "../stores/storeHooks";
 
 export default function MainPage() {
-  if (localStorage.User) return <Redirect to={`@${localStorage.User}/`}/>
+  const username = useUsername()
+  if (username) return <Redirect to={`@${username}/`}/>
   else return <Redirect to={`/search/`}/>
 }

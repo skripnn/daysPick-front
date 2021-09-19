@@ -2,8 +2,8 @@ import {makeAutoObservable} from "mobx";
 
 class CalendarStore {
   days = {}
-  daysOff = new Set()
-  daysPick = new Set()
+  daysOff = []
+  daysPick = []
 
   constructor() {
     makeAutoObservable(this)
@@ -11,7 +11,6 @@ class CalendarStore {
 
   setValue = (obj={}) => {
     for (let [key, value] of Object.entries(obj)) {
-      if (Array.isArray(value)) value = new Set(value)
       this[key] = value
     }
   }

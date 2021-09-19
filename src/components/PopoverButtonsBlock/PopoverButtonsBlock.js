@@ -12,9 +12,11 @@ function PopoverButtonsBlock({children, icon}) {
         {icon}
       </IconButton>
       <Popover
+        marginThreshold={0}
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}
+        onClick={() => setAnchorEl(null)}
         anchorOrigin={{
           vertical: 'center',
           horizontal: 'right',

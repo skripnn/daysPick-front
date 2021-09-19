@@ -13,9 +13,10 @@ import {inject, observer} from "mobx-react";
 
 let dragState = false
 
-function TagsEdit(props) {
-  const {tags, setValue} = props.ProfileStore
-  const setTags = (v) => setValue({tags: v})
+function TagsEdit({Account:store}) {
+  const {tags} = store.profile
+  const setValue = (r) => store.setValue({profile: r})
+  const setTags = (v) => setValue({profile: {...store.profile, tags: v}})
 
   const ref = useRef()
 
@@ -238,9 +239,7 @@ function TagsEdit(props) {
   </>)
 }
 
-export default inject(stores => ({
-  ProfileStore: stores.UsersStore.getLocalUser().user
-}))(observer(TagsEdit))
+export default inject('Account')(observer(TagsEdit))
 
 function TagChoiceDialog({open, close, setValue, tags}) {
   const [newTagTitle, setNewTagTitle] = useState(null)

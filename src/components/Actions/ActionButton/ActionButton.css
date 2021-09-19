@@ -26,3 +26,23 @@ button.action-button {
 .action-button.full-width {
     width: 100%;
 }
+.action-button.border {
+    border-width: 1px;
+    border-style: solid;
+}
+.action-button.empty {
+    width: 69px
+}
+.action-button-2 {
+    border-width: 1px;
+    border-style: solid;
+}
+.action-button-2-label {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+}
+.action-button-2-label > svg {
+    font-size: 16px;
+    margin-right: 4px;
+}

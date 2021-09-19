@@ -1,6 +1,21 @@
 import React from "react";
 import './ActionsPanel.css'
 
+export function ActionsPanel2({left, children, right}) {
+  return (
+    <div className={'actions-panel'}>
+      <div>
+        {left}
+      </div>
+      {!!children && <div style={{flexGrow: 1, display: 'flex', justifyContent: 'center', alignSelf: "flex-start"}}>
+        {children}
+      </div>}
+      <div>
+        {right}
+      </div>
+    </div>
+  )
+}
 
 
 function ActionsPanel({hidden, left, center, right, bottom, children}) {
@@ -8,7 +23,7 @@ function ActionsPanel({hidden, left, center, right, bottom, children}) {
 
   if (bottom) return (<>
     {children}
-    <div className={'actions-panel bottom'}>
+    <div className={'actions-panel bottom2'}>
       {left}
       {center}
       {right}

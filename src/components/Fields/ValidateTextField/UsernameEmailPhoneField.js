@@ -3,7 +3,7 @@ import {emailValidator} from "../../../js/functions/functions";
 import ValidateTextField from "./ValidateTextField";
 import MuiPhoneNumber from "material-ui-phone-number";
 
-export default function UsernameEmailPhoneField({fieldProps={}, onChange=() => {}, validate=true}) {
+export default function UsernameEmailPhoneField({fieldProps={}, onChange=() => {}, validate=true, disableAutoFill}) {
   const [value, setValue] = useState('')
   const [type, setType] = useState('username')
   const [error, setError] = useState(null)
@@ -48,17 +48,17 @@ export default function UsernameEmailPhoneField({fieldProps={}, onChange=() => {
     <>
       {type === 'username' &&
       <ValidateTextField
-        {...fieldsProps}
         label={'Имя пользователя, email или телефон'}
-        name={'username'}
+        name={!disableAutoFill && 'username'}
         convertValue={v => (v ? v.toLowerCase() : v)}
+        {...fieldsProps}
       />
       }
       {type === 'email' &&
       <ValidateTextField
         {...fieldsProps}
         label={'Email'}
-        name={'email'}
+        name={!disableAutoFill && 'email'}
         convertValue={v => (v ? v.toLowerCase() : v)}
       />
       }
@@ -66,7 +66,7 @@ export default function UsernameEmailPhoneField({fieldProps={}, onChange=() => {
       <MuiPhoneNumber
         {...fieldsProps}
         label={'Телефон'}
-        name={'phone'}
+        name={!disableAutoFill && 'phone'}
         disableDropdown
         color={'secondary'}
         countryCodeEditable={false}

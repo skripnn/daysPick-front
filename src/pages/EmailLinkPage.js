@@ -17,7 +17,7 @@ export default function EmailLinkPage() {
       if (r.token) localStorage.setItem("Authorization", `Token ${r.token}`)
       if (r.account) {
         localStorage.setItem("User", r.account.username)
-        mainStore.AccountStore.setValue(r.account)
+        mainStore.Account.setValue(r.account)
       }
       if (r.message) Info.success(r.message)
       Fetch.autoLink(!!r.error || !link ? '/' : link)

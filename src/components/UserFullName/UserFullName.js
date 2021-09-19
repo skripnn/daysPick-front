@@ -1,48 +1,42 @@
 import './UserFullName.css'
 import React from "react";
 import Box from "@material-ui/core/Box";
-import UserAvatar from "../UserAvatar/UserAvatar";
 import {Publish} from "@material-ui/icons";
 import {IconButton, Tooltip} from "@material-ui/core";
 import Fetch from "../../js/Fetch";
-import {inject, observer} from "mobx-react";
-import IconBadge from "../IconBadge/IconBadge";
 import Info from "../../js/Info";
+import A from "../core/A";
+import {useAccount} from "../../stores/storeHooks";
 
-function UserFullName(props) {
-  if (!props.user.full_name) return null
 
-  function click() {
-    if (props.link) Fetch.link(`@${props.user.username}/`, props.setUser)
-  }
-
-  const avatar = (
-    <Box>
-      <IconBadge dot content={props.badge}>
-        <UserAvatar {...props.user} onClick={props.avatarClick}/>
-      </IconBadge>
-    </Box>
-  )
+export function ProfileFullName({profile, leftChildren, rightChildren, link}) {
+  if (!profile) return null
 
   return (
-    <div className={'user-full-name'} onClick={click}>
-      {props.avatar === 'left' && avatar}
-      <Box>{props.user.full_name}</Box>
-      {props.avatar === 'right' && avatar}
-      {props.raise && props.AccountStore.can_be_raised &&
-      <Tooltip title={'Поднять в поиске'}>
-        <IconButton size={"small"}
-                    onClick={() => Fetch.post('account', {raised: true}).then(props.AccountStore.setValue).then(() => Info.success('Профиль поднят в поиске'))}>
-            <Publish className={"edit-button"}/>
-        </IconButton>
-      </Tooltip>
-      }
+    <div className={'user-full-name'}>
+      {leftChildren}
+      <A link={link ? `@${profile.username}` : undefined}>
+        <Box>{profile.full_name}</Box>
+      </A>
+      {rightChildren}
     </div>
   )
 }
 
-UserFullName.defaultProps = {
-  badge: false
-}
 
-export default inject('AccountStore')(observer(UserFullName))
+export function RaiseButton() {
+  const {can_be_raised, setValue} = useAccount().can_be_raised
+
+  if (!can_be_raised) return null
+  return (
+    <Tooltip title={'Поднять в поиске'}>
+      <IconButton size={"small"}
+                  onClick={() => Fetch
+                    .post('account', {raised: true})
+                    .then(setValue)
+                    .then(() => Info.success('Профиль поднят в поиске'))}>
+        <Publish className={"colored-button"}/>
+      </IconButton>
+    </Tooltip>
+  )
+}

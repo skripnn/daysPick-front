@@ -1,82 +1,97 @@
-import React from "react";
+import React, {useState} from "react";
 import {inject, observer} from "mobx-react";
 import {ProjectItemAutoFolder} from "../components/ProjectItem/ProjectItem";
 import Fetch from "../js/Fetch";
 import LazyList from "../components/LazyList/LazyList";
-import {useMobile} from "../components/hooks";
-import ProjectsStatistics from "../components/ProjectsStatistics/ProjectsStatistics";
+import {StatisticsDialog} from "../components/ProjectsStatistics/ProjectsStatistics";
+import {useAccount} from "../stores/storeHooks";
+import {compareId} from "../js/functions/functions";
+import A from "../components/core/A";
+import {AddCircleOutline, Folder} from "@material-ui/icons";
+import ActionButton2 from "../components/Actions/ActionButton/ActionButton2";
+import ActionsPanel2 from "../components/Actions/ActionsPanel/ActionsPanel2";
+import Typography from "@material-ui/core/Typography";
+import mainStore from "../stores/mainStore";
+import {NewSeriesDialog} from "../components/NewSeriesDialog/NewSeriesDialog";
 
 
-function ProjectsListPage(props) {
-  const {link, f, p, setProject, statistics, setValue} = props
-  const mobile = useMobile()
+function ProjectsListPage({store, getLink}) {
+  const {fullList, filteredList, save, del} = store
+  const {list, page, pages, add} = filteredList.exist() ? filteredList : fullList
+  const [statistics, setStatistics] = useState(null)
+  const [filter, setFilter] = useState(null)
+  const [newSeries, setNewSeries] = useState(null)
+  const {id, username} = useAccount()
 
-  function onAction(project) {
-    if (project.parent) {
-      const parent = props.pageStore.getProject(project.parent.id)
-      parent.children = parent.children.filter(p => p.id !== project.id)
-      if (parent.children.length) props.pageStore.setProject(parent)
-      else props.pageStore.delProject(parent.id)
-    }
-    else props.pageStore.delProject(project.id)
+  function getStatistics() {
+    Fetch.post([getLink, 'statistics'], filter).then(setStatistics)
   }
 
-  function onProjectClick(project) {
-    Fetch.link(`project/${project.id}`, setProject)
-  }
-
-  function getStatistics(filter) {
-    if (setValue) Fetch.post([link, 'statistics'], filter).then(v => setValue({statistics: v}))
+  function reload() {
+    Fetch.get(getLink).then(fullList.set)
   }
 
   return (
-      <div>
-        <LazyList
-          searchFieldParams={{
-            set: f.set,
-            calendar: props.calendar,
-            user: localStorage.User,
-          }}
-          getLink={link}
-          getParams={{user: localStorage.User}}
-          pages={f.pages || p.pages}
-          page={f.page || p.page}
-          set={p.set}
-          add={f.pages ? f.add : p.add}
-          onFilterChange={getStatistics}
-        >
-          {!!statistics && (f.exist() || p.exist()) && <ProjectsStatistics statistics={statistics} mobile={mobile}/>}
-          {(f.exist() ? f.list : p.list).map((project) =>
+    <div>
+      <LazyList
+        searchFieldParams={{
+          set: filteredList.set,
+          calendarGet: getLink === 'offers' ? Fetch.getOffersCalendar : Fetch.calendarGetter(id),
+        }}
+        getLink={getLink}
+        getParams={{user: id}}
+        pages={pages}
+        page={page}
+        set={fullList.set}
+        add={add}
+        onFilterChange={setFilter}
+      >
+        <ActionsPanel2>
+          <ActionButton2
+            label={'Новый проект'}
+            icon={<AddCircleOutline style={{marginBottom: 0.25}}/>}
+            wrapper={<A link={`project${getLink === 'offers' ? '' : `?user=${username}`}`} setter={mainStore.ProjectPage.setValue}/>}
+          />
+          <ActionButton2
+            label={'Новая серия'}
+            icon={<Folder style={{marginBottom: 0.25}}/>}
+            onClick={() => setNewSeries({user: getLink === 'offers' ? null : id})}
+          />
+          {!!list.length && <ActionButton2
+            label={'Статистика'}
+            onClick={getStatistics}
+          />}
+        </ActionsPanel2>
+        {!list.length ?
+          <Typography variant={'body2'} color={'secondary'}>Нет проектов</Typography> :
+          list.map((project) =>
             <ProjectItemAutoFolder
+              key={project.id.toString()}
               project={project}
-              key={project.id}
-              onClick={onProjectClick}
-              onDelete={onAction}
-              confirmButton={project.creator !== localStorage.User}
-              paidButton={false}
+              onClick={p => Fetch.link(['project', p.id], mainStore.ProjectPage.download)}
+              wrapperRender={p => <A link={['project', p.id]} noDiv key={project.id.toString()} disabled/>}
+              onDelete={del}
+              onConfirm={save}
+              onPaid={save}
+              paidButton={p => compareId(p.user, id)}
+              confirmButton={p => compareId(p.user, id)}
             />
-          )}
-        </LazyList>
-      </div>
+          )
+        }
+      </LazyList>
+      <StatisticsDialog value={statistics} close={() => setStatistics(null)}/>
+      <NewSeriesDialog openState={newSeries} onClose={() => setNewSeries(null)} onSave={reload}/>
+    </div>
   )
 }
 
-export const ProjectsPage = inject(stores => ({
-  f: stores.ProjectsPageStore.f,
-  p: stores.ProjectsPageStore.p,
-  pageStore: stores.ProjectsPageStore,
-  setProject: stores.ProjectStore.setProject,
-  calendar: stores.UsersStore.getLocalUser().calendar,
-  statistics: stores.ProjectsPageStore.statistics,
-  setValue: stores.ProjectsPageStore.setValue,
-  link: 'projects'
+export const OffersPage = inject(stores => ({
+  store: stores.OffersPage,
+  getLink: 'offers'
 }))(observer(ProjectsListPage))
 
-export const OffersPage = inject(stores => ({
-  f: stores.OffersPageStore.f,
-  p: stores.OffersPageStore.p,
-  pageStore: stores.OffersPageStore,
-  setProject: stores.OffersPageStore.setProject,
-  calendar: stores.UsersStore.getLocalUser().offersCalendar,
-  link: 'offers'
+export const ProjectsPage = inject(stores => ({
+  store: stores.ProjectsPage,
+  getLink: 'projects'
 }))(observer(ProjectsListPage))
+

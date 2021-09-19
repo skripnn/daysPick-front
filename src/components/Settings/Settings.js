@@ -1,9 +1,7 @@
 import {
   Grid,
   InputAdornment,
-  List,
   ListItem,
-  ListSubheader,
   Tooltip
 } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
@@ -16,10 +14,6 @@ import ValidateTextField, {
 import React, {useEffect, useState} from "react";
 import Loader from "../../js/Loader";
 import Fetch from "../../js/Fetch";
-import CheckBoxField from "../Fields/CheckBoxField/CheckBoxField";
-// import FacebookField from "../Fields/FacebookField/FacebookField";
-import {inject, observer} from "mobx-react";
-import Typography from "@material-ui/core/Typography";
 import TextField from "../Fields/TextField/TextField";
 import './Settings.css'
 import Keys from "../../js/Keys";
@@ -30,77 +24,7 @@ import RefreshIcon from "../Icons/RefreshIcon";
 import MuiPhoneNumber from "material-ui-phone-number";
 
 
-function Settings(props) {
-  const {changeLocalUsername} = props
-  const {
-    username,
-    setValue,
-    is_public,
-    email_confirm,
-    email,
-    phone,
-    phone_confirm,
-    is_confirmed
-  } = props.store
-
-  if (!username) return null
-
-  function delete_profile() {
-    // eslint-disable-next-line no-restricted-globals
-    if (confirm('Удалить профиль?\nДанные невозможно будет восстановить')) {
-      Fetch.delete('account').then((r) => {
-        if (!r.error) {
-          Info.info('Данные успешно удалены')
-          localStorage.clear()
-          Fetch.link('search')
-        }
-        else Info.info(r.error)
-      })
-    }
-  }
-
-  return (
-    <List dense>
-      {!is_confirmed &&
-        <ListSubheader className={'text-red'}>Подтвердите аккаунт с помощью e-mail или номера телефона</ListSubheader>
-      }
-      <NewUsernameField username={username} setValue={setValue} changeUsername={changeLocalUsername}/>
-      <NewPasswordField/>
-      <EmailChangeField email={email} email_confirm={email_confirm} setValue={setValue}/>
-      <PhoneChangeField phone={phone} phone_confirm={phone_confirm} setValue={setValue}/>
-      <ListItem>
-        <Grid container spacing={1}>
-          <Grid item xs={12} sm>
-            <div onClick={!is_confirmed ? () => Info.warning('Необходимо подтвердить аккаунт') : undefined}>
-              <CheckBoxField
-                name={'is_public'}
-                label={'Публичный профиль'}
-                checked={is_public}
-                onChange={v => Fetch.post('account', {is_public: v}).then(setValue)}
-                disabled={!is_confirmed}
-                helperText={'Доступен через поиск'}
-              />
-            </div>
-          </Grid>
-          <Grid item xs={12} sm>
-            <div className={'delete-account-button'}>
-            <Typography variant={'subtitle2'} color={'secondary'} onClick={delete_profile}
-                        className={'delete-profile-button'}>Удалить профиль</Typography>
-            </div>
-          </Grid>
-        </Grid>
-      </ListItem>
-    </List>
-  )
-}
-
-export default inject(stores => ({
-  store: stores.AccountStore,
-  changeLocalUsername: stores.UsersStore.changeLocalUsername
-}))(observer(Settings))
-
-
-function NewUsernameField({username, changeUsername}) {
+export function NewUsernameField({username, setValue}) {
   const [newUsername, setNewUsername] = useState(username)
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -148,7 +72,7 @@ function NewUsernameField({username, changeUsername}) {
       .then(r => {
         if (r.error) setError(r.error)
         else {
-          changeUsername(r)
+          setValue(r)
           setError(null)
         }
         setLoading(false)
@@ -188,7 +112,7 @@ function NewUsernameField({username, changeUsername}) {
   )
 }
 
-function NewPasswordField() {
+export function NewPasswordField() {
   const [password, setPassword] = useState(null)
   const [password2, setPassword2] = useState(null)
   const [error, setError] = useState(false)
@@ -219,7 +143,7 @@ function NewPasswordField() {
       setPassword2(null)
       setError(false)
       setLoading(false)
-      r.error ? Info.warning(r.error) : Info.success('Пароль обновлен')
+      r.error ? Info.error(r.error) : Info.success('Пароль обновлен')
       if (r.token) localStorage.setItem("Authorization", `Token ${r.token}`)
     })
   }
@@ -261,7 +185,7 @@ function NewPasswordField() {
   )
 }
 
-function EmailChangeField({email, email_confirm, setValue}) {
+export function EmailChangeField({email, email_confirm, setValue}) {
 
   const [newEmail, setNewEmail] = useState(email_confirm)
 
@@ -385,7 +309,7 @@ function EmailChangeField({email, email_confirm, setValue}) {
   )
 }
 
-function PhoneChangeField({phone, phone_confirm, setValue}) {
+export function PhoneChangeField({phone, phone_confirm, setValue}) {
 
   const [newPhone, setNewPhone] = useControlledState(phone_confirm)
   const [error, setError] = useState(null)

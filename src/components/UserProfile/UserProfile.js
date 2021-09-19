@@ -53,3 +53,31 @@ export default inject(stores => ({
   user: stores.UsersStore.getUser().user,
   userPage: stores.UsersStore.getUser().userPage
 }))(observer(UserProfile))
+
+
+
+export function Profile({profile}) {
+  const showInfo = !!profile.info
+  const showTags = !!profile.tags && !!profile.tags.length
+  const showContacts = !!profile.email || !!profile.phone || !!profile.telegram
+
+  const tabObj = (id, label, content) => ({
+    id: id,
+    label: label,
+    content: content
+  })
+
+  const tabs = []
+  if (showInfo) tabs.push(tabObj('Info', 'Описание', <ProfileInfo user={profile}/>))
+  if (showTags) tabs.push(tabObj('Tags', 'Специализации', <Tags user={profile}/>))
+  if (showContacts) tabs.push(tabObj('Contacts', 'Контакты', <Contacts user={profile}/>))
+
+  return (<List dense>
+    {tabs.map(tab => (
+      <div key={tab.id}>
+        <HeaderText>{tab.label}</HeaderText>
+        {tab.content}
+      </div>
+    ))}
+  </List>)
+}

@@ -7,16 +7,17 @@ import Box from "@material-ui/core/Box";
 import {Link} from "react-router-dom";
 import Menu from "../Menu/Menu";
 import LoginIcon from "../Icons/LoginIcon";
-import {IconButton, LinearProgress, Tooltip} from "@material-ui/core";
+import {IconButton, Tooltip} from "@material-ui/core";
 import {Search} from "@material-ui/icons";
-import Fetch from "../../js/Fetch";
-import {inject, observer} from "mobx-react";
 import './Header.css'
-import NotConfirmBar from "./NotConfirmBar";
+import {NotConfirmBar} from "./NotConfirmBar";
+import A from "../core/A";
+import {useUserLink} from "../../stores/storeHooks";
+import mainStore from "../../stores/mainStore";
 
 
-function Header(props) {
-  const auth = !!localStorage.User || !!props.AccountStore.username
+export default function Header() {
+  const auth = !!localStorage.Authorization
   const titles = [
     ['/projects', 'Мои проекты'],
     ['/clients', 'Мои клиенты'],
@@ -26,6 +27,7 @@ function Header(props) {
   ]
 
   const { pathname } = useLocation();
+  const link = useUserLink()
   const [title, setTitle] = useState(getTitle())
   // eslint-disable-next-line
   useEffect(() => setTitle(getTitle()), [pathname])
@@ -33,7 +35,7 @@ function Header(props) {
   function getTitle() {
     let title ='DaysPick'
     for (const [path, name] of titles) {
-      if (window.location.pathname.startsWith(path)) {
+      if (pathname.startsWith(path)) {
         title = name
         break
       }
@@ -41,7 +43,7 @@ function Header(props) {
     return title
   }
 
-  const rightButton = !window.location.pathname.startsWith('/login')? (
+  const rightButton = !pathname.startsWith('/login')? (
     <Link to={'/login/'}>
       <Tooltip title="Войти">
         <IconButton>
@@ -53,14 +55,17 @@ function Header(props) {
 
   return (
     <AppBar position="sticky">
-      {props.InfoBarStore.loading && <LinearProgress style={{position: 'absolute', top: 0, width: "100%"}}/>}
       <Toolbar variant={"dense"} style={{minHeight: 54}}>
         <Box flexGrow={1} display={'flex'} alignItems={'center'}>
-          <Typography variant="h6" onClick={() => Fetch.autoLink('/')} style={{cursor: 'pointer'}}>{title}</Typography>
-          {!window.location.pathname.startsWith('/search')  &&
-          <IconButton onClick={() => Fetch.link('search')}>
-            <Search/>
-          </IconButton>}
+          <A link={auth ? link : '/'} setter={auth ? mainStore.UserPage.setValue : undefined}>
+            <Typography variant="h6" style={{cursor: 'pointer'}}>{title}</Typography>
+          </A>
+          {!pathname.startsWith('/search')  &&
+            <A link={'search'}>
+              <IconButton>
+                <Search/>
+              </IconButton>
+            </A>}
         </Box>
         {auth?  <Menu /> : rightButton}
       </Toolbar>
@@ -68,9 +73,3 @@ function Header(props) {
     </AppBar>
   );
 }
-
-export default inject(stores => ({
-  InfoBarStore: stores.InfoBarStore,
-  AccountStore: stores.AccountStore
-}))(observer(Header))
-

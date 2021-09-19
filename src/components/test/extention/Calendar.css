@@ -2,7 +2,7 @@ div.calendar-block {
     display: flex;
     flex-flow: row nowrap;
     justify-content: center;
-    padding-top: 10px;
+    /*padding-top: 10px;*/
     overflow: hidden;
 
     -webkit-user-select: none;

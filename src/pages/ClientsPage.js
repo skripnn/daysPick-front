@@ -1,73 +1,65 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import ClientDialog from "../components/ClientDialog/ClientDialog";
-import {inject, observer} from "mobx-react";
-import ClientItem from "../components/ClientItem/ClientItem.js";
-import {ListSubheader} from "@material-ui/core";
+import {ListItem, ListSubheader} from "@material-ui/core";
 import {convertClients} from "../js/functions/functions";
 import Fetch from "../js/Fetch";
 import LazyList from "../components/LazyList/LazyList";
+import {useAccount} from "../stores/storeHooks";
+import {ClientItem} from "../components/Items/ClientItem";
+import {inject, observer} from "mobx-react";
+import {AddCircleOutline} from "@material-ui/icons";
+import ActionButton2 from "../components/Actions/ActionButton/ActionButton2";
 
 
-function ClientsPage(props) {
-  const {dialog, delClient, setDialog, saveClient} = props.ClientsPageStore
-  const {c, f} = props
+function ClientsPage({ClientsPage:store}) {
+  const {fullList, filteredList, save, del} = store
+  const {list, page, pages, add} = filteredList.exist() ? filteredList : fullList
+  const [dialog, setDialog] = useState(null)
+  useEffect(() => setDialog(null), [list])
+  const {id} = useAccount()
 
-  function del(client) {
-    Fetch.delete(['client', client.id]).then(() => {
-      delClient(client.id)
-      setDialog(null)
-    })
+  function onSave(client) {
+    dialog.id ? save(client) : Fetch.get('clients').then(fullList.set).then(() => setDialog(null))
   }
-
-  function save(client) {
-    Fetch.post(['client', client.id], client).then(result => {
-      saveClient(result)
-      Fetch.get('clients').then(result => {
-        f.set(null)
-        c.set(result)
-      })
-      setDialog(null)
-    })
-  }
-
 
   return (
     <div>
       <LazyList
         searchFieldParams={{
-          set: f.set,
-          calendar: props.calendar,
-          user: localStorage.User
+          set: filteredList.set,
+          calendarGet: Fetch.calendarGetter(id)
         }}
         getLink={'clients'}
-        pages={f.pages || c.pages}
-        page={f.page || c.page}
-        set={c.set}
-        add={f.pages ? f.add : c.add}
+        pages={pages}
+        page={page}
+        set={fullList.set}
+        add={add}
+        preLoader
       >
-        <>
-          <div style={{height: 12}}/>
-          {convertClients(f.exist() ? f.list : c.list).map(i => (
-            <div key={i.company}>
-              <ListSubheader disableSticky>{i.company || ' '}</ListSubheader>
-              {i.clients.map(client => <ClientItem
+        <ListItem className={'item'} style={{width: 'fit-content'}}>
+          <ActionButton2
+            label={'Новый клиент'}
+            icon={<AddCircleOutline style={{marginBottom: 0.25}}/>}
+            onClick={() => setDialog({name: '', company: ''})}
+          />
+        </ListItem>
+        {convertClients(list).map(i => (
+          <div key={i.company}>
+            <ListSubheader disableSticky>{i.company || ' '}</ListSubheader>
+            {i.clients.map(client =>
+              <ClientItem
                 client={client}
-                key={client.id}
+                key={client.id.toString()}
                 onClick={setDialog}
-                onDelete={del}/>)}
-            </div>
-          ))}
-        </>
+                onDelete={del}
+              />
+            )}
+          </div>
+        ))}
       </LazyList>
-      {!!dialog && <ClientDialog autoFocus={!dialog.id} onDelete={del} onSave={save} close={() => setDialog(null)}/>}
+      <ClientDialog openState={dialog} onClose={() => setDialog(null)} onDelete={del} onSave={onSave}/>
     </div>
   )
 }
 
-
-export default inject(stores => ({
-  c: stores.ClientsPageStore.c,
-  f: stores.ClientsPageStore.f,
-  ClientsPageStore: stores.ClientsPageStore,
-  calendar: stores.UsersStore.getLocalUser().calendar
-}))(observer(ClientsPage))
+export default inject('ClientsPage')(observer((ClientsPage)))

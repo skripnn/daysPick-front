@@ -1,9 +1,4 @@
 import {newDate} from "../../js/functions/date";
-import {
-  ListItem,
-  ListItemSecondaryAction,
-  ListItemText,
-} from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import React, {useState} from "react";
@@ -11,83 +6,90 @@ import {
   ArrowDropDown,
   ArrowDropUp,
   AssignmentTurnedIn, Cancel,
-  CheckBox,
   CheckBoxOutlineBlank, DoubleArrow,
   FolderOpen, Help, MoreHoriz, Person,
 } from "@material-ui/icons";
 import "./ProjectItem.css"
 import Fetch from "../../js/Fetch";
-import {compareProfiles, formatDate, getProjectStatus} from "../../js/functions/functions";
+import {compareId, formatDate, getProjectStatus} from "../../js/functions/functions";
 import PopoverButtonsBlock from "../PopoverButtonsBlock/PopoverButtonsBlock";
-import {useControlledState, useMobile, useTouchHold} from "../hooks";
+import {useTouchHold} from "../hooks";
 import IconBadge from "../IconBadge/IconBadge";
+import FetchIconButton from "../core/FetchIconButton";
+import {useAccount} from "../../stores/storeHooks";
+import Info from "../../js/Info";
+import mainStore from "../../stores/mainStore";
+import Item from "../Items/Item";
 
-export function ProjectItemAutoFolder({project, onTouchHold, onTouchEnd, onMouseOver, onMouseLeave, onClick, showOneChildFolder,
-                                 open, childListFilter, childProps,
-                                 onPaid, onDelete, onConfirm, confirmButton, paidButton, deleteButton}) {
 
-  const isFolder = !!project.children && !!project.children.length
-  const children = project.children ? childListFilter(project.children) : []
-  let oneChild = isFolder && children.length === 1
+export function ProjectItemAutoFolder({project, wrapperRender,
+                               onTouchHold, onTouchEnd, onMouseOver, onMouseLeave,
+                               onClick, onPaid, onDelete, onConfirm,
+                               confirmButton, paidButton, deleteButton}) {
 
   const commonProps = {
     onTouchHold: onTouchHold,
     onTouchEnd: onTouchEnd,
     onMouseOver: onMouseOver,
     onMouseLeave: onMouseLeave,
-    onClick: onClick
-  }
-
-  const itemProps = {
+    onClick: onClick,
     onPaid: onPaid,
     onDelete: onDelete,
     onConfirm: onConfirm,
-    confirmButton: confirmButton,
+    deleteButton: deleteButton,
     paidButton: paidButton,
-    deleteButton: deleteButton
+    confirmButton: confirmButton,
+    wrapperRender: wrapperRender
   }
 
   const Folder = (
     <ProjectFolderItem
-      project={{...project, children: children}}
+      project={project}
       {...commonProps}
-      childProps={childProps ? childProps : {...commonProps, ...itemProps}}
-      open={open}
+      renderChild={p => (
+        <ProjectItem
+          child
+          key={p.id.toString()}
+          project={p}
+          {...commonProps}
+        />
+      )}
     />
   )
 
   const Item = (
     <ProjectItem
-      project={oneChild ? project.children[0] : project}
+      key={project.id.toString()}
+      project={project}
       {...commonProps}
-      {...itemProps}
     />
   )
 
-  return (!isFolder || (oneChild && !showOneChildFolder)) ? Item : Folder
-
+  return project.is_series ? Folder : Item
 }
 
-ProjectItemAutoFolder.defaultProps = {
-  showOneChildFolder: false,
-  childListFilter: l => l
-}
 
-export function ProjectFolderItem({project, onTouchHold, onTouchEnd, onMouseOver, onMouseLeave, onClick, open, setOpen, childListFilter, childProps}) {
-  const mobile = useMobile()
-  const [folderOpen, setFolderOpen] = useControlledState(open, setOpen)
+export function ProjectFolderItem({project, wrapperRender, renderChild,
+                                    onTouchHold, onTouchEnd, onMouseOver, onMouseLeave,
+                                    onClick}) {
 
-  let clients = [...new Set(project.children.map(p => p.client ? (mobile ? p.client.name : p.client.full_name) : null))]
+  const [folderOpen, setFolderOpen] = useState(false)
+  const account = useAccount()
+  const type = compareId(project.user, project.creator) ? 'self' :
+    compareId(project.user, account) ? 'in' : 'out'
+
+  let clients = [...new Set(project.children.map(p => p.client ? p.client.full_name : null))]
   if (clients.includes(null)) clients = clients.filter(v => !!v).concat([null])
   const client = clients.length > 1 ? clients[0] + ', ...' : clients[0]
 
-  const money = project.children.map(p => p.money || 0).reduce((a, b) => a + b, 0)
+  const money = project.children.length ? project.children.map(p => p.money || 0).reduce((a, b) => a + b, 0) : null
 
   const action = (
-    <IconButton edge="end" onClick={() => setFolderOpen(!folderOpen)}>
+    <IconButton edge="end" onClick={() => setFolderOpen(!folderOpen)} size={'small'} disabled={!project.children.length}>
       {folderOpen ? <ArrowDropUp/> : <ArrowDropDown/>}
     </IconButton>
   )
+
   const primary = (
     <div style={{display: 'flex', alignItems: 'center'}}>
       <FolderOpen fontSize={"inherit"} style={{paddingRight: 4}}/>{project.title}
@@ -98,85 +100,93 @@ export function ProjectFolderItem({project, onTouchHold, onTouchEnd, onMouseOver
     <ProjectItemBase
       project={{...project, money: money}}
       primary={primary}
-      secondary={client}
+      secondary={type === 'self' && (client || '...')}
       action={action}
       onTouchHold={onTouchHold}
       onTouchEnd={onTouchEnd}
       onMouseOver={onMouseOver}
       onMouseLeave={onMouseLeave}
       onClick={onClick}
+      wrapperRender={wrapperRender}
     />
-    {folderOpen && childListFilter(project.children).map(p =>
-      <ProjectItem
-        child
-        {...childProps}
-        project={p}
-        key={p.id}
-      />
-    )}
+    {folderOpen && project.children.map(renderChild)}
   </>)
 
 }
 
-ProjectFolderItem.defaultProps = {
-  childProps: {},
-  childListFilter: (l) => l
-}
 
-export function ProjectItem({project, child, onTouchHold, onTouchEnd, onMouseOver, onMouseLeave, onClick,
-                               onConfirm, onPaid, onDelete, confirmButton, paidButton, deleteButton}) {
-  const [transparent, setTransparent] = useState(false)
+export function ProjectItem({project, wrapperRender, child,
+                              onTouchHold, onTouchEnd, onMouseOver, onMouseLeave,
+                              onClick, onConfirm, onPaid, onDelete,
+                              confirmButton, paidButton, deleteButton}) {
   const past = project.date_end < newDate().format()
-
-  function onHandleDelete() {
-    Fetch.delete(['project', project.id]).then(() => onDelete(project))
-  }
-
-  function onHandleConfirm() {
-    // project.is_wait = false
-    Fetch.post(['project', project.id], {is_wait: false}).then(() => onConfirm(project))
-  }
-
-  function onHandlePaid() {
-    // project.is_paid = !project.is_paid
-    Fetch.post(['project', project.id], {is_paid: true}).then(() => onPaid(project))
-  }
+  const account = useAccount()
+  const type = compareId(project.user, project.creator) ? 'self' :
+    compareId(project.user, account) ? 'in' : 'out'
 
   const PaidButton = (
-    <IconButton edge="end" disabled={transparent} onClick={() => {
-      if (project.date_end < newDate().format()) {
-        setTransparent(true)
-        onHandlePaid()
-      }
-      else onHandlePaid()
-    }}>
-      {transparent ? <CheckBox/> : <CheckBoxOutlineBlank/>}
-    </IconButton>
+    <FetchIconButton
+      edge={'end'}
+      fetch={() => Fetch
+        .post(['project', project.id], {is_paid: true})
+        .then((r) => {
+          if (r.error) Info.error(r.error)
+          else {
+            Info.success('Проект оплачен')
+            onPaid(r)
+          }
+        })}
+    >
+      <CheckBoxOutlineBlank/>
+    </FetchIconButton>
   )
 
   const DeleteButton = (
-    <IconButton edge="end" disabled={transparent} onClick={() => {
-      const text = compareProfiles(project.user, project.creator) || project.canceled ? "Удалить проект?" : (compareProfiles(project.user, localStorage.User) ? "Отказаться от проекта?" : "Отменить проект?")
-      // eslint-disable-next-line no-restricted-globals
-      if (!confirm(text)) return
-      setTransparent(true)
-      onHandleDelete()
-    }}>
-      {compareProfiles(project.user, project.creator) || project.canceled ? <DeleteIcon/> : <Cancel/>}
-    </IconButton>
+    <FetchIconButton
+      edge={'end'}
+      confirm={type === 'self' || project.canceled ?
+        "Удалить проект?" :
+        (type === 'in' ?
+          "Отказаться от проекта?" :
+          "Отменить проект?")}
+      fetch={() => Fetch
+          .delete(['project', project.id])
+          .then((r) => {
+            if (r.error) Info.error(r.error)
+            else {
+              Info.success(type === 'out' ? 'Проект отменён' : 'Проект удалён')
+              if (type === 'in') Fetch.get('account').then(mainStore.Account.setValue)
+              onDelete(project)
+            }
+          })}
+      >
+      {type === 'self' || project.canceled ? <DeleteIcon/> : <Cancel/>}
+    </FetchIconButton>
   )
 
   const ConfirmMenu = (
     <PopoverButtonsBlock
-      icon={compareProfiles(project.user, project.creator)
+      icon={type === 'self'
         ? <MoreHoriz/>
         : <IconBadge dot content><Help color={'secondary'}/></IconBadge>
       }
     >
       {DeleteButton}
-      <IconButton onClick={onHandleConfirm} disabled={transparent}>
+      <FetchIconButton
+        edge={false}
+        fetch={() => Fetch
+          .post(['project', project.id], {confirmed: true, is_wait: false})
+          .then((r) => {
+            if (r.error) Info.error(r.error)
+            else {
+              Info.success('Проект подтверждён')
+              Fetch.get('account').then(mainStore.Account.setValue)
+              onConfirm(r)
+            }
+          })}
+      >
         <AssignmentTurnedIn/>
-      </IconButton>
+      </FetchIconButton>
     </PopoverButtonsBlock>
   )
 
@@ -189,16 +199,17 @@ export function ProjectItem({project, child, onTouchHold, onTouchEnd, onMouseOve
 
   return (
     <ProjectItemBase
+      type={type}
       project={project}
       child={child}
       primary={title}
       action={action}
-      deleting={transparent}
       onTouchHold={onTouchHold}
       onTouchEnd={onTouchEnd}
       onMouseOver={onMouseOver}
       onMouseLeave={onMouseLeave}
       onClick={onClick}
+      wrapperRender={wrapperRender}
     />
   )
 }
@@ -212,25 +223,26 @@ ProjectItem.defaultProps = {
   deleteButton: true,
 }
 
-export function ProjectItemBase({project, deleting, child, onTouchHold, onTouchEnd, onMouseOver, onMouseLeave, onClick, primary, secondary, action}) {
-  const mobile = useMobile()
+export function ProjectItemBase({project, child, wrapperRender,
+                                  onTouchHold, onTouchEnd, onMouseOver, onMouseLeave,
+                                  onClick, primary, secondary, action, type}) {
 
   const past = project.date_end < newDate().format() || project.canceled
-  const className = 'project-item' + (past ? ' past' : '') + (child ? ' child' : '') + (deleting ? ' deleting' : '')
+  const className = 'project-item' + (past ? ' past' : '') + (child ? ' child' : '')
   const touchActions = useTouchHold(() => onTouchHold(project), () => onTouchEnd(project))
 
-  let clientName = null
-  if (!compareProfiles(project.user, project.creator)) {
+  let clientName
+  if (type !== 'self') {
     clientName = (
       <>
-        {compareProfiles(project.creator, localStorage.User)
-          ? <><DoubleArrow fontSize={"inherit"} style={{paddingRight: 4}}/>{project.user ? project.user.full_name : null}</>
-          : <><Person fontSize={"inherit"} style={{paddingRight: 4}}/>{project.creator.full_name}</>
+        {type === 'in'
+          ? <><Person fontSize={"inherit"} style={{paddingRight: 4}}/>{project.creator.full_name}</>
+          : <><DoubleArrow fontSize={"inherit"} style={{paddingRight: 4}}/>{project.user ? project.user.full_name : '...'}</>
         }
       </>
     )
   }
-  else if (project.client) clientName = mobile ? project.client.name : project.client.full_name
+  else clientName = project.client ? project.client.full_name : '...'
 
   let primaryText = primary || project.title
   if (typeof primaryText === 'string') {
@@ -238,33 +250,22 @@ export function ProjectItemBase({project, deleting, child, onTouchHold, onTouchE
     if (status) primaryText += ` (${status})`
   }
 
-  return (
-    <ListItem
+  const item = (<>
+    <Item
       className={className}
       onMouseOver={() => onMouseOver(project)}
       onMouseLeave={() => onMouseLeave(project)}
-      button
-      onClick={deleting ? undefined : () => onClick(project)}
+      onClick={() => onClick(project)}
       {...touchActions}
-    >
-      <ListItemText
-        primaryTypographyProps={{className: 'project-item-text'}}
-        primary={primaryText}
-        secondaryTypographyProps={{className: 'project-item-text'}}
-        secondary={secondary || clientName}
-      />
-      {(project.money === 0 || !!project.money) &&
-      <ListItemText
-        secondary={new Intl.NumberFormat('ru-RU').format(project.money) + " ₽"}
-        style={{textAlign: "right", whiteSpace: "nowrap"}}/>
-      }
-      {!!action &&
-      <ListItemSecondaryAction className={className + ' button'}>
-        {action}
-      </ListItemSecondaryAction>
-      }
-    </ListItem>
-  )
+
+      primary={primaryText}
+      secondary={secondary || clientName}
+      third={(project.money === 0 || !!project.money) && new Intl.NumberFormat('ru-RU').format(project.money) + " ₽"}
+      action={action}
+    />
+  </>)
+
+  return wrapperRender? React.cloneElement(wrapperRender(project), {children: item}) : item
 }
 
 ProjectItemBase.defaultProps = {

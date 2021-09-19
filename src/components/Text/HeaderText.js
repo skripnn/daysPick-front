@@ -19,6 +19,6 @@ export default function HeaderText({children, center, button, id, activeTab, set
   }
 
   return (
-    <Typography className={`header-text item ${center ? 'center' : ''}`}>{children}</Typography>
+    <Typography className={`header-text item ${center ? 'center' : ''}`} {...props}>{children}</Typography>
   )
 }

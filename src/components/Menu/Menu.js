@@ -9,89 +9,140 @@ import {
 } from "@material-ui/core";
 import "./Menu.css"
 import IconButton from "@material-ui/core/IconButton";
-import UserAvatar from "../UserAvatar/UserAvatar";
-import UserFullName from "../UserFullName/UserFullName";
+import {ProfileAvatar} from "../UserAvatar/UserAvatar";
+import {ProfileFullName} from "../UserFullName/UserFullName";
 import {inject, observer} from "mobx-react";
 import {Group, List as ListIcon, PermIdentity, Search, SettingsOutlined} from "@material-ui/icons";
 import LogoutIcon from "../Icons/LogoutIcon";
 import Fetch from "../../js/Fetch";
 import {useSwipeable} from "react-swipeable";
 import IconBadge from "../IconBadge/IconBadge";
+import A from "../core/A";
+import mainStore from "../../stores/mainStore";
 
 
-function Menu(props) {
+function Menu({Account:store}) {
+  const {unconfirmed_projects, is_confirmed, profile, username, logOut} = store
   const [open, setOpen] = useState(false)
 
-  function close(link, set) {
-    if (link) Fetch.link(link, set)
+  function close() {
     setOpen(false)
   }
 
-  function MenuItem(props) {
-    function handleClick() {
-      if (props.preLink) props.preLink(props.link, props.set)
-      close(props.link, props.set)
+  function MenuItem({preLink, link, set, className, noSelect, sub, children, text, icon, badgeProps, onClick}) {
+    function handleClose() {
+      close()
+      if (onClick) onClick()
     }
 
-    return (
-      <ListItem button onClick={props.onClick || handleClick} className={props.className || 'menu-item'} selected={!props.noSelect && !!window.location.pathname.match(props.link)} >
-        {!!props.icon && <ListItemIcon>{props.icon}</ListItemIcon>}
-        <ListItemText primary={props.text} secondary={props.sub || null}/>
+    const component = (
+      <ListItem button onClick={handleClose} className={className || 'menu-item'} selected={!noSelect && !!window.location.pathname.match(link)} >
+        {!!icon &&
+        <ListItemIcon>
+          <IconBadge {...badgeProps}>
+            {icon}
+          </IconBadge>
+        </ListItemIcon>
+        }
+        <ListItemText primary={children || text} secondary={sub || null}/>
       </ListItem>
+    )
+
+    if (!link) return component
+
+    return (
+      <A link={link} preLinkFunction={preLink} setter={set} noDiv>
+        {component}
+      </A>
     )
   }
 
+  const avatar = (
+    <IconBadge content={unconfirmed_projects || !is_confirmed} rect={false} dot={!unconfirmed_projects}>
+      <ProfileAvatar profile={profile}/>
+    </IconBadge>
+  )
+
   const handlers = useSwipeable({
-    onSwipedRight: () => close(),
+    onSwipedRight: close,
     trackMouse: true
   });
 
   return (
     <div>
-        <IconButton onClick={() => setOpen(prevState => !prevState)} style={{marginRight: -12}}>
-          <IconBadge dot content={props.unconfirmedProjects || !props.account.is_confirmed}>
-            <UserAvatar {...props.user} />
-          </IconBadge>
-        </IconButton>
+      <IconButton onClick={() => setOpen(true)} style={{marginRight: -12}}>
+        {avatar}
+      </IconButton>
       <Drawer
         open={open}
-        onClose={() => close()}
+        onClose={close}
         anchor={'right'}
         className={'menu'}
         {...handlers}
       >
-        <MenuItem text={<UserFullName user={props.user} avatar={'right'} badge={props.unconfirmedProjects || !props.account.is_confirmed}/>} link={`@${props.account.username}`} set={props.setUser} noSelect className={'menu-item-top'}/>
+        <MenuItem
+          link={`@${username}`}
+          set={mainStore.UserPage.setValue}
+          noSelect
+          className={'menu-item-top'}
+        >
+          <ProfileFullName
+            profile={profile}
+            rightChildren={avatar}
+          />
+        </MenuItem>
         <Divider />
         <List>
-          <MenuItem text={'Мои проекты'} icon={<IconBadge content={props.unconfirmedProjects} rect={false}><ListIcon/></IconBadge>} link={`projects`} set={props.setProjects} />
-          <MenuItem text={'Мои клиенты'} icon={<Group />} link={`clients`} set={props.setClients} />
-          <MenuItem text={'Исходящие проекты'} icon={<ListIcon/>} link={`offers`} set={props.setOffers} />
+          <MenuItem
+            text={'Мои проекты'}
+            icon={<ListIcon/>}
+            badgeProps={{
+              content: unconfirmed_projects,
+              rect: false
+            }}
+            link={`projects`}
+            set={mainStore.ProjectsPage.fullList.set}
+          />
+          <MenuItem
+            text={'Мои клиенты'}
+            icon={<Group />}
+            link={`clients`}
+            set={mainStore.ClientsPage.fullList.set}
+          />
+          <MenuItem
+            text={'Исходящие проекты'}
+            icon={<ListIcon/>}
+            link={`offers`}
+            set={mainStore.OffersPage.fullList.set}
+          />
         </List>
         <Divider />
         <List>
           <MenuItem text={'Поиск'} icon={<Search />} link={`search`} />
           <MenuItem text={'Профиль'} icon={<PermIdentity />} link={`profile`} />
-          <MenuItem text={'Настройки'} icon={<IconBadge dot content={!props.account.is_confirmed} rect={false}><SettingsOutlined /></IconBadge>} link={`settings`} />
-          <MenuItem text={'Выйти'} icon={<LogoutIcon />} noSelect onClick={() => {
-            localStorage.clear()
-            window.location.pathname = "/search"
-          }}/>
+          <MenuItem
+            text={'Настройки'}
+            icon={<SettingsOutlined />}
+            badgeProps={{
+              dot: true,
+              content: !is_confirmed,
+              rect: false
+            }}
+            link={`settings`}
+          />
+          <MenuItem
+            text={'Выйти'}
+            icon={<LogoutIcon />}
+            noSelect
+            onClick={() => {
+              logOut()
+              Fetch.link('search')
+            }}
+          />
         </List>
       </Drawer>
     </div>
   )
 }
 
-export default inject(stores => {
-  return {
-    account: stores.AccountStore,
-    // account: stores.UsersStore.getLocalUser().account,
-    user: stores.UsersStore.getLocalUser().user,
-    unconfirmedProjects: stores.UsersStore.getLocalUser().userPage.unconfirmedProjects,
-    getUser: stores.UsersStore.getLocalUser().getUser,
-    setUser: stores.UsersStore.setUser,
-    setClients: stores.ClientsPageStore.c.set,
-    setProjects: stores.ProjectsPageStore.p.set,
-    setOffers: stores.OffersPageStore.p.set
-  }
-})(observer(Menu))
+export default inject('Account')(observer(Menu))

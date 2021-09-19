@@ -58,21 +58,60 @@ export function phoneValidator(value) {
   return /^\+7 \(9[0-9]{2}\) [0-9]{3}-[0-9]{2}-[0-9]{2}$/.test(value)
 }
 
+export function getId(item) {
+  return typeof item === 'number' || !item ? item : item.id
+}
+
 export function compareProfiles(a, b) {
   const _a = typeof a === 'string' || !a ? a : a.username
   const _b = typeof b === 'string' || !b ? b : b.username
   return _a === _b
 }
 
-export function getProjectStatus(project) {
+export function compareId(a, b) {
+  return getId(a) === getId(b)
+}
+
+export function getProjectStatus(project, asker) {
+  if (!project.id) return null
   if (!project.confirmed) {
-    if (compareProfiles(project.creator, localStorage.User)) return 'Ожидание ответа'
+    if (compareId(project.creator, asker)) return 'Ожидание ответа'
     else {
       if (project.is_wait) return 'Новый проект'
       if (!project.is_wait) return 'Проект изменён'
     }
   }
-  else if (compareProfiles(project.canceled, project.creator)) return 'Отменен'
-  else if (compareProfiles(project.canceled, project.user)) return 'Отказ'
+  else if (compareId(project.canceled, project.creator)) return 'Отменён'
+  else if (compareId(project.canceled, project.user)) return 'Отказ'
   return null
+}
+
+
+export function projectListTransform (projects=[]) {
+  const array = []
+  projects.forEach(p => {
+    if (p.parent) {
+      const indexFolder = array.findIndex(i => i.id === p.parent.id)
+      if (indexFolder === -1) {
+        array.push({...p.parent, dates: [...p.dates], date_start: p.date_start, date_end: p.date_end, children: [p], confirmed: true, is_series: true})
+      }
+      else {
+        const parent = array[indexFolder]
+        parent.dates = [...parent.dates, ...p.dates]
+        parent.children.push(p)
+        if (p.date_start < parent.date_start) parent.date_start = p.date_start
+        if (p.date_end > parent.date_end) parent.date_end = p.date_end
+        array[indexFolder] = parent
+      }
+    }
+    else {
+      array.push(p)
+    }
+  })
+  return array.map(p => p.children && p.children.length === 1 ? p.children[0] : p)
+}
+
+
+export function isPromise(func) {
+  return func && typeof func.then === 'function' && func[Symbol.toStringTag] === 'Promise';
 }

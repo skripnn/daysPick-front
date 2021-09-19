@@ -1,6 +1,7 @@
 import mainStore from "../stores/mainStore";
 import Keys from "./Keys";
 import Info from "./Info";
+import {getId} from "./functions/functions";
 
 
 class FetchClass {
@@ -26,28 +27,35 @@ class FetchClass {
       return
     }
     if (res.status === 200) return res.json()
-    return Info.error(`${res.status} ${res.statusText}`)
+    Info.error(`${res.status} ${res.statusText}`)
+    return null
   }
 
   path = (URLs, params) => {
     if (URLs instanceof Array) URLs = URLs.filter(v => !!v).join('/')
     if (URLs.startsWith('/')) URLs = URLs.slice(1)
-    let path = this.url + URLs
+    URLs = URLs.split('?')
+    const paramsFromURL = URLs.length > 1 ? URLs[1] : null
+    let path = this.url + URLs[0]
     if (!path.endsWith('/')) path += '/'
+    // if (path.endsWith('/')) path = path.slice(0, path.length - 1)
     if (typeof URLs === 'string' && URLs.startsWith('http')) path = URLs
-    if (params) {
+    if (params || paramsFromURL) {
       path += '?'
-      let list = []
-      for (const [key, value] of Object.entries(params)) {
-        if (!value) continue
-        if (value instanceof Array) {
-          for (const v of value) list.push(`${key}=${v}`)
+      if (params) {
+        let list = []
+        for (const [key, value] of Object.entries(params)) {
+          if (!value) continue
+          if (value instanceof Array) {
+            for (const v of value) list.push(`${key}=${v}`)
+          }
+          else {
+            list.push(`${key}=${value}`)
+          }
         }
-        else {
-          list.push(`${key}=${value}`)
-        }
+        path += list.join('&')
       }
-      path += list.join('&')
+      if (paramsFromURL) path += paramsFromURL
     }
     return path
   }
@@ -143,21 +151,30 @@ class FetchClass {
     project_id: project
   })
 
+  calendarGetter = (user, project) => {
+    if (!user) return null
+    return (start, end) => this.getCalendar(start, end, getId(user), getId(project))
+  }
+
   getOffersCalendar = (dateStart, dateEnd) => this.get('calendar', {
     start: dateStart.format(),
     end: dateEnd.format(),
     offers: 1
   })
 
-  link = (link, set, replace=false) => {
-    Info.loading(true)
+  linkConvert = (link) => {
     if (link instanceof Array) link = link.filter(v => !!v).join('/')
     let l = link
     if (l !== '/') {
       if (l.startsWith('/')) l = l.slice(1)
       if (l.endsWith('/')) l = l.slice(0, l.length - 1)
     }
-    const pushLink = l === '/'? l : `/${l}`
+    return l === '/'? l : `/${l}`
+  }
+
+  link = (link, set, replace=false) => {
+    Info.loading(true)
+    const pushLink = this.linkConvert(link)
     const toHistory = () => {
       if (replace) this.history ? this.history.replace(pushLink) : window.history.replace(pushLink)
       else this.history ? this.history.push(pushLink) : window.history.push(pushLink)
@@ -165,19 +182,34 @@ class FetchClass {
       window.scrollTo(0, 0)
     }
     if (!set) toHistory()
-    else this.get(l).then(set).then(toHistory)
+    else this.get(link).then(set).then(toHistory)
   }
 
   autoLink = (link, replace) => {
-    if (link === '/') link = localStorage.User? `@${localStorage.User}` : 'search'
+    // if (link === '/') link = localStorage.User? `@${localStorage.User}` : 'search'
     if (link instanceof Array) link = link.filter(v => !!v).join('/')
-    if (link.search(/projects/) > -1) mainStore.ProjectsPageStore.clear()
-    else if (link.match(/^\/?@/)) this.link(link, mainStore.UsersStore.setUser)
+    if (link.search(/projects/) > -1) this.link(link, mainStore.ProjectsPage.fullList.set)
+    else if (link.search(/offers/) > -1) this.link(link, mainStore.OffersPage.fullList.set)
+    else if (link.match(/^\/?project/)) this.link(link, mainStore.ProjectPage.setValue)
+    else if (link.match(/^\/?@/)) this.link(link, mainStore.UserPage.setValue)
     else this.link(link, null, replace)
   }
 
   back = () => {
     this.history? this.history.goBack() : window.history.goBack()
+  }
+
+  hotLink = (link) => {
+    window.location.pathname = this.linkConvert(link)
+  }
+
+  getSetter(link) {
+    if (link instanceof Array) link = link.filter(v => !!v).join('/')
+    if (link.search(/projects/) > -1) return mainStore.ProjectsPage.fullList.set
+    if (link.match(/^\/?project/)) return mainStore.ProjectPage.download
+    if (link.search(/offers/) > -1) return mainStore.OffersPage.fullList.set
+    if (link.match(/^\/?@/)) return mainStore.UserPage.setValue
+    return null
   }
 
 }

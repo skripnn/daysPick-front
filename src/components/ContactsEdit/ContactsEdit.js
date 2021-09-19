@@ -5,8 +5,9 @@ import React from "react";
 import {List, ListItem, ListSubheader} from "@material-ui/core";
 import {emailValidator, phoneValidator} from "../../js/functions/functions";
 
-function ContactsEdit({user}) {
-  const {email, phone, telegram, setValue} = user
+function ContactsEdit({Account:store}) {
+  const {email, phone, telegram} = store.profile
+  const setValue = (r) => store.setValue({profile: r})
 
   function onSave(data) {
     Fetch.post(['profile'], data).then(setValue)
@@ -46,6 +47,4 @@ function ContactsEdit({user}) {
   )
 }
 
-export default inject(stores => ({
-  user: stores.UsersStore.getLocalUser().user
-}))(observer(ContactsEdit))
+export default inject('Account')(observer(ContactsEdit))

@@ -1,4 +1,4 @@
-export default function Terms() {
+export default function TermsPage() {
   return (
     <div id="inputResult">
       <div className="row mb-4">

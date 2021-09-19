@@ -1,65 +1,61 @@
-import {action, makeAutoObservable} from "mobx";
-import Info from "../../js/Info";
+import {makeAutoObservable} from "mobx";
 
 class ProjectStore {
+
   id = null
-  dates = []
-  user = localStorage.User
-  user_info = null
-  creator = localStorage.User
-  creator_info = null
-  children = []
-  date_start = null
-  date_end = null
+
+  title = null
   days = {}
-  title = ''
+
   money = null
-  money_per_day = null
   money_calculating = false
+  money_per_day = null
+
   client = null
+
+  user = null
+  creator = null
+  canceled = null
+
   is_paid = false
   is_wait = false
+
   info = ''
-  is_folder = false
+
   parent = null
-  confirmed
-  canceled
+
+  confirmed = true
 
   constructor() {
     makeAutoObservable(this)
   }
 
-  default = action((obj) => {
-    this.id = null
-    this.dates = []
-    this.user = localStorage.User
-    this.user_info = null
-    this.creator = localStorage.User
-    this.creator_info = null
-    this.children = []
-    this.date_start = null
-    this.date_end = null
-    this.days = {}
-    this.title = ''
-    this.money = null
-    this.money_per_day = null
-    this.money_calculating = false
-    this.client = null
-    this.is_paid = false
-    this.is_wait = false
-    this.info = ''
-    this.is_folder = false
-    this.parent = null
-    this.confirmed = undefined
-    this.canceled = undefined
-    this.setValue(obj, false)
-  })
 
-  setDays = (daysPick) => {
-    this.setValue({dates: daysPick})
-    for (const d of daysPick) {
-      if (!this['days'].hasOwnProperty(d)) this['days'][d] = null
+  setValue = (obj) => {
+    for (const [key, value] of Object.entries(obj)) {
+      this[key] = value
     }
+    if (['days', 'money', 'money_per_day'].some(r => Object.keys(obj).includes(r))) this.moneyRecalculate()
+  }
+
+  setParent = (obj) => {
+    this.parent = obj
+    if (obj) {
+      if (!this.client) this.client = obj.client
+      if (!this.money && !this.money_per_day) {
+        this.setValue({money: obj.money, money_calculating: obj.money_calculating, money_per_day: obj.money_per_day})
+      }
+    }
+  }
+
+  moneyRecalculate = () => {
+    const valid = (x) => {
+      if (Number.isFinite(x)) return x || null
+      return null
+    }
+    const daysCount = Object.keys(this.days).length
+    if (this.money_calculating) this.money = valid(this.money_per_day * daysCount)
+    else this.money_per_day = valid(this.money / daysCount)
   }
 
   setInfo = (value, date) => {
@@ -69,70 +65,6 @@ class ProjectStore {
       days[date] = value
       this.setValue({days: days})
     }
-  }
-
-  setMoney = () => {
-    const valid = (x) => {
-      if (Number.isFinite(x)) return x || null
-      return null
-    }
-    if (this.money_calculating) this.money = valid(this.money_per_day * this.dates.length)
-    else this.money_per_day = valid(this.money / this.dates.length)
-  }
-
-  setProject = (project) => {
-    this.setValue({...project, hidden: false, dates: [...Object.keys(project.days)]}, false)
-  }
-
-  setValue = (obj={}, errors=true) => {
-    for (const [key, value] of Object.entries(obj)) {
-      if (errors && this.canceled) {
-        Info.info('Изменение недоступно')
-        return
-      }
-      if (errors && this.creator !== this.user) {
-        if (['is_paid', 'confirmed'].includes(key)) localStorage.User === this.user ? this[key] = value : Info.info('Изменение недоступно')
-        else localStorage.User === this.user ? Info.info('Изменение недоступно') : this[key] = value
-      }
-      else this[key] = value
-      if (key === 'is_paid' && value === true && this.creator === this.user) this.is_wait = false
-      if (key === 'user' && value !== localStorage.User) {
-        this.is_paid = false
-        this.client = null
-      }
-      if (key === 'parent' && !!value) {
-        if (value.client && this.client === null) this.client = value.client
-        if (this.money === null && this.money_per_day === null) {
-          this.setValue({
-            money: value.money,
-            money_per_day: value.money_per_day,
-            money_calculating: value.money_calculating
-          })
-        }
-      }
-    }
-    if (['dates', 'money', 'money_per_day'].some(r => Object.keys(obj).includes(r))) this.setMoney()
-    if (!!this.children.length) {
-      this.is_folder = true
-      const dates = []
-      this.children.forEach(p => Object.keys(p.days).forEach(d => dates.push(d)))
-      this.dates = [...new Set(dates)]
-      this.money_calculating ? this.money = null : this.money_per_day = null
-    }
-    else this.is_folder = false
-  }
-
-  serializer = () => {
-    const project = {
-      ...this,
-      dates: undefined,
-      hidden: undefined,
-      days: {}
-    }
-    for (const date of this.dates) {
-      project.days[date] = this.days[date]
-    }
-    return project
   }
 
 }

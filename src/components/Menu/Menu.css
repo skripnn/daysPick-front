@@ -6,3 +6,6 @@
 .menu-item-top > div > span {
     float: right;
 }
+.menu-item > *:first-child {
+    min-width: 40px;
+}

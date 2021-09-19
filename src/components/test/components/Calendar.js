@@ -7,7 +7,6 @@ import {getMonth, newDate, dateRange} from "../extention/date";
 import sortSet from "../extention/sortSet";
 import weeksCounter from "../extention/weeksCounter";
 import weekWidth from "../extention/weekWidth";
-import DeltaTouchClass from "../extention/deltaTouch";
 
 import ButtonScroll from "./ButtonScroll";
 import TextLine from "./TextLine";
@@ -43,7 +42,6 @@ import ActionButton from "../../Actions/ActionButton/ActionButton";
 import {toJS} from "mobx";
 import TextField from "../../Fields/TextField/TextField";
 import TextLoop from "react-text-loop";
-import UserFullName from "../../UserFullName/UserFullName";
 import CloseButton from "../../CloseButton/CloseButton";
 import UserProfile from "../../UserProfile/UserProfile";
 import DaysNames from "../../Calendar/components/DaysNames";
@@ -109,21 +107,27 @@ function Calendar (props) {
   // eslint-disable-next-line
   useEffect(firstRender, [])
   // eslint-disable-next-line
-  useEffect(refreshWeeks, [props.usersContent, usersContent, content.days, content.daysOff, content.daysPick, state.check, props.edit, props.onDay, state.shift])
+  useEffect(refreshWeeks, [props.usersContent, content, usersContent, content.days, content.daysOff, content.daysPick, state.check, props.edit, props.onDay, state.shift])
   // eslint-disable-next-line
   useEffect(fromPropsToContent, [props.content.days, props.content.daysOff, props.content.daysPick])
   useEffect(fromPropsOffset, [props.noOffset])
   // eslint-disable-next-line
-  useEffect(() => newWeeks(undefined, true, 0), [props.triggerNew, state.multiView, usernames])
+  // useEffect(() => newWeeks(undefined, true, 0), [props.triggerNew, state.multiView, usernames])
   // eslint-disable-next-line
-  useEffect(() => get(weeks, 0), [props.triggerGet])
+  useEffect(() => {if (props.triggerGet) get(weeks, 0)}, [props.triggerGet])
+  useEffect(() => {
+    if (props.onWeeksChange && Array.isArray(weeks)) props.onWeeksChange(weeks)
+  }, [weeks])
 
-  useEffect(() => setContent({
-    days: props.content ? props.content.days || {} : {},
-    daysOff: sortSet(props.content ? props.content.daysOff : []),
-    daysPick: sortSet(props.content ? props.content.daysPick : []),
-  // eslint-disable-next-line
-  }), [props.triggerClear])
+  // useEffect(() => {
+  //   if (props.triggerClear) {
+  //     setContent({
+  //       days: {},
+  //       daysOff: sortSet([]),
+  //       daysPick: sortSet([]),
+  //     })
+  //   }
+  // }, [props.triggerClear])
   // eslint-disable-next-line
   useEffect(getTexts, [weeks])
 
@@ -131,6 +135,31 @@ function Calendar (props) {
   useDeltaTouch(ref)
   useWindowResizeCallback(refreshWeeks)
   useShiftPressCallback((v) => updateState({shift: v}))
+
+  // function autoScrollToDaysPick() {
+  //   if (props.noOffset) return
+  //   if (!content.daysPick.size) return
+  //   if (!Array.isArray(weeks)) return
+  //
+  //   const dates = [...content.daysPick].sort()
+  //   const firstDate = newDate(dates[0]).monday()
+  //   const lastDate = newDate(dates[dates.length - 1]).monday()
+  //   const mainWidth = ref.current.clientWidth
+  //   const scrollLeft = ref.current.scrollLeft
+  //   const wCount = weeksCounter(mainWidth)
+  //   const startIndex = weeksCounter(scrollLeft)
+  //   const firstVisibleDay = newDate(weeks[startIndex].key)
+  //   const lastVisibleDay = newDate(firstVisibleDay).offsetWeeks(wCount)
+  //   if (firstDate >= firstVisibleDay && lastDate <=lastVisibleDay) return
+  //
+  //   const start = newDate(weeks[0].key)
+  //   const diff = firstDate.getDiffWeeks(start)
+  //   const scroll = weekWidth(diff)
+  //   const possibleScroll = ref.current.scrollWidth - ref.current.clientWidth
+  //   if (scroll < 0 || scroll > possibleScroll) newWeeks(undefined, true, undefined, true)
+  //   else ref.current.scrollTo({left: scroll, behavior: 'smooth'})
+  // }
+  // useEffect(autoScrollToDaysPick, [content.daysPick])
 
   // const [intersection, setIntersection] = useState(false)
   // const [el, setEl] = useState(null)
@@ -179,7 +208,7 @@ function Calendar (props) {
   // }
 
   function firstRender() {
-    newWeeks(undefined, true, 0)
+    newWeeks(undefined, props.firstDownload, 0)
     updateState({loading: false})
   }
 
@@ -251,7 +280,7 @@ function Calendar (props) {
     return state.multiView ? date.getDiffDays(x) : date.getDiffWeeks(x)
   }
 
-  function getWeeks(prevWeeks) {
+  function getWeeks(prevWeeks, forceOffset=false) {
     // получение новых недель
     let weeksCount = weeksCounter(ref.current.clientWidth)  // сколько недель влезает в блок
     const startDate = props.startDate ? newDate(props.startDate) : null  // левая граница
@@ -259,7 +288,7 @@ function Calendar (props) {
 
     // 1 - получаем стартовую дату
     let start = mMonday(newDate())
-    if (state.offset && content.daysPick.size > 0) start = mMonday(newDate([...content.daysPick][0]))
+    if ((forceOffset || state.offset) && content.daysPick.size > 0) start = mMonday(newDate([...content.daysPick][0]))
     if (prevWeeks) start = newDate(prevWeeks[0].key)
 
     let leftDate = newDate(start)
@@ -605,8 +634,8 @@ function Calendar (props) {
   //   ref.current.scrollLeft += delta
   // }
 
-  function newWeeks(weeks, download = false, timeout) {
-    const newWeeks = getWeeks(weeks)
+  function newWeeks(weeks, download = false, timeout, forceOffset=false) {
+    const newWeeks = getWeeks(weeks, forceOffset)
     if (download && props.get) get(newWeeks, timeout)
     setWeeks(newWeeks)
   }
@@ -644,7 +673,7 @@ function Calendar (props) {
   return (<>
     <div className={"calendar-block" + (state.loading ? " hidden" : "")}>
       <div className="calendar-left">
-        <div style={{height: 40, display: "flex", flexDirection: 'column-reverse', alignItems: 'center', alignSelf: "flex-end", paddingRight: 2}}>
+        <div style={{height: 40, display: "flex", flexDirection: 'column-reverse', alignItems: 'center', paddingRight: 2}}>
           <ButtonScroll onClick={reset} loader={state.loader}/>
           {!!props.username && !!users.find(user => user.username === props.username) && <div className="calendar-button-scroll" style={{padding: 0}}>
             <ViewModule style={{height: 20, width: 20}} onClick={onMultiViewClick}/>
@@ -881,7 +910,7 @@ function CreateUser({fullScreen, add, close, replaceUser}) {
       <TextField
         autoFocus
         value={value}
-        onChange={e => setValue(e.target.value)}
+        onChange={setValue}
         label={"Имя"}
         onKeyUp={(e) => {
           if (!value.length) return
@@ -924,7 +953,7 @@ function UserDialog({user, onClose, fullScreen}) {
       {!!user && <>
       <DialogTitle>
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
-          <UserFullName user={user} avatar={'left'}/>
+          {/*<UserFullName user={user} avatar={'left'}/>*/}
           <CloseButton onClick={onClose}/>
         </div>
       </DialogTitle>
@@ -1091,7 +1120,7 @@ function UserProjectDialog({project, close}) {
   return (<>
     <DialogTitle>
       <div style={{display: 'flex', justifyContent: 'space-between'}}>
-        <UserFullName user={project.user} avatar={'left'}/>
+        {/*<UserFullName user={project.user} avatar={'left'}/>*/}
         <CloseButton onClick={close}/>
       </div>
     </DialogTitle>

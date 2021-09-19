@@ -22,17 +22,17 @@ class InfoClass {
   }
 
   confirm = (message, action) => {
-    mainStore.InfoBarStore.setConfirm({message: message, action: action})
+    mainStore.InfoBar.setConfirm({message: message, action: action})
   }
 
   add = (type, message) => {
     const obj = Object.fromEntries([[type, message]])
-    mainStore.InfoBarStore.add(obj)
+    mainStore.InfoBar.add(obj)
     return obj
   }
 
   loading = (bool) => {
-    mainStore.InfoBarStore.setLoading(bool)
+    mainStore.InfoBar.setLoading(bool)
   }
 
 }

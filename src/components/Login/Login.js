@@ -9,6 +9,7 @@ import {ValidatePasswordField} from "../Fields/ValidateTextField/ValidateTextFie
 import Button from "@material-ui/core/Button";
 import SocialLogin from "../SocialLogin/SocialLogin";
 import UsernameEmailPhoneField from "../Fields/ValidateTextField/UsernameEmailPhoneField";
+import {useUsername} from "../../stores/storeHooks";
 
 export default function Login({onSuccess}) {
   const classNames = useStyle()
@@ -18,9 +19,11 @@ export default function Login({onSuccess}) {
     username: null,
     password: null
   })
+  const username = useUsername()
   useEffect(() => setError(null), [data])
   useEffect(() => {
-    if (localStorage.Authorization && localStorage.User) Fetch.autoLink(`@${localStorage.User}`)
+    if (localStorage.Authorization && username) Fetch.autoLink(`@${username}`)
+  // eslint-disable-next-line
   }, [])
 
   function onSubmit(e) {
@@ -33,10 +36,9 @@ export default function Login({onSuccess}) {
             if (r.token) {
               if (error) setError(null)
               localStorage.setItem("Authorization", `Token ${r.token}`)
-              localStorage.setItem("User", r.account.username)
-              mainStore.AccountStore.setValue(r.account)
+              mainStore.Account.setValue(r.account)
               if (onSuccess) onSuccess()
-              else Fetch.autoLink(`@${localStorage.User}`)
+              else Fetch.autoLink(`@${r.account.username}`)
             }
             else {
               setLoading(false)
@@ -46,6 +48,8 @@ export default function Login({onSuccess}) {
         )
     }
   }
+
+  if (localStorage.Authorization) return null
 
   return (
     <Container maxWidth={'xs'}>

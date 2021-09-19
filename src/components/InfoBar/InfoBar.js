@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {inject, observer} from "mobx-react";
-import {Dialog, DialogActions, DialogContent, DialogContentText, Snackbar} from "@material-ui/core";
+import {Dialog, DialogActions, DialogContent, DialogContentText, LinearProgress, Snackbar} from "@material-ui/core";
 import {Alert} from "@material-ui/lab";
 import ActionButton from "../Actions/ActionButton/ActionButton";
 
 function InfoBar(props) {
-  const {list, del, confirm, setConfirm} = props.InfoBarStore
+  const {list, del, confirm, setConfirm} = props.InfoBar
   const [open, setOpen] = useState([])
   useEffect(() => {
     setOpen(Object.keys(list).filter(id => !list[id].close))
@@ -38,4 +38,13 @@ function InfoBar(props) {
   </>)
 }
 
-export default inject('InfoBarStore')(observer(InfoBar))
+export default inject('InfoBar')(observer(InfoBar))
+
+
+function LoadingBarComponent({InfoBar}) {
+  const {loading} = InfoBar
+  if (!loading) return null
+  return <LinearProgress color={'secondary'} style={{position: 'absolute', top: 0, width: "100%", zIndex: 1150, opacity: 0.5}}/>
+}
+
+export const LoadingBar = inject('InfoBar')(observer(LoadingBarComponent))

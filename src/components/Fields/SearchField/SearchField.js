@@ -5,14 +5,13 @@ import React, {useEffect, useRef, useState} from "react";
 import Box from "@material-ui/core/Box";
 import Calendar from '../../test/components/Calendar';
 import Loader from "../../../js/Loader";
-import Fetch from "../../../js/Fetch";
 import "./SearchField.css"
 import DateRangeField from "../DateRangeField/DateRangeField";
 import Info from "../../../js/Info";
 
 
 function SearchField(props) {
-  const {get, set, noFilter, calendar, user, minFilter, initDays, onChangeDays, onChangeFilter, preSearch, ...newProps} = props
+  const {get, set, noFilter, calendar, calendarGet, minFilter, initDays, onChangeDays, onChangeFilter, preSearch, ...newProps} = props
 
   const [filter, setFilter] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -82,7 +81,7 @@ function SearchField(props) {
           {...newProps}
           size={"medium"}
           value={filter || ''}
-          onChange={(e) => setFilter(e.target.value || null)}
+          onChange={(v) => setFilter(v || null)}
           InputProps={{
             startAdornment:
               <InputAdornment position={"start"}>
@@ -121,10 +120,11 @@ function SearchField(props) {
         <Calendar
           edit
           onChange={v => v.length ? changeDays(v) : changeDays(null)}
-          get={user ? (start, end) => Fetch.getCalendar(start, end, user) : undefined}
+          get={calendarGet}
           content={content}
           setContent={setContent}
           onError={Info.error}
+          firstDownload
         />
       </div>}
     </Box>
@@ -135,7 +135,7 @@ function SearchField(props) {
 SearchField.defaultProps = {
   set: () => {},
   onChangeFilter: () => {},
-  preSearch: () => {}
+  preSearch: () => {},
 }
 
 export default SearchField
