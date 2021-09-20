@@ -187,10 +187,10 @@ class FetchClass {
 
   autoLink = (link, replace) => {
     if (link instanceof Array) link = link.filter(v => !!v).join('/')
-    if (link.search(/projects/) > -1) this.link(link, mainStore.ProjectsPage.fullList.set)
-    else if (link.search(/offers/) > -1) this.link(link, mainStore.OffersPage.fullList.set)
-    else if (link.match(/^\/?project/)) this.link(link, mainStore.ProjectPage.setValue)
-    else if (link.match(/^\/?@/)) this.link(link, mainStore.UserPage.setValue)
+    if (link.search(/projects/) > -1) this.link(link, mainStore.ProjectsPage.fullList.set, replace)
+    else if (link.search(/offers/) > -1) this.link(link, mainStore.OffersPage.fullList.set, replace)
+    else if (link.match(/^\/?project/)) this.link(link, mainStore.ProjectPage.setValue, replace)
+    else if (link.match(/^\/?@/)) this.link(link, mainStore.UserPage.setValue, replace)
     else this.link(link, null, replace)
   }
 

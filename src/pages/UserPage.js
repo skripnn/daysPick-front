@@ -2,7 +2,6 @@ import {ProfileFullName, RaiseButton} from "../components/UserFullName/UserFullN
 import {ProfileAvatar} from "../components/UserAvatar/UserAvatar";
 import React from "react";
 import {inject, observer} from "mobx-react";
-import {useMount} from "../components/hooks";
 import ActionButton from "../components/Actions/ActionButton/ActionButton";
 import {AccountCircle, Close, EventBusy, List as ListIcon, PostAdd} from "@material-ui/icons";
 import {ActionsPanel2} from "../components/Actions/ActionsPanel/ActionsPanel";
@@ -18,16 +17,14 @@ import _ from 'underscore';
 import mainStore from "../stores/mainStore";
 
 function UserPage({UserPage:store}) {
-  const {profile, calendar, projects, setValue, get, update} = store
+  const {profile, calendar, projects, setValue, update} = store
   const {id, is_self, tab, unconfirmed_projects, daysOffEdit, filterPicked, picked, noOffset, setTab} = store
-  useMount(() => {if (!id) get()})
 
   function onChange(daysPick, array, pick) {
     if (daysOffEdit) {
       Fetch.post('daysoff', {days: array, pick: pick}).then()
       calendar.setValue({daysOff: new Set(daysPick)})
-    }
-    else setValue({filterPicked: daysPick, tab: 'projects'})
+    } else setValue({filterPicked: daysPick, tab: 'projects'})
   }
 
   function highlightDays(project) {
@@ -43,7 +40,7 @@ function UserPage({UserPage:store}) {
     update()
   }
 
-  const visibleProjects = !!filterPicked.length?
+  const visibleProjects = !!filterPicked.length ?
     projects.filter(i => !!_.intersection(i.dates, filterPicked).length) :
     projectListTransform(projects)
 
@@ -54,7 +51,7 @@ function UserPage({UserPage:store}) {
       <ProfileFullName
         profile={profile}
         leftChildren={<ProfileAvatar profile={profile} dialog/>}
-        rightChildren={is_self && <RaiseButton />}
+        rightChildren={is_self && <RaiseButton/>}
       />
       <ActionsPanel2>
         {is_self && <ActionButton
@@ -87,8 +84,8 @@ function UserPage({UserPage:store}) {
     <Calendar
       content={{
         days: calendar.days,
-        daysOff: daysOffEdit? [] : calendar.daysOff,
-        daysPick: daysOffEdit? calendar.daysOff : !!filterPicked.length ? filterPicked : picked
+        daysOff: daysOffEdit ? [] : calendar.daysOff,
+        daysPick: daysOffEdit ? calendar.daysOff : !!filterPicked.length ? filterPicked : picked
       }}
       setContent={calendar.setContent}
       get={Fetch.calendarGetter(id)}
@@ -99,37 +96,38 @@ function UserPage({UserPage:store}) {
     />
     {tab === 'profile' && <Profile profile={profile}/>}
     {tab === 'projects' &&
-      <List dense>
-        <div style={{display: 'flex', justifyContent: 'center'}}>
-          <HeaderText center>{`Актуальные проекты ${!projects || !projects.length ? ' отсутствуют' : ''}`}</HeaderText>
-          <div style={{position: 'absolute', right: 0, alignSelf: 'center'}}>
-            {!!filterPicked.length &&
-              <IconButton size={'small'} onClick={() => setValue({filterPicked: []})}>
-                <Close/>
-              </IconButton>
-            }
-          </div>
+    <List dense>
+      <div style={{display: 'flex', justifyContent: 'center'}}>
+        <HeaderText center>{`Актуальные проекты ${!projects || !projects.length ? ' отсутствуют' : ''}`}</HeaderText>
+        <div style={{position: 'absolute', right: 0, alignSelf: 'center'}}>
+          {!!filterPicked.length &&
+          <IconButton size={'small'} onClick={() => setValue({filterPicked: []})}>
+            <Close/>
+          </IconButton>
+          }
         </div>
-        {visibleProjects.map(project =>
-          <ProjectItemAutoFolder
-            key={project.id.toString()}
-            project={project}
-            onClick={(p) => Fetch.link(['project', p.id], mainStore.ProjectPage.download)}
-            wrapperRender={p => <A link={['project', p.id]} noDiv preLinkFunction={unHighlightDays} key={project.id.toString()} disabled/>}
+      </div>
+      {visibleProjects.map(project =>
+        <ProjectItemAutoFolder
+          key={project.id.toString()}
+          project={project}
+          onClick={(p) => Fetch.link(['project', p.id], mainStore.ProjectPage.download)}
+          wrapperRender={p => <A link={['project', p.id]} noDiv preLinkFunction={unHighlightDays}
+                                 key={project.id.toString()} disabled/>}
 
-            onDelete={onAction}
-            onPaid={onAction}
-            onConfirm={onAction}
-            paidButton={p => compareId(p.user, id)}
-            confirmButton={p => compareId(p.user, id)}
+          onDelete={onAction}
+          onPaid={onAction}
+          onConfirm={onAction}
+          paidButton={p => compareId(p.user, id)}
+          confirmButton={p => compareId(p.user, id)}
 
-            onTouchHold={(p) => setValue({picked: p.dates, noOffset: false})}
-            onTouchEnd={unHighlightDays}
-            onMouseOver={highlightDays}
-            onMouseLeave={unHighlightDays}
-          />
-        )}
-      </List>
+          onTouchHold={(p) => setValue({picked: p.dates, noOffset: false})}
+          onTouchEnd={unHighlightDays}
+          onMouseOver={highlightDays}
+          onMouseLeave={unHighlightDays}
+        />
+      )}
+    </List>
     }
     <span className={'bottom-space'}/>
   </>)

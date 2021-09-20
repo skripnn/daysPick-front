@@ -45,9 +45,9 @@ export function useMobile() {
 
 export function usePreLoader() {
   const [loading, setLoading] = useState(true)
-  let setter = Fetch.getSetter(window.location.pathname)
 
   useEffect(() => {
+    let setter = Fetch.getSetter(window.location.pathname)
     if (setter) Fetch.getFromUrl().then((r) => {
       if (r.error) Fetch.link('/')
       else setter(r)

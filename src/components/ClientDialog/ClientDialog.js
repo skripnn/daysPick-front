@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {
   Dialog,
   DialogContent,
-  DialogTitle, List, ListItem, ListItemText, ListSubheader
+  DialogTitle, List
 } from "@material-ui/core";
 import TextField from "../Fields/TextField/TextField";
 import './ClientDialog.css'
@@ -14,6 +14,7 @@ import {useMobile} from "../hooks";
 import A from "../core/A";
 import {Autocomplete} from "@material-ui/lab";
 import HeaderText from "../Text/HeaderText";
+import Item from "../Items/Item";
 
 export default function ClientDialog({openState, onClose, onBack, onDelete, onSave}) {
   const opened = !!openState
@@ -40,20 +41,24 @@ export default function ClientDialog({openState, onClose, onBack, onDelete, onSa
 
   return (
     <Dialog
+      scroll={'body'}
       fullScreen={mobile}
       fullWidth
       maxWidth={'sm'}
       onClose={onClose}
       open={!!openState}>
       <DialogTitle>
-        {!!mobile && <HeaderText center>{'Новый клиент'}</HeaderText>}
+        {!!mobile && <HeaderText center>{state.id ? 'Клиент': 'Новый клиент'}</HeaderText>}
         <ActionsPanel
-          left={<ActionButton
-            onClick={onBack || onClose}
-            label="Назад"
-            icon={<ArrowBackIos/>}
-          />}
-          center={!mobile && <HeaderText>{'Новый клиент'}</HeaderText>}
+          left={<>
+            <ActionButton
+              onClick={onBack || onClose}
+              label="Назад"
+              icon={<ArrowBackIos/>}
+            />
+            {!!state.id && <ActionButton empty/>}
+          </>}
+          center={!mobile && <HeaderText>{state.id ? 'Клиент': 'Новый клиент'}</HeaderText>}
           right={<>
             {!!state.id && <ActionButton
               // eslint-disable-next-line no-restricted-globals
@@ -99,16 +104,15 @@ export default function ClientDialog({openState, onClose, onBack, onDelete, onSa
         />
         {state.projects && !!state.projects.length &&
         <List dense>
-          <ListSubheader style={{background: "white", textAlign: 'center'}}>Проекты</ListSubheader>
-          <div style={{maxHeight: 270, overflow: "scroll"}}>
-            {state.projects.map(project =>
-              <A link={['project', project.id]} key={project.id.toString()}>
-                <ListItem button>
-                  <ListItemText primary={project.title}/>
-                </ListItem>
-              </A>
-            )}
-          </div>
+          <HeaderText center>Проекты</HeaderText>
+          {state.projects.map(project =>
+            <A link={['project', project.id]} key={project.id.toString()}>
+              <Item
+                primary={project.title}
+              />
+            </A>
+          )}
+          <span className={'bottom-space'}/>
         </List>
         }
       </DialogContent>

@@ -144,7 +144,7 @@ export function ProjectItem({project, wrapperRender, child,
   const DeleteButton = (
     <FetchIconButton
       edge={'end'}
-      confirm={type === 'self' || project.canceled ?
+      confirmText={type === 'self' || project.canceled ?
         "Удалить проект?" :
         (type === 'in' ?
           "Отказаться от проекта?" :

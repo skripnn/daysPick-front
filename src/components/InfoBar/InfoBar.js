@@ -1,6 +1,13 @@
 import React, {useEffect, useState} from "react";
 import {inject, observer} from "mobx-react";
-import {Dialog, DialogActions, DialogContent, DialogContentText, LinearProgress, Snackbar} from "@material-ui/core";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  LinearProgress,
+  Snackbar
+} from "@material-ui/core";
 import {Alert} from "@material-ui/lab";
 import ActionButton from "../Actions/ActionButton/ActionButton";
 
