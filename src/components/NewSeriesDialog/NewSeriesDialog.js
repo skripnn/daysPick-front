@@ -15,6 +15,9 @@ import InfoField from "../Fields/InfoField/InfoField";
 import MoneyField from "../Fields/MoneyField/MoneyField";
 import ClientField from "../Fields/ItemField/ClientField";
 import Info from "../../js/Info";
+import ProfileField from "../Fields/ItemField/ProfileField";
+import {useAccount} from "../../stores/storeHooks";
+import {compareId} from "../../js/functions/functions";
 
 export function NewSeriesDialog({openState, onClose, onBack, onSave}) {
   const [loading, setLoading] = useState(null)
@@ -26,9 +29,11 @@ export function NewSeriesDialog({openState, onClose, onBack, onSave}) {
     money_calculating: false,
     money_per_day: null,
     client: null,
+    user: null,
     is_series: true,
   })
   const mobile = useMobile()
+  const {id} = useAccount()
 
   function changeValue(obj) {
     setState(prevState => ({...prevState, ...obj}))
@@ -90,7 +95,7 @@ export function NewSeriesDialog({openState, onClose, onBack, onSave}) {
           }
         />
       </DialogTitle>
-      <DialogContent style={{overflow: "hidden"}}>
+      <DialogContent>
         <Grid container direction={'column'} spacing={3}>
           <Grid item xs>
             <TextField label="Название" value={state.title} onChange={changeValue} changeName={'title'} emptyNull
@@ -107,7 +112,10 @@ export function NewSeriesDialog({openState, onClose, onBack, onSave}) {
                         money_calculating={state.money_calculating} setValue={changeValue}/>
           </Grid>
           <Grid item xs>
-            <ClientField label={'Клиент'} value={state.client} onChange={v => changeValue({client: v})} onDialogChange={setHidden}/>
+            {compareId(state.user, id) ?
+              <ClientField label={'Клиент'} value={state.client} onChange={v => changeValue({client: v})} onDialogChange={setHidden}/> :
+              <ProfileField label={'Исполнитель'} value={state.user} onChange={v => changeValue({user: v})} onDialogChange={setHidden} exclude={id}/>
+            }
           </Grid>
         </Grid>
       </DialogContent>

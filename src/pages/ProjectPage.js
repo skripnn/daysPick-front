@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import Calendar from "../components/test/components/Calendar";
 import ProjectForm from "../components/ProjectForm/ProjectForm";
 import {inject, observer} from "mobx-react";
-import {compareId, getProjectStatus} from "../js/functions/functions";
+import {compareId, getProjectStatus, getProjectTitle} from "../js/functions/functions";
 import PopOverDay from "../components/PopOverDay/PopOverDay";
 import Fetch from "../js/Fetch";
 import Info from "../js/Info"
@@ -17,8 +17,8 @@ import ProfileField from "../components/Fields/ItemField/ProfileField";
 import {useAccount} from "../stores/storeHooks";
 import ProjectFolderField from "../components/Fields/ItemField/ProjectFolderField";
 import {ActionsPanel2} from "../components/Actions/ActionsPanel/ActionsPanel";
-import ActionButton from "../components/Actions/ActionButton/ActionButton";
-import {Add, ArrowBackIos, AssignmentTurnedIn, Cancel, Delete, Done, Save, Send} from "@material-ui/icons";
+import ActionButton, {BackActionButton} from "../components/Actions/ActionButton/ActionButton";
+import {Add, AssignmentTurnedIn, Cancel, Delete, Done, Save, Send} from "@material-ui/icons";
 import {useLastLocation} from "react-router-last-location";
 import _ from "underscore";
 import mainStore from "../stores/mainStore";
@@ -107,7 +107,7 @@ function ProjectSelfComponent({ProjectPage:store}) {
       if (r.error) Info.error(r.error)
       else  {
         Info.success('Проект удалён')
-        Fetch.autoLink(lastLocation ? lastLocation.pathname : `@${account.username}`)
+        Fetch.backLink(lastLocation)
       }
     })
   }
@@ -126,7 +126,7 @@ function ProjectSelfComponent({ProjectPage:store}) {
       if (r.error) Info.error(r.error)
       else {
         Info.success('Проект сохранён')
-        Fetch.autoLink(lastLocation ? lastLocation.pathname : `@${account.username}`)
+        Fetch.backLink(lastLocation)
       }
     })
   }
@@ -134,13 +134,7 @@ function ProjectSelfComponent({ProjectPage:store}) {
   return (
     <>
       <ActionsPanel2
-        left={!!lastLocation &&
-        <ActionButton
-          label={"Назад"}
-          icon={<ArrowBackIos />}
-          link={lastLocation.pathname.slice(1)}
-        />
-        }
+        left={<BackActionButton/>}
         right={<>
           {!!project.id &&
           <ActionButton
@@ -206,14 +200,14 @@ function ProjectOutComponent({ProjectPage:store}) {
       else is_same = _.isEqual(project[key], downloadedValues[key])
       if (!is_same) changedFields[key] = project[key]
     }
-    return Object.keys(changedFields).length ? changedFields : null
+    return Object.keys(changedFields).length ? {...changedFields, confirmed: false} : null
   }
   const changedFields = getChanges()
 
   const fields = {
     'title': <TextField label="Название" value={project.title} onChange={setValue} changeName={'title'} emptyNull/>,
     'money': <MoneyField money={money} money_per_day={money_per_day} money_calculating={money_calculating} setValue={setValue}/>,
-    'user': <ProfileField label={'Исполнитель'} value={project.user} required onChange={setUser} helperText={getProjectStatus(downloadedValues, account)} disabled={!!project.id} exclude={account.id}/>
+    'user': <ProfileField label={'Исполнитель'} value={project.user} required onChange={setUser} helperText={getProjectStatus(downloadedValues, account)} disabled={!!project.id && !!downloadedValues.user} exclude={account.id}/>
   }
 
   const infoField = (rowsHeight) => <InfoField info={info} setInfo={setInfo} days={days} rowsHeight={rowsHeight}/>
@@ -227,8 +221,8 @@ function ProjectOutComponent({ProjectPage:store}) {
     icon: !!project.canceled ? <Delete/> : <Cancel/>
   }
   let saveButtonProps = {
-    label: !!project.id ? 'Изменить' : 'Предложить',
-    icon: !!project.id ? <Save/> : <Send/>
+    label: !!project.id ? 'Изменить' : project.user ? 'Предложить' : 'Сохранить',
+    icon: !!project.id || !project.user ? <Save/> : <Send/>
   }
 
   function onDelete() {
@@ -237,7 +231,7 @@ function ProjectOutComponent({ProjectPage:store}) {
       if (r.error) Info.error(r.error)
       else  {
         Info.success(text)
-        Fetch.autoLink(lastLocation ? lastLocation.pathname : `@${account.username}`)
+        Fetch.backLink(lastLocation)
       }
     })
   }
@@ -257,7 +251,7 @@ function ProjectOutComponent({ProjectPage:store}) {
       if (r.error) Info.error(r.error)
       else {
         Info.success(text)
-        Fetch.autoLink(lastLocation ? lastLocation.pathname : `@${account.username}`)
+        Fetch.backLink(lastLocation)
       }
     })
   }
@@ -265,13 +259,7 @@ function ProjectOutComponent({ProjectPage:store}) {
   return (
     <>
       <ActionsPanel2
-        left={!!lastLocation &&
-        <ActionButton
-          label={"Назад"}
-          icon={<ArrowBackIos />}
-          link={lastLocation.pathname.slice(1)}
-        />
-        }
+        left={<BackActionButton/>}
         right={<>
           {!!project.id &&
           <ActionButton
@@ -334,7 +322,7 @@ function ProjectInComponent({ProjectPage:store}) {
   const status = getProjectStatus(downloadedValues, account)
 
   const fields = {
-    'title': <TextField label="Название" value={project.title} changeName={'title'} emptyNull helperText={status} onChange={setValue}/>,
+    'title': <TextField label="Название" value={getProjectTitle(project)} changeName={'title'} emptyNull helperText={status} onChange={setValue}/>,
     'money': <MoneyField money={money} money_per_day={money_per_day} money_calculating={money_calculating} setValue={setValue}/>,
     'creator': <ProfileField label={'Заказчик'} value={project.creator} disabled/>,
   }
@@ -357,7 +345,7 @@ function ProjectInComponent({ProjectPage:store}) {
       if (r.error) Info.error(r.error)
       else  {
         Info.success('Проект удалён')
-        Fetch.autoLink(lastLocation ? lastLocation.pathname : `@${account.username}`)
+        Fetch.backLink(lastLocation)
       }
     })
   }
@@ -369,7 +357,7 @@ function ProjectInComponent({ProjectPage:store}) {
       else {
         Info.success(text)
         Fetch.get('account').then(mainStore.Account.setValue)
-        Fetch.autoLink(lastLocation ? lastLocation.pathname : `@${account.username}`)
+        Fetch.backLink(lastLocation)
       }
     })
   }
@@ -377,13 +365,7 @@ function ProjectInComponent({ProjectPage:store}) {
   return (
     <>
       <ActionsPanel2
-        left={!!lastLocation &&
-        <ActionButton
-          label={"Назад"}
-          icon={<ArrowBackIos />}
-          link={lastLocation.pathname.slice(1)}
-        />
-        }
+        left={<BackActionButton/>}
         right={<>
           <ActionButton
             onClick={onDelete}
@@ -418,7 +400,7 @@ function ProjectInComponent({ProjectPage:store}) {
 }
 const ProjectIn = inject('ProjectPage')(observer(ProjectInComponent))
 
-function ProjectFolderComponent({ProjectPage:store}) {
+function ProjectFolderSelfComponent({ProjectPage:store}) {
   const {downloadedValues, project, calendar, downloadFromTemplate} = store
   const {money, money_per_day, money_calculating, info, days, children, setInfo, setValue} = project
   const account = useAccount()
@@ -533,7 +515,7 @@ function ProjectFolderComponent({ProjectPage:store}) {
       if (r.error) Info.error(r.error)
       else {
         Info.success('Серия проектов удалена')
-        Fetch.autoLink(lastLocation ? lastLocation.pathname : `@${account.username}`)
+        Fetch.backLink(lastLocation)
       }
     })
   }
@@ -541,33 +523,23 @@ function ProjectFolderComponent({ProjectPage:store}) {
   return (
     <>
       <ActionsPanel2
-        left={!!lastLocation &&
-        <ActionButton
-          label={"Назад"}
-          icon={<ArrowBackIos />}
-          link={lastLocation.pathname.slice(1)}
-        />
-        }
+        left={<BackActionButton/>}
         right={<>
           {compareId(project.user, account) &&
-          <>
             <ActionButton
               onClick={onDelete}
               {...deleteButtonProps}
             />
+          }
+          {!changedFields ?
             <ActionButton
               onClick={() => Fetch.link(`project?series=${project.id}`, downloadFromTemplate)}
               {...addButtonProps}
+            /> :
+            <ActionButton
+              onClick={onSave}
+              {...saveButtonProps}
             />
-          </>
-          }
-
-          {!project.canceled &&
-          <ActionButton
-            onClick={onSave}
-            disabled={!changedFields}
-            {...saveButtonProps}
-          />
           }
         </>}
       />
@@ -590,12 +562,174 @@ function ProjectFolderComponent({ProjectPage:store}) {
     </>
   )
 }
-const ProjectFolder = inject('ProjectPage')(observer(ProjectFolderComponent))
+const ProjectFolderSelf = inject('ProjectPage')(observer(ProjectFolderSelfComponent))
+
+function ProjectFolderOutComponent({ProjectPage:store}) {
+  const {downloadedValues, project, calendar, downloadFromTemplate} = store
+  const {money, money_per_day, money_calculating, info, days, children, setInfo, setValue} = project
+  const account = useAccount()
+  const lastLocation = useLastLocation()
+
+  const [pick, setPick] = useState([].concat(...children.map(p => p.dates)))
+  useEffect(unHighlightDays, [children])
+
+  function highlightDays(p) {
+    setPick(p.dates)
+  }
+
+  function unHighlightDays() {
+    setPick([].concat(...children.map(p => p.dates)))
+  }
+
+  const [DayInfo, setDayInfo] = useState(null)
+  function showInfo(element, info, date, dayOff) {
+    if (!info && !dayOff) return
+    setDayInfo(
+      <PopOverDay
+        anchorEl={element}
+        info={info}
+        dayOff={compareId(project.user, account) && dayOff}
+        onClose={() => setDayInfo(null)}
+      />
+    )
+  }
+
+  function getChanges() {
+    const changedFields = {}
+    for (const key of Object.keys(project)) {
+      let is_same = true
+      if (['client', 'user', 'creator', 'canceled'].includes(key)) is_same = compareId(project[key], downloadedValues[key])
+      else is_same = _.isEqual(project[key], downloadedValues[key])
+      if (!is_same) changedFields[key] = project[key]
+    }
+    return Object.keys(changedFields).length ? changedFields : null
+  }
+  const changedFields = getChanges()
+
+  function changeMoney(obj) {
+    if (Object.keys(obj).includes('money_calculating')) setValue({
+      ...obj,
+      money: project.money_per_day,
+      money_per_day: project.money
+    })
+    else setValue(obj)
+  }
+
+  const fields = {
+    'title': <TextField label="Название" value={project.title} onChange={setValue} changeName={'title'} emptyNull/>,
+    'money': <MoneyField money={money} money_per_day={money_per_day} money_calculating={money_calculating} setValue={changeMoney}/>,
+    'user': <ProfileField label={'Исполнитель'} value={project.user} onChange={(v) => setValue({user: v })} exclude={account.id}/>,
+  }
+
+  const getField = (fieldName) => fields[fieldName] || fieldName
+
+  let left = ['title', <InfoField info={info} setInfo={setInfo} days={days} height={69 * 2 + 14}/>,
+    <div style={{textAlign: 'center', width: '100%'}}>
+      <Typography color={'secondary'} variant={'overline'}>Значения по умолчанию</Typography>
+    </div>, 'money', 'user'
+  ]
+  let right = [
+    <List dense style={{height: 374, overflow: "scroll"}}>
+      {children.map(p => (
+        <ProjectItem
+          child
+          key={p.id.toString()}
+          project={p}
+          deleteButton={false}
+          paidButton={false}
+          confirmButton={false}
+          wrapperRender={p => <A link={['project', p.id]} noDiv preLinkFunction={unHighlightDays} key={project.id.toString()} disabled/>}
+          onClick={p => Fetch.link(['project', p.id], mainStore.ProjectPage.download)}
+
+          onTouchHold={highlightDays}
+          onTouchEnd={unHighlightDays}
+          onMouseOver={highlightDays}
+          onMouseLeave={unHighlightDays}
+        />
+      ))}
+    </List>
+  ]
+  let saveButtonProps = {
+    label: 'Сохранить',
+    icon: <Save/>
+  }
+  let deleteButtonProps = {
+    label: 'Удалить',
+    icon: <Delete/>
+  }
+  let addButtonProps = {
+    label: 'Добавить',
+    icon: <Add/>
+  }
+
+  function onSave() {
+    Fetch.post(['project', project.id], project.id ? changedFields : project).then((r) => {
+      if (r.error) Info.error(r.error)
+      else {
+        Info.success('Проект сохранён')
+        downloadedValues.setValue(project)
+      }
+    })
+  }
+
+  function onDelete() {
+    //eslint-disable-next-line
+    if (!confirm('Удалить серию проектов?')) return
+    Fetch.delete(['project', project.id]).then((r) => {
+      if (r.error) Info.error(r.error)
+      else {
+        Info.success('Серия проектов удалена')
+        Fetch.backLink(lastLocation)
+      }
+    })
+  }
+
+  return (
+    <>
+      <ActionsPanel2
+        left={<BackActionButton/>}
+        right={<>
+            <ActionButton
+              onClick={onDelete}
+              {...deleteButtonProps}
+            />
+          {!changedFields ?
+            <ActionButton
+              onClick={() => Fetch.link(`project?series=${project.id}`, downloadFromTemplate)}
+              {...addButtonProps}
+            /> :
+            <ActionButton
+              onClick={onSave}
+              {...saveButtonProps}
+            />
+          }
+        </>}
+      />
+      <Calendar
+        get={Fetch.calendarGetter(project.user, project)}
+        content={{...calendar, daysPick: pick}}
+        setContent={calendar.setContent}
+        onDay={{
+          onTouchHold: showInfo,
+          onContextMenu: showInfo
+        }}
+        onError={Info.error}
+      />
+      <ProjectForm
+        left={left.map(getField)}
+        right={right.map(getField)}
+      />
+      {DayInfo}
+      <span className={'bottom-space'}/>
+    </>
+  )
+}
+const ProjectFolderOut = inject('ProjectPage')(observer(ProjectFolderOutComponent))
 
 function ProjectPage({ProjectPage:store}) {
   const {project} = store
   const account = useAccount()
-  if (project.is_series) return <ProjectFolder/>
+  if (project.is_series) return compareId(project.user, account) ? <ProjectFolderSelf/> : <ProjectFolderOut/>
   else if (compareId(project.creator, project.user)) return <ProjectSelf/>
   else if (compareId(project.creator, account)) return <ProjectOut/>
   else if (compareId(project.user, account)) return <ProjectIn/>

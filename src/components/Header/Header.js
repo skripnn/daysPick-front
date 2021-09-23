@@ -40,6 +40,7 @@ export default function Header() {
         break
       }
     }
+    if (!pathname.startsWith('/@')) document.title = 'DaysPick' + (title === 'DaysPick' ? '' : ` / ${title}`)
     return title
   }
 

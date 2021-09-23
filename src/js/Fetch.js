@@ -8,6 +8,7 @@ class FetchClass {
   host = Keys.fetchHost
   url = `${this.host}/api/`
   history = null
+  lastLocations = []
 
   errorAlert = (e) => {
     Info.loading(false)
@@ -181,6 +182,7 @@ class FetchClass {
       Info.loading(false)
       window.scrollTo(0, 0)
     }
+    if (!replace) this.lastLocations.push(window.location.pathname.slice(1) + window.location.search)
     if (!set) toHistory()
     else this.get(link).then(set).then(toHistory)
   }
@@ -189,9 +191,23 @@ class FetchClass {
     if (link instanceof Array) link = link.filter(v => !!v).join('/')
     if (link.search(/projects/) > -1) this.link(link, mainStore.ProjectsPage.fullList.set, replace)
     else if (link.search(/offers/) > -1) this.link(link, mainStore.OffersPage.fullList.set, replace)
-    else if (link.match(/^\/?project/)) this.link(link, mainStore.ProjectPage.setValue, replace)
+    else if (link.match(/^\/?project/)) this.link(link, mainStore.ProjectPage.download, replace)
     else if (link.match(/^\/?@/)) this.link(link, mainStore.UserPage.setValue, replace)
     else this.link(link, null, replace)
+  }
+
+  backLink = () => {
+    if (this.lastLocations.length) {
+      const lastLocation = this.lastLocations.pop()
+      const setter = this.getSetter(lastLocation)
+      Info.loading(true)
+      this.get(lastLocation).then(r => {
+        if (setter) setter(r)
+        this.back()
+        Info.loading(false)
+      })
+    }
+    else Fetch.autoLink(`@${mainStore.Account.username}`)
   }
 
   back = () => {

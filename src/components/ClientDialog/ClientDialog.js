@@ -15,6 +15,7 @@ import A from "../core/A";
 import {Autocomplete} from "@material-ui/lab";
 import HeaderText from "../Text/HeaderText";
 import Item from "../Items/Item";
+import Loader from "../../js/Loader";
 
 export default function ClientDialog({openState, onClose, onBack, onDelete, onSave}) {
   const opened = !!openState
@@ -28,7 +29,7 @@ export default function ClientDialog({openState, onClose, onBack, onDelete, onSa
 
   useEffect(() => {
     if (openState && openState.id) Fetch.get(['client', openState.id]).then(client => setState(client))
-    setState(openState || {})
+    else Loader.set(() => setState(openState || {}), openState ? 0 : 500)
     setLoading(null)
     // eslint-disable-next-line
   }, [openState])
@@ -77,7 +78,7 @@ export default function ClientDialog({openState, onClose, onBack, onDelete, onSa
       </DialogTitle>
       <DialogContent style={{overflow: "hidden"}}>
         <TextField
-          autoFocus={!state.id}
+          autoFocus={openState && !openState.id}
           margin="dense"
           name="name"
           label="Имя"

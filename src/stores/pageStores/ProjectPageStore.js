@@ -8,6 +8,7 @@ class ProjectPageStore {
   project = new ProjectStore()
   downloadedValues = new ProjectStore()
   calendar = new CalendarStore()
+  backLocation = null
 
   constructor() {
     makeAutoObservable(this)
@@ -27,6 +28,7 @@ class ProjectPageStore {
   setUser = (value) => {
     if (!compareId(value, this.project.user)) this.calendar = new CalendarStore()
     this.project.setValue({user: value})
+    this.calendar.setValue({daysPick: Object.keys(this.project.days)})
   }
 
   download = (obj, template=false) => {
@@ -40,6 +42,7 @@ class ProjectPageStore {
     if (obj.calendar) {
       this.calendar.setValue(obj.calendar)
     }
+    this.backLocation = window.location.pathname + window.location.search
   }
 
   downloadFromTemplate = (obj) => this.download(obj, true)

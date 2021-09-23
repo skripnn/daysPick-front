@@ -1,4 +1,5 @@
 import {newDate} from "./date";
+import mainStore from "../../stores/mainStore";
 
 export function actualProjects(projects) {
   let actualProjects = []
@@ -40,6 +41,20 @@ export function formatDate(d) {
   return d[8] + d[9] + '.' + d[5] + d[6] + '.' + d[2] + d[3]
 }
 
+export function getProjectTitle(project) {
+  let title = project.title || ''
+  if (!title) {
+    title = project.date_start
+    if (project.date_end !== project.date_start) {
+      title += ' - ' + project.date_end
+    }
+  }
+  if (project.parent) {
+    title = project.parent.title + ' / ' + title
+  }
+  return title
+}
+
 export function emailValidator(value) {
   return /^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/.test(value)
 }
@@ -62,9 +77,10 @@ export function compareId(a, b) {
   return getId(a) === getId(b)
 }
 
-export function getProjectStatus(project, asker) {
+export function getProjectStatus(project, asker=mainStore.Account.id) {
   if (!project.id) return null
-  if (!project.confirmed) {
+  if (!project.confirmed && !project.canceled) {
+    if (!project.user) return null
     if (compareId(project.creator, asker)) return 'Ожидание ответа'
     else {
       if (project.is_wait) return 'Новый проект'
@@ -83,7 +99,7 @@ export function projectListTransform (projects=[]) {
     if (p.parent) {
       const indexFolder = array.findIndex(i => i.id === p.parent.id)
       if (indexFolder === -1) {
-        array.push({...p.parent, dates: [...p.dates], date_start: p.date_start, date_end: p.date_end, children: [p], confirmed: true, is_series: true})
+        array.push({...p.parent, dates: [...p.dates], date_start: p.date_start, date_end: p.date_end, children: [p], confirmed: true, is_series: true, creator: p.creator, user: p.user})
       }
       else {
         const parent = array[indexFolder]

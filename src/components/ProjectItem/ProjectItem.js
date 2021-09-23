@@ -73,10 +73,10 @@ export function ProjectFolderItem({project, wrapperRender, renderChild,
                                     onTouchHold, onTouchEnd, onMouseOver, onMouseLeave,
                                     onClick}) {
 
-  const [folderOpen, setFolderOpen] = useState(false)
+  const [folderOpen, setFolderOpen] = useState(!!project.children.find(p => !p.confirmed))
   const account = useAccount()
-  const type = compareId(project.user, project.creator) ? 'self' :
-    compareId(project.user, account) ? 'in' : 'out'
+  let type = compareId(project.user, project.creator) ? 'self' :
+    compareId(project.creator, account) ? 'out': 'in'
 
   let clients = [...new Set(project.children.map(p => p.client ? p.client.full_name : null))]
   if (clients.includes(null)) clients = clients.filter(v => !!v).concat([null])
@@ -85,9 +85,11 @@ export function ProjectFolderItem({project, wrapperRender, renderChild,
   const money = project.children.length ? project.children.map(p => p.money || 0).reduce((a, b) => a + b, 0) : null
 
   const action = (
-    <IconButton edge="end" onClick={() => setFolderOpen(!folderOpen)} size={'small'} disabled={!project.children.length}>
-      {folderOpen ? <ArrowDropUp/> : <ArrowDropDown/>}
-    </IconButton>
+    <IconBadge content={type === 'in' && project.children.filter(p => !p.confirmed).length}>
+      <IconButton edge="end" onClick={() => setFolderOpen(!folderOpen)} size={'small'} disabled={!project.children.length}>
+        {folderOpen ? <ArrowDropUp/> : <ArrowDropDown/>}
+      </IconButton>
+    </IconBadge>
   )
 
   const primary = (
@@ -106,8 +108,9 @@ export function ProjectFolderItem({project, wrapperRender, renderChild,
       onTouchEnd={onTouchEnd}
       onMouseOver={onMouseOver}
       onMouseLeave={onMouseLeave}
-      onClick={onClick}
-      wrapperRender={wrapperRender}
+      onClick={type !== 'in' ? onClick : () => setFolderOpen(!folderOpen)}
+      wrapperRender={type !== 'in' && wrapperRender}
+      type={type}
     />
     {folderOpen && project.children.map(renderChild)}
   </>)
@@ -123,6 +126,10 @@ export function ProjectItem({project, wrapperRender, child,
   const account = useAccount()
   const type = compareId(project.user, project.creator) ? 'self' :
     compareId(project.user, account) ? 'in' : 'out'
+
+  if (typeof confirmButton === 'function') confirmButton = confirmButton(project)
+  if (typeof paidButton === 'function') paidButton = paidButton(project)
+  if (typeof deleteButton === 'function') deleteButton = deleteButton(project)
 
   const PaidButton = (
     <FetchIconButton
@@ -160,7 +167,7 @@ export function ProjectItem({project, wrapperRender, child,
             }
           })}
       >
-      {type === 'self' || project.canceled ? <DeleteIcon/> : <Cancel/>}
+      {type === 'self' || project.canceled ? <IconBadge dot content={!!project.canceled}><DeleteIcon/></IconBadge> : <Cancel/>}
     </FetchIconButton>
   )
 

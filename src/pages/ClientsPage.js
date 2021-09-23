@@ -39,7 +39,7 @@ function ClientsPage({ClientsPage:store}) {
         <ListItem className={'item'} style={{width: 'fit-content'}}>
           <ActionButton2
             label={'Новый клиент'}
-            icon={<AddCircleOutline style={{marginBottom: 0.25}}/>}
+            icon={<AddCircleOutline/>}
             onClick={() => setDialog({name: '', company: ''})}
           />
         </ListItem>

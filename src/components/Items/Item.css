@@ -16,7 +16,9 @@
 }
 .item-text {
     white-space: nowrap;
-    overflow: hidden
+    overflow: hidden;
+    display: flex !important;
+    align-items: center;
 }
 .item-third {
     text-align: right;

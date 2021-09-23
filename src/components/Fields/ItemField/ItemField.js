@@ -32,7 +32,7 @@ export default function ItemField({label, value, onChange=()=>{}, itemRender, ge
           button: !readOnly,
           slim: true,
           onClick: !disabled ? () => setDialog(!readOnly) : undefined,
-          action: !readOnly ? <IconButton size={'small'} onClick={() => onChange(null)}><Clear/></IconButton> : null
+          action: !readOnly && !disabled ? <IconButton size={'small'} onClick={() => onChange(null)}><Clear/></IconButton> : null
         })}
       </List>
       }

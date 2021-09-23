@@ -76,13 +76,13 @@ function LazyList(props) {
     if (element) observer.observe(element)
   }
 
-  const filterGet = (v) => Fetch.post(getLink, {...params, page: 0, ...v}) // .then(r => {
-      // setFilter(v)
-      // return r
-    // })
+  const filterGet = (v) => Fetch.post(getLink, {...params, page: 0, ...v}).then(r => {
+      setFilter(v)
+      return r
+    })
 
   function filterSet(v) {
-    // setRequest(false)
+    setRequest(false)
     if (v === null) setFilter(null)
     if (searchFieldParams) searchFieldParams.set(v)
   }

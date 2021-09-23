@@ -5,8 +5,10 @@ import {CircularProgress} from "@material-ui/core";
 import IconBadge from "../../IconBadge/IconBadge";
 import A from "../../core/A";
 import Fetch from "../../../js/Fetch";
+import {useLastLocation} from "react-router-last-location";
+import {ArrowBackIos} from "@material-ui/icons";
 
-function ActionButton(props, ref) {
+function ActionButtonComponent(props, ref) {
   if (props.hidden) return null
 
   const className = "action-button"
@@ -36,5 +38,18 @@ function ActionButton(props, ref) {
   )
 }
 
-export default forwardRef(ActionButton)
+const ActionButton = forwardRef(ActionButtonComponent)
+export default ActionButton
+
+export function BackActionButton() {
+  const lastLocation = useLastLocation()
+  if (!lastLocation) return <></>
+  return (
+    <ActionButton
+      label={"Назад"}
+      icon={<ArrowBackIos />}
+      onClick={Fetch.backLink}
+    />
+  )
+}
 

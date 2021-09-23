@@ -15,10 +15,13 @@ import {compareId, projectListTransform} from "../js/functions/functions";
 import {IconButton, List} from "@material-ui/core";
 import _ from 'underscore';
 import mainStore from "../stores/mainStore";
+import {useAccount} from "../stores/storeHooks";
 
 function UserPage({UserPage:store}) {
   const {profile, calendar, projects, setValue, update} = store
   const {id, is_self, tab, unconfirmed_projects, daysOffEdit, filterPicked, picked, noOffset, setTab} = store
+  const account = useAccount()
+  document.title = `DaysPick / ${profile.full_name}`
 
   function onChange(daysPick, array, pick) {
     if (daysOffEdit) {
@@ -118,10 +121,10 @@ function UserPage({UserPage:store}) {
           onDelete={onAction}
           onPaid={onAction}
           onConfirm={onAction}
-          paidButton={p => compareId(p.user, id)}
-          confirmButton={p => compareId(p.user, id)}
+          paidButton={p => compareId(p.user, account)}
+          confirmButton={p => compareId(p.user, account)}
 
-          onTouchHold={(p) => setValue({picked: p.dates, noOffset: false})}
+          onTouchHold={p => setValue({picked: p.dates, noOffset: false})}
           onTouchEnd={unHighlightDays}
           onMouseOver={highlightDays}
           onMouseLeave={unHighlightDays}

@@ -1,6 +1,7 @@
 import {makeAutoObservable} from "mobx";
 
 class AccountStore {
+  id = null
   username = null
   email = null
   email_confirm = null
@@ -26,6 +27,7 @@ class AccountStore {
 
   logOut = () => {
     localStorage.clear()
+    this.id = null
     this.username = null
     this.email = null
     this.email_confirm = null

@@ -49,12 +49,12 @@ function ProjectsListPage({store, getLink}) {
         <ActionsPanel2>
           <ActionButton2
             label={'Новый проект'}
-            icon={<AddCircleOutline style={{marginBottom: 0.25}}/>}
+            icon={<AddCircleOutline/>}
             wrapper={<A link={`project${getLink === 'offers' ? '' : `?user=${username}`}`} setter={mainStore.ProjectPage.setValue}/>}
           />
           <ActionButton2
             label={'Новая серия'}
-            icon={<Folder style={{marginBottom: 0.25}}/>}
+            icon={<Folder/>}
             onClick={() => setNewSeries({user: getLink === 'offers' ? null : id})}
           />
           {!!list.length && <ActionButton2
