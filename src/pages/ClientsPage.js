@@ -4,7 +4,6 @@ import {Avatar, ListItem, ListSubheader} from "@material-ui/core";
 import {convertClients} from "../js/functions/functions";
 import Fetch from "../js/Fetch";
 import LazyList from "../components/LazyList/LazyList";
-import {useAccount} from "../stores/storeHooks";
 import {inject, observer} from "mobx-react";
 import {AddCircleOutline} from "@material-ui/icons";
 import ActionButton2 from "../components/Actions/ActionButton/ActionButton2";
@@ -16,7 +15,6 @@ function ClientsPage({ClientsPage:store}) {
   const {list, page, pages, add} = filteredList.exist() ? filteredList : fullList
   const [dialog, setDialog] = useState(null)
   useEffect(() => setDialog(null), [list])
-  const {id} = useAccount()
 
   function onSave(client) {
     dialog.id ? save(client) : Fetch.get('clients').then(fullList.set).then(() => setDialog(null))
@@ -27,7 +25,7 @@ function ClientsPage({ClientsPage:store}) {
       <LazyList
         searchFieldParams={{
           set: filteredList.set,
-          calendarGet: Fetch.calendarGetter(id)
+          noFilter: true
         }}
         getLink={'clients'}
         pages={pages}
