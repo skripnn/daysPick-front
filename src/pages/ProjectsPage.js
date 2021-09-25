@@ -5,7 +5,6 @@ import Fetch from "../js/Fetch";
 import LazyList from "../components/LazyList/LazyList";
 import {StatisticsDialog} from "../components/ProjectsStatistics/ProjectsStatistics";
 import {useAccount} from "../stores/storeHooks";
-import {compareId} from "../js/functions/functions";
 import A from "../components/core/A";
 import {AddCircleOutline, Folder} from "@material-ui/icons";
 import ActionButton2 from "../components/Actions/ActionButton/ActionButton2";
@@ -16,7 +15,7 @@ import {NewSeriesDialog} from "../components/NewSeriesDialog/NewSeriesDialog";
 
 
 function ProjectsListPage({store, getLink}) {
-  const {fullList, filteredList, save, del} = store
+  const {fullList, filteredList} = store
   const {list, page, pages, add} = filteredList.exist() ? filteredList : fullList
   const [statistics, setStatistics] = useState(null)
   const [filter, setFilter] = useState(null)
@@ -50,7 +49,7 @@ function ProjectsListPage({store, getLink}) {
           <ActionButton2
             label={'Новый проект'}
             icon={<AddCircleOutline/>}
-            wrapper={<A link={`project${getLink === 'offers' ? '' : `?user=${username}`}`} setter={mainStore.ProjectPage.setValue}/>}
+            wrapper={<A link={`project${getLink === 'offers' ? '' : `?user=${username}`}`} setter={mainStore.ProjectPage.downloadFromTemplate}/>}
           />
           <ActionButton2
             label={'Новая серия'}
@@ -70,11 +69,9 @@ function ProjectsListPage({store, getLink}) {
               project={project}
               onClick={p => Fetch.link(['project', p.id], mainStore.ProjectPage.download)}
               wrapperRender={p => <A link={['project', p.id]} noDiv key={project.id.toString()} disabled/>}
-              onDelete={del}
-              onConfirm={save}
-              onPaid={save}
-              paidButton={p => compareId(p.user, id)}
-              confirmButton={p => compareId(p.user, id)}
+              paidButton={false}
+              confirmButton={false}
+              deleteButton={false}
             />
           )
         }

@@ -18,7 +18,7 @@ import {useAccount} from "../stores/storeHooks";
 import ProjectFolderField from "../components/Fields/ItemField/ProjectFolderField";
 import {ActionsPanel2} from "../components/Actions/ActionsPanel/ActionsPanel";
 import ActionButton, {BackActionButton} from "../components/Actions/ActionButton/ActionButton";
-import {Add, AssignmentTurnedIn, Cancel, Delete, Done, Save, Send} from "@material-ui/icons";
+import {Add, AssignmentTurnedIn, Cancel, Delete, Done, FileCopy, Save, Send} from "@material-ui/icons";
 import {useLastLocation} from "react-router-last-location";
 import _ from "underscore";
 import mainStore from "../stores/mainStore";
@@ -101,6 +101,11 @@ function ProjectSelfComponent({ProjectPage:store}) {
     label: 'Сохранить',
     icon: <Save/>
   }
+  let doubleButtonProps = {
+    label: 'Дублировать',
+    icon: <FileCopy/>,
+    onClick: () => Fetch.link(`project?copy=${project.id}`, store.downloadFromTemplate)
+  }
 
   function onDelete() {
     Fetch.delete(['project', project.id]).then((r) => {
@@ -142,11 +147,18 @@ function ProjectSelfComponent({ProjectPage:store}) {
             {...deleteButtonProps}
           />
           }
-          <ActionButton
-            onClick={onSave}
-            disabled={!changedFields}
-            {...saveButtonProps}
-          />
+          {!!project.id && !changedFields &&
+            <ActionButton
+              {...doubleButtonProps}
+            />
+          }
+          {(!!changedFields || !project.id) &&
+            <ActionButton
+              onClick={onSave}
+              disabled={!changedFields}
+              {...saveButtonProps}
+            />
+          }
         </>}
       />
       <Calendar
@@ -224,6 +236,11 @@ function ProjectOutComponent({ProjectPage:store}) {
     label: !!project.id ? 'Изменить' : project.user ? 'Предложить' : 'Сохранить',
     icon: !!project.id || !project.user ? <Save/> : <Send/>
   }
+  let doubleButtonProps = {
+    label: 'Дублировать',
+    icon: <FileCopy/>,
+    onClick: () => Fetch.link(`project?copy=${project.id}`, store.downloadFromTemplate)
+  }
 
   function onDelete() {
     const text = !!project.canceled ? 'Проект удалён' : 'Проект отменён'
@@ -267,7 +284,12 @@ function ProjectOutComponent({ProjectPage:store}) {
             {...deleteButtonProps}
           />
           }
-          {!project.canceled &&
+          {!!project.id && !changedFields &&
+          <ActionButton
+            {...doubleButtonProps}
+          />
+          }
+          {!project.canceled && !!changedFields &&
           <ActionButton
             onClick={onSave}
             disabled={!changedFields}
@@ -674,11 +696,11 @@ function ProjectFolderOutComponent({ProjectPage:store}) {
 
   function onDelete() {
     //eslint-disable-next-line
-    if (!confirm('Удалить серию проектов?')) return
+    if (!confirm('Удалить серию?')) return
     Fetch.delete(['project', project.id]).then((r) => {
       if (r.error) Info.error(r.error)
       else {
-        Info.success('Серия проектов удалена')
+        Info.success('Серия удалена')
         Fetch.backLink(lastLocation)
       }
     })
@@ -689,10 +711,12 @@ function ProjectFolderOutComponent({ProjectPage:store}) {
       <ActionsPanel2
         left={<BackActionButton/>}
         right={<>
+          {!project.children.length &&
             <ActionButton
               onClick={onDelete}
               {...deleteButtonProps}
             />
+          }
           {!changedFields ?
             <ActionButton
               onClick={() => Fetch.link(`project?series=${project.id}`, downloadFromTemplate)}

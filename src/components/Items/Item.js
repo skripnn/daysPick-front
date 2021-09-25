@@ -13,8 +13,8 @@ export default function Item({avatar, primary, secondary, third, action, onClick
       </ListItemIcon>
       }
       <ListItemText
-        primaryTypographyProps={{className: 'item-text'}}
-        secondaryTypographyProps={{className: 'item-text'}}
+        primaryTypographyProps={{className: 'item-text',  component: 'div'}}
+        secondaryTypographyProps={{className: 'item-text', component: 'div'}}
         primary={primary}
         secondary={secondary}
       />

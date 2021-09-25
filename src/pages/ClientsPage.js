@@ -1,14 +1,14 @@
 import React, {useEffect, useState} from "react";
 import ClientDialog from "../components/ClientDialog/ClientDialog";
-import {ListItem, ListSubheader} from "@material-ui/core";
+import {Avatar, ListItem, ListSubheader} from "@material-ui/core";
 import {convertClients} from "../js/functions/functions";
 import Fetch from "../js/Fetch";
 import LazyList from "../components/LazyList/LazyList";
 import {useAccount} from "../stores/storeHooks";
-import {ClientItem} from "../components/Items/ClientItem";
 import {inject, observer} from "mobx-react";
 import {AddCircleOutline} from "@material-ui/icons";
 import ActionButton2 from "../components/Actions/ActionButton/ActionButton2";
+import Item from "../components/Items/Item";
 
 
 function ClientsPage({ClientsPage:store}) {
@@ -47,11 +47,11 @@ function ClientsPage({ClientsPage:store}) {
           <div key={i.company}>
             <ListSubheader disableSticky>{i.company || ' '}</ListSubheader>
             {i.clients.map(client =>
-              <ClientItem
-                client={client}
+              <Item
                 key={client.id.toString()}
-                onClick={setDialog}
-                onDelete={del}
+                avatar={<Avatar style={{zoom: 0.7}}>{client.name[0].toUpperCase()}</Avatar>}
+                primary={client.name}
+                onClick={() => setDialog(client)}
               />
             )}
           </div>

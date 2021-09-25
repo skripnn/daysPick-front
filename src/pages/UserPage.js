@@ -3,7 +3,7 @@ import {ProfileAvatar} from "../components/UserAvatar/UserAvatar";
 import React from "react";
 import {inject, observer} from "mobx-react";
 import ActionButton from "../components/Actions/ActionButton/ActionButton";
-import {AccountCircle, Close, EventBusy, List as ListIcon, PostAdd} from "@material-ui/icons";
+import {AccountCircle, Close, EventBusy, List as ListIcon, PostAdd, Send} from "@material-ui/icons";
 import {ActionsPanel2} from "../components/Actions/ActionsPanel/ActionsPanel";
 import Calendar from "../components/test/components/Calendar";
 import Fetch from "../js/Fetch";
@@ -56,7 +56,7 @@ function UserPage({UserPage:store}) {
         leftChildren={<ProfileAvatar profile={profile} dialog/>}
         rightChildren={is_self && <RaiseButton/>}
       />
-      <ActionsPanel2>
+      {!!account.id && <ActionsPanel2>
         {is_self && <ActionButton
           hidden={!is_self}
           label={"Выходные"}
@@ -65,9 +65,9 @@ function UserPage({UserPage:store}) {
           onClick={() => setTab('daysOff')}
         />}
         <ActionButton
-          label={'Добавить'}
-          icon={<PostAdd/>}
-          wrapper={<A link={`project?user=${profile.username}`} setter={mainStore.ProjectPage.download}/>}
+          label={is_self ? 'Добавить' : 'Предложить'}
+          icon={is_self ? <PostAdd/> : <Send/>}
+          wrapper={<A link={`project?user=${profile.username}`} setter={mainStore.ProjectPage.downloadFromTemplate}/>}
         />
         <ActionButton
           badge={unconfirmed_projects}
@@ -82,7 +82,7 @@ function UserPage({UserPage:store}) {
           active={tab === 'profile'}
           onClick={() => setTab('profile')}
         />
-      </ActionsPanel2>
+      </ActionsPanel2>}
     </div>
     <Calendar
       content={{
@@ -92,7 +92,7 @@ function UserPage({UserPage:store}) {
       }}
       setContent={calendar.setContent}
       get={Fetch.calendarGetter(id)}
-      edit
+      edit={!!account.id}
       noOffset={noOffset}
       onChange={onChange}
       onWeeksChange={(weeks) => setValue({range: {start: weeks[0].key, end: weeks[weeks.length - 1].key}})}

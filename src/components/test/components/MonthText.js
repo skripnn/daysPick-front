@@ -7,7 +7,7 @@ function MonthText(props) {
   return (
     <span className="calendar-text"
           style={{minWidth: props.width}}
-          children={props.width >= 48? monthNames[props.month] : undefined}/>
+          children={props.width >= 48? <span>{monthNames[props.month]}</span>: undefined}/>
   )
 }
 export default MonthText

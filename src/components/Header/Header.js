@@ -19,11 +19,12 @@ import mainStore from "../../stores/mainStore";
 export default function Header() {
   const auth = !!localStorage.Authorization
   const titles = [
-    ['/projects', 'Мои проекты'],
-    ['/clients', 'Мои клиенты'],
-    ['/profile', 'Профиль'],
-    ['/settings', 'Настройки'],
-    ['/offers', 'Исходящие проекты']
+    [/^\/projects\/?$/, 'Мои проекты'],
+    [/^\/project\/?$/, 'Новый проект'],
+    [/^\/clients\/?$/, 'Мои клиенты'],
+    [/^\/profile\/?$/, 'Профиль'],
+    [/^\/settings\/?$/, 'Настройки'],
+    [/^\/offers\/?$/, 'Исходящие проекты']
   ]
 
   const { pathname } = useLocation();
@@ -35,7 +36,7 @@ export default function Header() {
   function getTitle() {
     let title ='DaysPick'
     for (const [path, name] of titles) {
-      if (pathname.startsWith(path)) {
+      if (pathname.match(path)) {
         title = name
         break
       }

@@ -24,8 +24,8 @@ class FetchClass {
     Info.loading(false)
     if (redirect && res.status === 401) {
       localStorage.clear()
-      window.open(window.location.href,"_self")
-      return
+      // window.open(window.location.href,"_self")
+      return {error: 'Ошибка авторизации'}
     }
     if (res.status === 200) return res.json()
     Info.error(`${res.status} ${res.statusText}`)

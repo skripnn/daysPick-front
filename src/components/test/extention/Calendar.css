@@ -1,9 +1,10 @@
 div.calendar-block {
     display: flex;
     flex-flow: row nowrap;
-    justify-content: center;
+    justify-content: flex-start;
     /*padding-top: 10px;*/
     overflow: hidden;
+    position: relative;
 
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -69,6 +70,9 @@ span.calendar-text {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+span.calendar-text > * {
+    position: absolute;
 }
 div.calendar-scroll {
     width: 100%;

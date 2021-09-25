@@ -12,7 +12,7 @@ export default function ProfileField({label, value, onChange, exclude, ...otherP
     />
   )
   const listRender = (list) => list.map(i => (
-    <ProfileItem profile={i} onClick={() => onChange(i)} slim/>
+    <ProfileItem key={i.id.toString()} profile={i} onClick={() => onChange(i)} slim/>
   ))
 
   return (

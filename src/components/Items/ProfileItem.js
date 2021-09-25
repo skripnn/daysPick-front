@@ -9,9 +9,9 @@ export default function ProfileItem({profile, noTags, ...otherProps}) {
   const tags = profile.tags && profile.tags.length ? (!mobile ?
       <>
         {profile.tags[0].title}
-        {profile.tags.length > 1 ? <>, <TextLoop children={profile.tags.slice(1).map(tag => tag.title)}
-                                              springConfig={{stiffness: 180, damping: 8}}
-                                              className={'text-loop'}/></> : ''}
+        {profile.tags.length > 1 ? <>,&nbsp;<TextLoop children={profile.tags.slice(1).map(tag => tag.title)}
+                                                     springConfig={{stiffness: 180, damping: 8}}
+                                                     className={'text-loop'}/></> : ''}
       </> :
       <TextLoop children={profile.tags.map(tag => tag.title)} springConfig={{stiffness: 180, damping: 8}}
                 className={'text-loop'}/>

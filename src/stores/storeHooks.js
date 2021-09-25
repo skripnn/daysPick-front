@@ -4,6 +4,7 @@ import {parseUser} from "../js/functions/functions";
 import mainStore from "./mainStore";
 import {autorun} from "mobx";
 import Fetch from "../js/Fetch";
+import Info from "../js/Info";
 
 export function useAccount() {
   return useContext(MobXProviderContext).Account
@@ -49,7 +50,7 @@ export function usePreLoader() {
   useEffect(() => {
     let setter = Fetch.getSetter(window.location.pathname)
     if (setter) Fetch.getFromUrl().then((r) => {
-      if (r.error) Fetch.link('/')
+      if (r.error) Info.error(r.error)
       else setter(r)
       setLoading(false)
     })
