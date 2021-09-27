@@ -17,7 +17,7 @@ import ProfileField from "../components/Fields/ItemField/ProfileField";
 import {useAccount} from "../stores/storeHooks";
 import ProjectFolderField from "../components/Fields/ItemField/ProjectFolderField";
 import {ActionsPanel2} from "../components/Actions/ActionsPanel/ActionsPanel";
-import ActionButton, {BackActionButton} from "../components/Actions/ActionButton/ActionButton";
+import ActionButton from "../components/Actions/ActionButton/ActionButton";
 import {Add, AssignmentTurnedIn, Cancel, Delete, Done, FileCopy, Save, Send} from "@material-ui/icons";
 import {useLastLocation} from "react-router-last-location";
 import _ from "underscore";
@@ -139,7 +139,6 @@ function ProjectSelfComponent({ProjectPage:store}) {
   return (
     <>
       <ActionsPanel2
-        left={<BackActionButton/>}
         right={<>
           {!!project.id &&
           <ActionButton
@@ -219,7 +218,7 @@ function ProjectOutComponent({ProjectPage:store}) {
   const fields = {
     'title': <TextField label="Название" value={project.title} onChange={setValue} changeName={'title'} emptyNull/>,
     'money': <MoneyField money={money} money_per_day={money_per_day} money_calculating={money_calculating} setValue={setValue}/>,
-    'user': <ProfileField label={'Исполнитель'} value={project.user} required onChange={setUser} helperText={getProjectStatus(downloadedValues, account)} disabled={!!project.id && !!downloadedValues.user} exclude={account.id}/>
+    'user': <ProfileField label={'Исполнитель'} value={project.user} required onChange={setUser} helperText={getProjectStatus(downloadedValues, account)} disabled={!!project.id && !!downloadedValues.user} exclude={account.id} initDays={calendar.daysPick}/>
   }
 
   const infoField = (rowsHeight) => <InfoField info={info} setInfo={setInfo} days={days} rowsHeight={rowsHeight}/>
@@ -276,7 +275,6 @@ function ProjectOutComponent({ProjectPage:store}) {
   return (
     <>
       <ActionsPanel2
-        left={<BackActionButton/>}
         right={<>
           {!!project.id &&
           <ActionButton
@@ -387,7 +385,6 @@ function ProjectInComponent({ProjectPage:store}) {
   return (
     <>
       <ActionsPanel2
-        left={<BackActionButton/>}
         right={<>
           <ActionButton
             onClick={onDelete}
@@ -545,7 +542,6 @@ function ProjectFolderSelfComponent({ProjectPage:store}) {
   return (
     <>
       <ActionsPanel2
-        left={<BackActionButton/>}
         right={<>
           {compareId(project.user, account) &&
             <ActionButton
@@ -709,7 +705,6 @@ function ProjectFolderOutComponent({ProjectPage:store}) {
   return (
     <>
       <ActionsPanel2
-        left={<BackActionButton/>}
         right={<>
           {!project.children.length &&
             <ActionButton

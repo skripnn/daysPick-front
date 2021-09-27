@@ -14,6 +14,7 @@ class AccountStore {
   can_be_raised = false
   profile = {}
   unconfirmed_projects = 0
+  favorites = []
 
   constructor() {
     makeAutoObservable(this)

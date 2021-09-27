@@ -12,7 +12,7 @@ import IconButton from "@material-ui/core/IconButton";
 import {ProfileAvatar} from "../UserAvatar/UserAvatar";
 import {ProfileFullName} from "../UserFullName/UserFullName";
 import {inject, observer} from "mobx-react";
-import {Group, List as ListIcon, PermIdentity, Search, SettingsOutlined} from "@material-ui/icons";
+import {Group, List as ListIcon, PermIdentity, Search, SettingsOutlined, Star} from "@material-ui/icons";
 import LogoutIcon from "../Icons/LogoutIcon";
 import Fetch from "../../js/Fetch";
 import {useSwipeable} from "react-swipeable";
@@ -114,6 +114,12 @@ function Menu({Account:store}) {
             icon={<ListIcon/>}
             link={`offers`}
             set={mainStore.OffersPage.fullList.set}
+          />
+          <MenuItem
+            text={'Избранное'}
+            icon={<Star/>}
+            link={`favorites`}
+            set={mainStore.FavoritesPage.fullList.set}
           />
         </List>
         <Divider />

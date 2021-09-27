@@ -4,7 +4,7 @@ import ProfileItem from "../../Items/ProfileItem";
 import ItemField from "./ItemField";
 import React from "react";
 
-export default function ProfileField({label, value, onChange, exclude, ...otherProps}) {
+export default function ProfileField({label, value, onChange, exclude, initDays={}, ...otherProps}) {
   const itemRender = (v) => (
     <Item
       avatar={<ProfileAvatar profile={v}/>}
@@ -12,7 +12,7 @@ export default function ProfileField({label, value, onChange, exclude, ...otherP
     />
   )
   const listRender = (list) => list.map(i => (
-    <ProfileItem key={i.id.toString()} profile={i} onClick={() => onChange(i)} slim/>
+    <ProfileItem key={i.id.toString()} profile={i} onClick={() => onChange(i)} slim star/>
   ))
 
   return (
@@ -24,6 +24,10 @@ export default function ProfileField({label, value, onChange, exclude, ...otherP
       getLink={'users'}
       getParams={exclude ? {exclude: exclude} : undefined}
       listRender={listRender}
+      searchFieldParams={{
+        noFilter: false,
+        initDays: initDays.length ? initDays : undefined,
+      }}
       {...otherProps}
     />
   )

@@ -1,11 +1,13 @@
 import TextLoop from "react-text-loop";
 import {ProfileAvatar} from "../UserAvatar/UserAvatar";
 import React from "react";
-import {useMobile} from "../../stores/storeHooks";
+import {useAccount, useMobile} from "../../stores/storeHooks";
 import Item from "./Item";
+import {Star} from "@material-ui/icons";
 
-export default function ProfileItem({profile, noTags, ...otherProps}) {
+export default function ProfileItem({profile, noTags, star, ...otherProps}) {
   const mobile = useMobile()
+  const account = useAccount()
   const tags = profile.tags && profile.tags.length ? (!mobile ?
       <>
         {profile.tags[0].title}
@@ -22,6 +24,7 @@ export default function ProfileItem({profile, noTags, ...otherProps}) {
       avatar={<ProfileAvatar profile={profile}/>}
       primary={profile.full_name}
       secondary={tags}
+      action={star && account.favorites.includes(profile.id) && <Star/>}
       {...otherProps}
     />
   )

@@ -15,6 +15,7 @@ class mainStore {
     this.ClientsPage = new SearchListStore()
     this.ProjectsPage = new SearchListStore()
     this.OffersPage = new SearchListStore()
+    this.FavoritesPage = new SearchListStore()
 
     this.ProjectPage = new ProjectPageStore()
   }

@@ -1,18 +1,32 @@
 import React from "react";
 import './ActionsPanel.css'
+import ActionButton, {BackActionButton} from "../ActionButton/ActionButton";
+import {useMobile} from "../../hooks";
 
 export function ActionsPanel2({left, children, right}) {
+  if (right) {
+    right = right.props.children.filter(i => !!i)
+    while (right.length < 3) {
+      right.unshift(<ActionButton empty/>)
+    }
+  }
+  const isMobile = useMobile()
+
   return (
     <div className={'actions-panel'}>
-      <div>
-        {left}
-      </div>
-      {!!children && <div style={{flexGrow: 1, display: 'flex', justifyContent: 'center', alignSelf: "flex-start"}}>
-        {children}
+      {!isMobile && <div>
+        {left || (!!right && <BackActionButton returnEmpty/>)}
       </div>}
-      <div>
+      {(!!children || (right && isMobile)) && <div style={{flexGrow: 1, display: 'flex', justifyContent: 'center', alignSelf: "flex-start"}}>
+        {children}
+        {!!right && <>
+          <BackActionButton returnEmpty/>
+          {right}
+        </>}
+      </div>}
+      {!isMobile && <div>
         {right}
-      </div>
+      </div>}
     </div>
   )
 }

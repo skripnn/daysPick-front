@@ -27,6 +27,7 @@ import RecoveryPage from "./pages/RecoveryPage";
 import Test from "./components/test/Test";
 import SettingsPage from "./pages/SettingsPage";
 import {useAuthorization, usePreLoader, useUsername} from "./stores/storeHooks";
+import FavoritesPage from "./pages/FavoritesPage";
 
 function App(props) {
   const { history } = props
@@ -52,6 +53,7 @@ function App(props) {
             <AuthRoute history={history} path='/settings/' component={SettingsPage}/>
             <AuthRoute history={history} path='/profile/' component={ProfilePage}/>
             <AuthRoute history={history} path='/clients/' component={ClientsPage}/>
+            <AuthRoute history={history} path='/favorites/' component={FavoritesPage}/>
             <AuthRoute history={history} path='/projects/' component={ProjectsPage}/>
             <AuthRoute history={history} path='/offers/' component={OffersPage}/>
             <AuthRoute history={history} path='/project/:id/' component={ProjectPage}/>

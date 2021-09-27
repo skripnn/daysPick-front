@@ -3,7 +3,7 @@ import {ProfileAvatar} from "../components/UserAvatar/UserAvatar";
 import React from "react";
 import {inject, observer} from "mobx-react";
 import ActionButton from "../components/Actions/ActionButton/ActionButton";
-import {AccountCircle, Close, EventBusy, List as ListIcon, PostAdd, Send} from "@material-ui/icons";
+import {AccountCircle, Close, EventBusy, List as ListIcon, PostAdd, Send, Star} from "@material-ui/icons";
 import {ActionsPanel2} from "../components/Actions/ActionsPanel/ActionsPanel";
 import Calendar from "../components/test/components/Calendar";
 import Fetch from "../js/Fetch";
@@ -57,13 +57,20 @@ function UserPage({UserPage:store}) {
         rightChildren={is_self && <RaiseButton/>}
       />
       {!!account.id && <ActionsPanel2>
-        {is_self && <ActionButton
-          hidden={!is_self}
-          label={"Выходные"}
-          icon={<EventBusy/>}
-          active={daysOffEdit}
-          onClick={() => setTab('daysOff')}
-        />}
+        {is_self ?
+          <ActionButton
+            label={"Выходные"}
+            icon={<EventBusy/>}
+            active={daysOffEdit}
+            onClick={() => setTab('daysOff')}
+          /> :
+          <ActionButton
+            label={"Избранное"}
+            icon={<Star/>}
+            active={account.favorites.includes(id)}
+            onClick={() => Fetch.post('account', {favorite: id}).then(account.setValue)}
+          />
+        }
         <ActionButton
           label={is_self ? 'Добавить' : 'Предложить'}
           icon={is_self ? <PostAdd/> : <Send/>}

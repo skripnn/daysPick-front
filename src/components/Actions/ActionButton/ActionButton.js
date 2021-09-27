@@ -41,9 +41,9 @@ function ActionButtonComponent(props, ref) {
 const ActionButton = forwardRef(ActionButtonComponent)
 export default ActionButton
 
-export function BackActionButton() {
+export function BackActionButton({returnEmpty}) {
   const lastLocation = useLastLocation()
-  if (!lastLocation) return <></>
+  if (!lastLocation) return <>{!!returnEmpty && <ActionButton empty/>}</>
   return (
     <ActionButton
       label={"Назад"}

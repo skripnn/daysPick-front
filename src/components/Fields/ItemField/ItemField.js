@@ -10,7 +10,7 @@ import ActionButton from "../../Actions/ActionButton/ActionButton";
 import LazyList from "../../LazyList/LazyList";
 import HeaderText from "../../Text/HeaderText";
 
-export default function ItemField({label, value, onChange=()=>{}, itemRender, getLink, getParams, listRender, createDialog, readOnly=false, emptyLoading, helperText, disabled, onDialogChange, ...otherProps}) {
+export default function ItemField({label, value, onChange=()=>{}, itemRender, getLink, getParams, listRender, createDialog, readOnly=false, emptyLoading, helperText, disabled, onDialogChange, searchFieldParams, ...otherProps}) {
   const [dialog, setDialog] = useState(false)
   useEffect(() => setDialog(false), [value, readOnly])
   useEffect(() => {
@@ -55,13 +55,14 @@ export default function ItemField({label, value, onChange=()=>{}, itemRender, ge
           listRender={listRender}
           createDialog={createDialog}
           emptyLoading={emptyLoading}
+          searchFieldParams={searchFieldParams}
         />
       }
     </div>
   )
 }
 
-export function ChooseDialog({label, open, onClose, getLink, getParams, listRender, createDialog, emptyLoading}) {
+export function ChooseDialog({label, open, onClose, getLink, getParams, listRender, createDialog, emptyLoading, searchFieldParams={}}) {
   const {fullListSet, filteredListSet, list, page, pages, add, reset} = useSearchList()
   const [create, setCreate] = useState(false)
   const mobile = useMobile()
@@ -117,7 +118,8 @@ export function ChooseDialog({label, open, onClose, getLink, getParams, listRend
           searchFieldParams={{
             set: filteredListSet,
             noFilter: true,
-            autoFocus: true
+            autoFocus: true,
+            ...searchFieldParams
           }}
           getLink={getLink}
           getParams={getParams}

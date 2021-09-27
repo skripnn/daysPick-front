@@ -36,8 +36,8 @@ export default function ClientDialog({openState, onClose, onBack, onDelete, onSa
 
   function load(command) {
     setLoading(command)
-    if (command === 'del') Fetch.delete(['client', state.id]).then(() => onDelete(state))
-    else if (command === 'save') Fetch.post(['client', state.id], state).then(() => onSave(state))
+    if (command === 'del') Fetch.delete(['client', state.id]).then(r => !!r && !r.error && onDelete(state)).then(() => setLoading(null))
+    else if (command === 'save') Fetch.post(['client', state.id], state).then(r => !!r && !r.error && onSave(r)).then(() => setLoading(null))
   }
 
   return (
