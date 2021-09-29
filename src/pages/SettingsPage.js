@@ -11,6 +11,7 @@ import {Grid, List, ListItem, ListSubheader} from "@material-ui/core";
 import CheckBoxField from "../components/Fields/CheckBoxField/CheckBoxField";
 import Typography from "@material-ui/core/Typography";
 import React from "react";
+import Keys from "../js/Keys";
 
 function SettingsPage({Account:store}) {
   const {
@@ -22,7 +23,8 @@ function SettingsPage({Account:store}) {
     phone,
     phone_confirm,
     is_confirmed,
-    logOut
+    logOut,
+    telegram_notifications
   } = store
 
   if (!username) return null
@@ -35,11 +37,12 @@ function SettingsPage({Account:store}) {
           Info.success('Данные успешно удалены')
           logOut()
           Fetch.link('search')
-        }
-        else Info.error(r.error)
+        } else Info.error(r.error)
       })
     }
   }
+
+  const TeleBotLink = `https://t.me/${Keys.telegramBot}`
 
   return (
     <List dense>
@@ -50,6 +53,18 @@ function SettingsPage({Account:store}) {
       <NewPasswordField/>
       <EmailChangeField email={email} email_confirm={email_confirm} setValue={setValue}/>
       <PhoneChangeField phone={phone} phone_confirm={phone_confirm} setValue={setValue}/>
+      {!!phone_confirm &&
+      <ListItem>
+        <CheckBoxField
+          name={'telegram_notifications'}
+          label={'Получать уведомления'}
+          checked={telegram_notifications}
+          onChange={v => Fetch.post('account', {telegram_notifications: v}).then(setValue)}
+          helperText={<>Через telegram-бот <a href={TeleBotLink} target={'_blank'}
+                                              rel={"noreferrer"}>@dayspick_bot</a></>}
+        />
+      </ListItem>
+      }
       <ListItem>
         <Grid container spacing={1}>
           <Grid item xs={12} sm>

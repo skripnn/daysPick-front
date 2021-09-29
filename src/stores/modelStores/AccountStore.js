@@ -15,6 +15,7 @@ class AccountStore {
   profile = {}
   unconfirmed_projects = 0
   favorites = []
+  telegram_notifications = false
 
   constructor() {
     makeAutoObservable(this)

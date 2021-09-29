@@ -54,7 +54,7 @@ function UserPage({UserPage:store}) {
       <ProfileFullName
         profile={profile}
         leftChildren={<ProfileAvatar profile={profile} dialog/>}
-        rightChildren={is_self && <RaiseButton/>}
+        rightChildren={is_self && account.can_be_raised && <RaiseButton />}
       />
       {!!account.id && <ActionsPanel2>
         {is_self ?

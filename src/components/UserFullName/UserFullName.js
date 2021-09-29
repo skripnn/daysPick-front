@@ -25,9 +25,8 @@ export function ProfileFullName({profile, leftChildren, rightChildren, link}) {
 
 
 export function RaiseButton() {
-  const {can_be_raised, setValue} = useAccount().can_be_raised
+  const {setValue} = useAccount()
 
-  if (!can_be_raised) return null
   return (
     <Tooltip title={'Поднять в поиске'}>
       <IconButton size={"small"}
