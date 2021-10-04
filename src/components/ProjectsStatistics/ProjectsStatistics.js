@@ -21,26 +21,26 @@ export function StatisticsDialog({value, close}) {
 
   return (
     <Dialog
-      maxWidth={'xs'}
-      onClose={close}
-      open={!!value}
-      fullWidth
-    >
-      <DialogTitle>
-        <div style={{display: "flex", justifyContent: "space-between", alignItems: "flex-end"}}>
-          <Typography>{'Статистика'}</Typography>
-          <CloseButton onClick={close}/>
-        </div>
-      </DialogTitle>
-      {!!value &&
-        <DialogContent>
-          {!value.projects ?
-            <Typography {...typographyProps}>Нет проектов</Typography> :
-            statistics.map((i, n) => (
-            <Typography {...typographyProps} key={n.toString()}>{i}</Typography>
-          ))}
-        </DialogContent>
-      }
-    </Dialog>
+    maxWidth={'xs'}
+    onClose={close}
+    open={!!value}
+    fullWidth
+  >
+    <DialogTitle>
+      <div style={{display: "flex", justifyContent: "space-between", alignItems: "flex-end"}}>
+        <Typography>{'Статистика'}</Typography>
+        <CloseButton onClick={close}/>
+      </div>
+    </DialogTitle>
+    {!!value &&
+    <DialogContent>
+      {!value.projects ?
+        <Typography {...typographyProps}>Нет проектов</Typography> :
+        statistics.map((i, n) => (
+          <Typography {...typographyProps} key={n.toString()}>{i}</Typography>
+        ))}
+    </DialogContent>
+    }
+  </Dialog>
   )
 }

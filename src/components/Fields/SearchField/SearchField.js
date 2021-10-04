@@ -8,21 +8,22 @@ import Loader from "../../../js/Loader";
 import "./SearchField.css"
 import DateRangeField from "../DateRangeField/DateRangeField";
 import Info from "../../../js/Info";
-
+import {TagsSearchField} from "./TagsSearchField";
 
 function SearchField(props) {
-  const {get, set, noFilter, calendar, calendarGet, minFilter, initDays, onChangeDays, onChangeFilter, preSearch, ...newProps} = props
+  const {get, set, noFilter, calendar, calendarGet, minFilter, initDays, onChangeDays, onChangeFilter, preSearch, filterProps, tagsFilter, ...newProps} = props
 
   const [filter, setFilter] = useState(null)
   const [loading, setLoading] = useState(false)
   const [days, setDays] = useState(initDays || null)
+  const [tags, setTags] = useState(null)
   const [range, setRange] = useState(null)
   const [content, setContent] = useState(calendar ? {...calendar} : {days: {}, daysOff: new Set(), daysPick: new Set(initDays)})
 
   const ref = useRef()
 
   // eslint-disable-next-line
-  useEffect(download, [days, filter])
+  useEffect(download, [days, filter, tags])
   // eslint-disable-next-line
   useEffect(() => onChangeFilter(filter), [filter])
 
@@ -47,9 +48,10 @@ function SearchField(props) {
   function download() {
     Loader.clear()
     const search_filter = {}
-    if (filter) search_filter.filter = filter
+    if (filter && filter.length >= (minFilter || 0)) search_filter.filter = filter
+    if (tags && tags.length) search_filter.tags = tags.map(i => i.id)
     if (days && days.length) search_filter.days = days
-    const valid = minFilter ? search_filter.filter && search_filter.filter.length >= minFilter : !!Object.keys(search_filter).length
+    const valid = minFilter ? (search_filter.filter || search_filter.tags) : !!Object.keys(search_filter).length
     if (valid) {
       setLoading(true)
       preSearch(search_filter)
@@ -74,33 +76,56 @@ function SearchField(props) {
     }
   }
 
+
+  const startButton = (
+    <IconButton onClick={download} disabled={loading} size={'small'}>
+      {props.loading || loading ? <CircularProgress style={{width: 24, height: 24}} color={"inherit"}/> :
+        <Search/>}
+    </IconButton>
+  )
+
+  const endButton = ((filter || days) &&
+    <InputAdornment position={"end"}>
+      <IconButton size={'small'} onClick={() => {
+        setFilter(null)
+        clearDays()
+      }}>
+        <Close/>
+      </IconButton>
+    </InputAdornment>
+  )
+
+
   return (
     <Box display={'flex'} flexDirection={'column'}>
       <Box display={'flex'} className={'search-field'}>
-        <TextField
-          {...newProps}
-          size={"medium"}
-          value={filter || ''}
-          onChange={(v) => setFilter(v || null)}
-          InputProps={{
-            startAdornment:
-              <InputAdornment position={"start"}>
-                <IconButton onClick={download} disabled={loading} size={'small'}>
-                  {props.loading || loading ? <CircularProgress style={{width: 24, height: 24}} color={"inherit"}/> :
-                    <Search/>}
-                </IconButton>
-              </InputAdornment>,
-            endAdornment: ((filter || days) &&
-              <InputAdornment position={"end"}>
-                <IconButton size={'small'} onClick={() => {
-                  setFilter(null)
-                  clearDays()
-                }}>
-                  <Close/>
-                </IconButton>
-              </InputAdornment>)
-          }}
-        />
+        {!!tagsFilter ?
+          <TagsSearchField
+            {...newProps}
+            value={filter || ''}
+            onChange={v => setFilter(v || null)}
+            onTagsChange={setTags}
+            startAdornment={startButton}
+            InputProps={{
+              endAdornment: endButton,
+              placeholder: (!!tags && !!tags.length) ? undefined : newProps.placeholder,
+              autoFocus: newProps.autoFocus
+            }}
+          /> :
+          <TextField
+            {...newProps}
+            size={"medium"}
+            value={filter || ''}
+            onChange={(v) => setFilter(v || null)}
+            InputProps={{
+              startAdornment:
+                <InputAdornment position={"start"}>
+                  {startButton}
+                </InputAdornment>,
+              endAdornment: endButton
+            }}
+          />
+        }
         {!noFilter && <IconButton onClick={filterButtonClick} size={'small'} style={{height: "max-content", marginTop: 1}}>
           <DateRange style={days ? {color: '#4db34b'} : {}}/>
         </IconButton>}

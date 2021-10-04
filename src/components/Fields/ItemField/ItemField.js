@@ -45,7 +45,7 @@ export default function ItemField({label, value, onChange=()=>{}, itemRender, ge
         onClick={!disabled ? () => setDialog(!readOnly) : undefined}
         helperText={helperText}
       />
-      {!readOnly &&
+      {!readOnly && !disabled &&
         <ChooseDialog
           label={label}
           open={dialog}

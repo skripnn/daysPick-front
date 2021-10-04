@@ -13,7 +13,7 @@ import Grid from "@material-ui/core/Grid";
 import CheckBoxField from "../components/Fields/CheckBoxField/CheckBoxField";
 import InfoField from "../components/Fields/InfoField/InfoField";
 import ClientField from "../components/Fields/ItemField/ClientField";
-import ProfileField from "../components/Fields/ItemField/ProfileField";
+import ProfileField, {ProfileFieldViewer} from "../components/Fields/ItemField/ProfileField";
 import {useAccount} from "../stores/storeHooks";
 import ProjectFolderField from "../components/Fields/ItemField/ProjectFolderField";
 import {ActionsPanel2} from "../components/Actions/ActionsPanel/ActionsPanel";
@@ -25,7 +25,6 @@ import mainStore from "../stores/mainStore";
 import Typography from "@material-ui/core/Typography";
 import A from "../components/core/A";
 import {ProjectItem} from "../components/ProjectItem/ProjectItem";
-
 
 function ProjectSelfComponent({ProjectPage:store}) {
   const {downloadedValues, project, calendar, setDays, setUser} = store
@@ -257,6 +256,10 @@ function ProjectOutComponent({ProjectPage:store}) {
       Info.error('Выбери даты')
       return false
     }
+    if (!project.user) {
+      Info.error('Выбери исполнителя')
+      return false
+    }
     return !!changedFields;
   }
 
@@ -344,7 +347,7 @@ function ProjectInComponent({ProjectPage:store}) {
   const fields = {
     'title': <TextField label="Название" value={getProjectTitle(project)} changeName={'title'} emptyNull helperText={status} onChange={setValue}/>,
     'money': <MoneyField money={money} money_per_day={money_per_day} money_calculating={money_calculating} setValue={setValue}/>,
-    'creator': <ProfileField label={'Заказчик'} value={project.creator} disabled/>,
+    'creator': <ProfileFieldViewer label={'Заказчик'} value={project.creator}/>,
   }
 
   const getField = (fieldName) => fields[fieldName] || fieldName
@@ -418,6 +421,81 @@ function ProjectInComponent({ProjectPage:store}) {
   )
 }
 const ProjectIn = inject('ProjectPage')(observer(ProjectInComponent))
+
+function ProjectOpenComponent({ProjectPage:store}) {
+  const {downloadedValues, project, calendar} = store
+  const {money, money_per_day, money_calculating, info, days} = project
+  const account = useAccount()
+  const lastLocation = useLastLocation()
+  const setValue = () => Info.info('Изменение недоступно')
+
+  const [DayInfo, setDayInfo] = useState(null)
+  function showInfo(element, info, date, dayOff) {
+    if (!info && !dayOff) return
+    setDayInfo(
+      <PopOverDay
+        anchorEl={element}
+        info={info}
+        dayOff={dayOff}
+        onClose={() => setDayInfo(null)}
+      />
+    )
+  }
+  const status = getProjectStatus(downloadedValues, account)
+
+  const fields = {
+    'title': <TextField label="Название" value={getProjectTitle(project)} changeName={'title'} emptyNull helperText={status} onChange={setValue}/>,
+    'money': <MoneyField money={money} money_per_day={money_per_day} money_calculating={money_calculating} setValue={setValue}/>,
+    'creator': <ProfileFieldViewer label={'Заказчик'} value={project.creator}/>,
+  }
+
+  const getField = (fieldName) => fields[fieldName] || fieldName
+
+  let left = ['title', 'money', 'creator']
+  let right = [<InfoField info={info} days={days} height={69 * 3 + (status ? 23 : 0)} setInfo={setValue}/>]
+
+  function onResponse() {
+    Fetch.post(['project', project.id, 'response']).then(r => {
+      if (r.error) Info.error(r.error)
+      else {
+        Info.success('Отклик отправлен')
+        // Fetch.get('account').then(mainStore.Account.setValue)
+        Fetch.backLink(lastLocation)
+      }
+    })
+  }
+
+  return (
+    <>
+      <ActionsPanel2
+        right={<>
+          <ActionButton
+            label={'Откликнуться'}
+            icon={<AssignmentTurnedIn/>}
+            onClick={onResponse}
+          />
+        </>}
+      />
+      <Calendar
+        get={Fetch.calendarGetter(account, project)}
+        content={calendar}
+        setContent={calendar.setContent}
+        onDay={{
+          onTouchHold: showInfo,
+          onContextMenu: showInfo
+        }}
+        onError={Info.error}
+      />
+      <ProjectForm
+        left={left.map(getField)}
+        right={right.map(getField)}
+      />
+      {DayInfo}
+      <span className={'bottom-space'}/>
+    </>
+  )
+}
+const ProjectOpen = inject('ProjectPage')(observer(ProjectOpenComponent))
 
 function ProjectFolderSelfComponent({ProjectPage:store}) {
   const {downloadedValues, project, calendar, downloadFromTemplate} = store
@@ -752,6 +830,7 @@ function ProjectPage({ProjectPage:store}) {
   else if (compareId(project.creator, project.user)) return <ProjectSelf/>
   else if (compareId(project.creator, account)) return <ProjectOut/>
   else if (compareId(project.user, account)) return <ProjectIn/>
+  else if (!project.user) return <ProjectOpen/>
   return null
 }
 

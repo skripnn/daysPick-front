@@ -112,7 +112,8 @@ LazyList.propTypes = {
     noFilter: PropTypes.bool,
     minFilter: PropTypes.number,
     initDays: PropTypes.array,
-    onChangeDays: PropTypes.func
+    onChangeDays: PropTypes.func,
+    tagsFilter: PropTypes.bool,
   }),
   observableRoot: PropTypes.instanceOf(Element),
   children: PropTypes.node,

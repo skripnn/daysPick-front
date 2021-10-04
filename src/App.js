@@ -24,10 +24,10 @@ import FeedPage from "./pages/FeedPage";
 import TermsPage from "./pages/TermsPage";
 import Login from "./components/Login/Login";
 import RecoveryPage from "./pages/RecoveryPage";
-import Test from "./components/test/Test";
 import SettingsPage from "./pages/SettingsPage";
 import {useAuthorization, usePreLoader, useUsername} from "./stores/storeHooks";
 import FavoritesPage from "./pages/FavoritesPage";
+import TestPage from "./pages/TestPage";
 
 function App(props) {
   const { history } = props
@@ -46,7 +46,7 @@ function App(props) {
         <Header history={history}/>
         <Container maxWidth="md" className={"content-block"}>
           <Switch>
-            {Keys.env === 'dev' && <Route history={history} path='/test/' component={Test}/>}
+            {Keys.env === 'dev' && <Route history={history} path='/test/' component={TestPage}/>}
             {Keys.env === 'dev' && <Route history={history} path='/feed/' component={FeedPage}/>}
             <Route history={history} path={'/terms/'} component={TermsPage}/>
             <Route history={history} path={'/recovery/'} component={RecoveryPage}/>

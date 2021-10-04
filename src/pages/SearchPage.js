@@ -1,11 +1,11 @@
 import React from "react";
-import LazyList from "../components/LazyList/LazyList";
 import {inject, observer} from "mobx-react";
 import A from "../components/core/A";
 import mainStore from "../stores/mainStore";
 import ProfileItem from "../components/Items/ProfileItem";
 import {useAccount} from "../stores/storeHooks";
 import {Star} from "@material-ui/icons";
+import LazyList from "../components/LazyList/LazyList";
 
 
 function SearchPage({SearchPage:store}) {
@@ -18,13 +18,15 @@ function SearchPage({SearchPage:store}) {
         set: set,
         placeholder: "Кого искать?",
         autoFocus: true,
-        minFilter: 3,
-        helperText: 'Введи имя, телефон или специализацию'
+        minFilter: 2,
+        helperText: 'Введи имя, телефон или специализацию',
+        tagsFilter: true
       }}
       add={add}
       page={page}
       pages={pages}
       getLink={'users'}
+      getParams={account.id ? {exclude: account.id} : undefined}
     >
       {!!list && list.map(profile =>
         <A link={`@${profile.username}`} setter={mainStore.UserPage.setValue} key={profile.username}>

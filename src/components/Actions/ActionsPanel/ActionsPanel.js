@@ -5,7 +5,8 @@ import {useMobile} from "../../hooks";
 
 export function ActionsPanel2({left, children, right}) {
   if (right) {
-    right = right.props.children.filter(i => !!i)
+    if (!Array.isArray(right)) right = [right.props.children]
+    else right = right.props.children.filter(i => !!i)
     while (right.length < 3) {
       right.unshift(<ActionButton empty/>)
     }

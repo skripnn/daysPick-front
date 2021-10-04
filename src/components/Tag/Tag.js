@@ -23,3 +23,16 @@ export default function Tag(props) {
       />
   )
 }
+
+export function TagSimple({tag, onDelete, onClick, ...otherProps}) {
+  return (
+    <Chip
+      className={'tag'}
+      variant="outlined"
+      label={tag.title}
+      onDelete={onDelete ? () => onDelete(tag) : undefined}
+      onClick={onClick ? () => onClick(tag) : undefined}
+      {...otherProps}
+    />
+  )
+}

@@ -1,9 +1,15 @@
 .tag {
-    margin: 2px;
-    background-color: white !important;
+    margin: 2px !important;
+    /*background-color: white !important;*/
 }
 .tag.edit:hover {
     cursor: grab
+}
+.tags-input > div {
+    min-height: unset;
+}
+.tags-input > div::after {
+    border-bottom-color: #5b5b5b;
 }
 
 @media screen and (max-width:600px) {

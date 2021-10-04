@@ -60,6 +60,11 @@ const theme = createMuiTheme({
       root: {
         paddingTop: 0
       }
+    },
+    MuiChip: {
+      root: {
+        backgroundColor: "white"
+      }
     }
   }
 });
