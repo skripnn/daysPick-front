@@ -70,7 +70,7 @@ function ProjectSelfComponent({ProjectPage:store}) {
     'money': <MoneyField money={money} money_per_day={money_per_day} money_calculating={money_calculating} setValue={setValue}/>,
     'client': <ClientField label={'Клиент'} value={project.client} onChange={(client) => setValue({client: client})}/>,
     'creator': <ProfileField label={'Заказчик'} value={project.creator} readOnly required/>,
-    'folder': <ProjectFolderField label={'Папка'} value={project.parent} onChange={setParent} createState={createFolderState}/>,
+    'folder': <ProjectFolderField label={'Серия'} value={project.parent} onChange={setParent} createState={createFolderState}/>,
     'user': <ProfileField label={'Исполнитель'} value={project.user} required onChange={setUser} readOnly={project.canceled}/>
   }
 

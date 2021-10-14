@@ -133,6 +133,7 @@ export function ProjectItem({project, wrapperRender, child,
 
   const PaidButton = (
     <FetchIconButton
+      size={'small'}
       edge={'end'}
       fetch={() => Fetch
         .post(['project', project.id], {is_paid: true})
@@ -150,6 +151,7 @@ export function ProjectItem({project, wrapperRender, child,
 
   const DeleteButton = (
     <FetchIconButton
+      size={'small'}
       edge={'end'}
       confirmText={type === 'self' || project.canceled ?
         "Удалить проект?" :
@@ -174,11 +176,11 @@ export function ProjectItem({project, wrapperRender, child,
   const ConfirmMenu = (
     <PopoverButtonsBlock
       icon={type === 'self'
-        ? <MoreHoriz/>
+        ? <MoreHoriz />
         : <IconBadge dot content><Help color={'secondary'}/></IconBadge>
       }
     >
-      {DeleteButton}
+      {React.cloneElement(DeleteButton, {size: 'medium'})}
       <FetchIconButton
         edge={false}
         fetch={() => Fetch
@@ -198,7 +200,7 @@ export function ProjectItem({project, wrapperRender, child,
   )
 
   let action = null
-  if (confirmButton && !project.confirmed && !project.canceled) action = ConfirmMenu
+  if (confirmButton && (type === 'self' ? project.is_wait : !project.confirmed && !project.canceled)) action = ConfirmMenu
   else if (paidButton && past && !project.is_paid && !project.canceled) action = PaidButton
   else if (deleteButton) action = DeleteButton
   const projectTitle = project.title || (formatDate(project.date_start) + (project.date_end === project.date_start ? '' : ` - ${formatDate(project.date_end)}`))

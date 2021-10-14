@@ -16,7 +16,7 @@ export function ProfileFullName({profile, leftChildren, rightChildren, link}) {
     <div className={'user-full-name'}>
       {leftChildren}
       <A link={link ? `@${profile.username}` : undefined}>
-        <Box>{profile.full_name}</Box>
+        <Box sx={profile.is_simulated ? { fontStyle: 'italic' } : undefined}>{profile.full_name}</Box>
       </A>
       {rightChildren}
     </div>

@@ -1,4 +1,4 @@
-import {Avatar, Dialog, DialogContent} from "@material-ui/core";
+import {Avatar, Badge, Dialog, DialogContent} from "@material-ui/core";
 import React, {useState} from "react";
 import "./UserAvatar.css"
 import Fetch from "../../js/Fetch";
@@ -12,7 +12,7 @@ export default function UserAvatar(props) {
     <>
       <Avatar
         className={'user-avatar'}
-        alt={props.full_name === '<DELETED>' ? ' ' : props.full_name}
+        alt={props.is_simulated || props.full_name === '<DELETED>' ? ' ' : props.full_name}
         src={path}
         onClick={props.onClick}
         style={style}
@@ -33,13 +33,20 @@ export function ProfileAvatar({profile, dialog, size}) {
 
   return (
     <>
-      <Avatar
-        className={'user-avatar'}
-        alt={profile.full_name === '<DELETED>' || profile.full_name.match(/^\d+$/) ? ' ' : profile.full_name}
-        src={path}
-        onClick={onHandleClick}
-        style={style}
-      />
+      <Badge
+        badgeContent={'bot'}
+        anchorOrigin={{vertical: 'top', horizontal: 'left'}}
+        invisible={!profile.is_simulated}
+        color={'secondary'}
+      >
+        <Avatar
+          className={'user-avatar'}
+          alt={profile.is_simulated || profile.full_name === '<DELETED>' || (profile.full_name && profile.full_name.match(/^\d+$/) ? ' ' : profile.full_name)}
+          src={path}
+          onClick={onHandleClick}
+          style={style}
+        />
+      </Badge>
       {dialog &&
       <Dialog
         open={!!image}

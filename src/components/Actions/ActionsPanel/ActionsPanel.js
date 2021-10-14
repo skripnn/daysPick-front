@@ -5,8 +5,8 @@ import {useMobile} from "../../hooks";
 
 export function ActionsPanel2({left, children, right}) {
   if (right) {
-    if (!Array.isArray(right)) right = [right.props.children]
-    else right = right.props.children.filter(i => !!i)
+    if (!Array.isArray(right)) right = right.props.children.filter(i => !!i)
+    else right = right.filter(i => !!i)
     while (right.length < 3) {
       right.unshift(<ActionButton empty/>)
     }
@@ -22,7 +22,7 @@ export function ActionsPanel2({left, children, right}) {
         {children}
         {!!right && <>
           <BackActionButton returnEmpty/>
-          {right}
+          {right.map((i, n) => React.cloneElement(i, {key: n.toString()}))}
         </>}
       </div>}
       {!isMobile && <div>

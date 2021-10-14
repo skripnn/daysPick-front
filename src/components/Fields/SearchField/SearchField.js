@@ -78,7 +78,7 @@ function SearchField(props) {
 
 
   const startButton = (
-    <IconButton onClick={download} disabled={loading} size={'small'}>
+    <IconButton onClick={download} disabled={loading} size={'small'} key={'0'}>
       {props.loading || loading ? <CircularProgress style={{width: 24, height: 24}} color={"inherit"}/> :
         <Search/>}
     </IconButton>

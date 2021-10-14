@@ -1,5 +1,4 @@
 import React from 'react';
-import Container from "@material-ui/core/Container";
 import ProjectPage from "./pages/ProjectPage";
 import UserPage from "./pages/UserPage";
 import {Route, Switch, withRouter} from "react-router-dom";
@@ -28,6 +27,7 @@ import SettingsPage from "./pages/SettingsPage";
 import {useAuthorization, usePreLoader, useUsername} from "./stores/storeHooks";
 import FavoritesPage from "./pages/FavoritesPage";
 import TestPage from "./pages/TestPage";
+import Section from "./components/Section/Section";
 
 function App(props) {
   const { history } = props
@@ -44,28 +44,33 @@ function App(props) {
       <div className="App">
         <LoadingBar/>
         <Header history={history}/>
-        <Container maxWidth="md" className={"content-block"}>
-          <Switch>
-            {Keys.env === 'dev' && <Route history={history} path='/test/' component={TestPage}/>}
-            {Keys.env === 'dev' && <Route history={history} path='/feed/' component={FeedPage}/>}
-            <Route history={history} path={'/terms/'} component={TermsPage}/>
-            <Route history={history} path={'/recovery/'} component={RecoveryPage}/>
-            <AuthRoute history={history} path='/settings/' component={SettingsPage}/>
-            <AuthRoute history={history} path='/profile/' component={ProfilePage}/>
-            <AuthRoute history={history} path='/clients/' component={ClientsPage}/>
-            <AuthRoute history={history} path='/favorites/' component={FavoritesPage}/>
-            <AuthRoute history={history} path='/projects/' component={ProjectsPage}/>
-            <AuthRoute history={history} path='/offers/' component={OffersPage}/>
-            <AuthRoute history={history} path='/project/:id/' component={ProjectPage}/>
-            <AuthRoute history={history} path='/project/' component={ProjectPage}/>
-            <NonAuthRoute history={history} path='/login/' component={LoginPage}/>
-            <NonAuthRoute history={history} path='/signup/' component={SignupPage}/>
-            <Route history={history} path='/confirm/' component={EmailLinkPage}/>
-            <Route history={history} path='/search/' component={SearchPage}/>
-            <Route history={history} path={'/:prefix([@]):username([0-9a-z]*)/'} component={UserPage}/>
-            <Route history={history} path='/' component={MainPage}/>
-          </Switch>
-        </Container>
+        <Switch>
+          <Route history={history} path={'/:prefix([@]):username([0-9a-z]*)/'} component={UserPage}/>
+          <Route history={history} path='/'>
+            <Section>
+              <Switch>
+                {Keys.env === 'dev' && <Route history={history} path='/test/' component={TestPage}/>}
+                {Keys.env === 'dev' && <Route history={history} path='/feed/' component={FeedPage}/>}
+                <Route history={history} path={'/terms/'} component={TermsPage}/>
+                <Route history={history} path={'/recovery/'} component={RecoveryPage}/>
+                <AuthRoute history={history} path='/settings/' component={SettingsPage}/>
+                <AuthRoute history={history} path='/profile/' component={ProfilePage}/>
+                <AuthRoute history={history} path='/clients/' component={ClientsPage}/>
+                <AuthRoute history={history} path='/favorites/' component={FavoritesPage}/>
+                <AuthRoute history={history} path='/projects/' component={ProjectsPage}/>
+                <AuthRoute history={history} path='/offers/' component={OffersPage}/>
+                <AuthRoute history={history} path='/project/:id/' component={ProjectPage}/>
+                <AuthRoute history={history} path='/project/' component={ProjectPage}/>
+                <NonAuthRoute history={history} path='/login/' component={LoginPage}/>
+                <NonAuthRoute history={history} path='/signup/' component={SignupPage}/>
+                <Route history={history} path='/confirm/' component={EmailLinkPage}/>
+                <Route history={history} path='/search/' component={SearchPage}/>
+                <Route history={history} path={'/:prefix([@]):username([0-9a-z]*)/'} component={null}/>
+                <Route history={history} path='/' component={MainPage}/>
+              </Switch>
+            </Section>
+          </Route>
+        </Switch>
         <InfoBar/>
       </div>
     </ThemeProvider>

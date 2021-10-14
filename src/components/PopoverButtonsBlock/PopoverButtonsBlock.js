@@ -8,7 +8,7 @@ function PopoverButtonsBlock({children, icon}) {
   const ref = useRef()
   return (
     <>
-      <IconButton ref={ref} edge="end" onClick={() => setAnchorEl(ref.current)}>
+      <IconButton ref={ref} edge="end" onClick={() => setAnchorEl(ref.current)} size={'small'}>
         {icon}
       </IconButton>
       <Popover
